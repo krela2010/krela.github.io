@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<search> 
-  
-  
-    
-    <entry>
-      <title>Xcode常用快捷键</title>
-      <link href="/2020/08/07/iOS/"/>
-      <url>/2020/08/07/iOS/</url>
-      
-        <content type="html"><![CDATA[<p>筛选几个常用的快捷键</p><pre><code>ctrl+f                光标向前ctrl+b                光标向后ctrl+a                光标行头ctrl+e                光标行尾ctrl+shift+f          向前选中ctrl+shift+b          向后选中ctrl+shift+a          向前选中至行头ctrl+shift+e          向后选中至行尾ctrl+k                向后删除当前行ctrl+6                搜索当前文件函数ctril+shift+,         显示scheme配置（build、run等）cmd+,                 配置工程ctrl+cmd+up/down      头文件和实现文件切换ctrl+cmd+left/right   文件历史栈切换</code></pre>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-  
-  
+<search>
+  <entry>
+    <title>Xcode常用快捷键</title>
+    <url>/2020/08/07/iOS/</url>
+    <content><![CDATA[<p>筛选几个常用的快捷键</p>
+<pre><code>ctrl+f                光标向前
+ctrl+b                光标向后
+ctrl+a                光标行头
+ctrl+e                光标行尾
+ctrl+shift+f          向前选中
+ctrl+shift+b          向后选中
+ctrl+shift+a          向前选中至行头
+ctrl+shift+e          向后选中至行尾
+ctrl+k                向后删除当前行
+ctrl+6                搜索当前文件函数
+ctril+shift+,         显示scheme配置（build、run等）
+cmd+,                 配置工程
+ctrl+cmd+up/down      头文件和实现文件切换
+ctrl+cmd+left/right   文件历史栈切换</code></pre>
+]]></content>
+  </entry>
 </search>
