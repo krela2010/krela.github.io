@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Xcode常用快捷键</title>
+    <title>提高开发效率的N种方法</title>
     <url>/2020/08/07/iOS/</url>
-    <content><![CDATA[<p>筛选几个常用的快捷键</p>
-<pre><code>ctrl+f                光标向前
+    <content><![CDATA[<h3 id="Xcode常用快捷键"><a href="#Xcode常用快捷键" class="headerlink" title="Xcode常用快捷键"></a>Xcode常用快捷键</h3><pre><code>ctrl+f                光标向前
 ctrl+b                光标向后
 ctrl+a                光标行头
 ctrl+e                光标行尾
@@ -18,6 +17,19 @@ ctril+shift+,         显示scheme配置（build、run等）
 cmd+,                 配置工程
 ctrl+cmd+up/down      头文件和实现文件切换
 ctrl+cmd+left/right   文件历史栈切换</code></pre>
+<h3 id="vi快捷键"><a href="#vi快捷键" class="headerlink" title="vi快捷键"></a>vi快捷键</h3><pre><code>shift zz 快速保存退出</code></pre>
+<h3 id="Alfred"><a href="#Alfred" class="headerlink" title="Alfred"></a>Alfred</h3>]]></content>
+      <tags>
+        <tag>xcode 效率 vi</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective-oc 笔记</title>
+    <url>/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<p>读书笔记</p>
 ]]></content>
+      <tags>
+        <tag>oc</tag>
+      </tags>
   </entry>
 </search>
