@@ -30,19 +30,146 @@ ctrl+cmd+left/right   文件历史栈切换</code></pre>
   <entry>
     <title>Effective-oc 笔记</title>
     <url>/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p>整理更新中</p>
+<a id="more"></a>
+<h3 id="1-oc起源"><a href="#1-oc起源" class="headerlink" title="1.oc起源"></a>1.oc起源</h3><h3 id="2-减少头文件引用"><a href="#2-减少头文件引用" class="headerlink" title="2.减少头文件引用"></a>2.减少头文件引用</h3><ul>
+<li>如果不使用类方法可以仅声明@class Class 即可</li>
+</ul>
+<h3 id="3-多用字面量"><a href="#3-多用字面量" class="headerlink" title="3.多用字面量"></a>3.多用字面量</h3><ul>
+<li>代码整洁、直观</li>
+<li>NSArray arrayWithObject：遇到nil不会崩溃，内部会判断</li>
+</ul>
+<h3 id="4-少用define"><a href="#4-少用define" class="headerlink" title="4.少用define"></a>4.少用define</h3><ul>
+<li>建议使用const来替代：<ol>
+<li>可以加static 控制作用域、避免冲突</li>
+<li>类型含义明确，维护性好</li>
+<li>static 编译器会自行优化为define</li>
+</ol>
+</li>
+</ul>
+<h3 id="5-枚举"><a href="#5-枚举" class="headerlink" title="5.枚举"></a>5.枚举</h3><ul>
+<li>占用1字节</li>
+<li>type NS_ENUM oc枚举<ol>
+<li>根据编译平台决定使用新、旧协议(c++)</li>
+<li>新协议指的是底层数据类型存储</li>
+<li>switch 处理enum分支；尽量不用default，覆盖每一个分支，避免新增enum，switch未处理的情况</li>
+</ol>
+</li>
+</ul>
+<h3 id="6-属性"><a href="#6-属性" class="headerlink" title="6.属性"></a>6.属性</h3><ul>
+<li>类对象保管存储偏移量</li>
+<li>@dynamic 配合CoreData动态添加方法</li>
+</ul>
+<h3 id="7-对象内部使用实例变量"><a href="#7-对象内部使用实例变量" class="headerlink" title="7.对象内部使用实例变量"></a>7.对象内部使用实例变量</h3><ul>
+<li><p>self.var 语法</p>
+<ol>
+<li>效率低</li>
+<li>可触发kvo，可使用懒加载</li>
+</ol>
+</li>
+<li><p><code>_var</code> 语法</p>
+<ol>
+<li>不触发kvo</li>
+<li>getter语法里使用</li>
+</ol>
+</li>
+<li><p>折中方案</p>
+<ol>
+<li>写入用setter</li>
+<li>读取用_var</li>
+</ol>
+</li>
+</ul>
+<h3 id="8-对象等同性"><a href="#8-对象等同性" class="headerlink" title="8.对象等同性"></a>8.对象等同性</h3><ul>
+<li>isEqualToString比isEqual快</li>
+<li>== 判断指针操作</li>
+<li>hash()方法用于比较，自己实现；注意set时 的hash 碰撞问题</li>
+<li>结构对象使用主键比较</li>
+</ul>
+<h3 id="9-类簇"><a href="#9-类簇" class="headerlink" title="9.类簇"></a>9.类簇</h3><ul>
+<li>oc没有概念上的抽象类，oc的抽象类不写init</li>
+<li>类簇类似抽象类的概念，提供接口，不提供实现</li>
+<li>NSArray 里面是工厂，NSArray class 隐藏 无法通过实例访问<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">NSArray</span> *arr = [[<span class="built_in">NSArray</span> alloc] init];</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@|%@&quot;</span>,[arr <span class="keyword">class</span>], [<span class="built_in">NSArray</span> <span class="keyword">class</span>]);</span><br><span class="line"><span class="built_in">NSString</span> *str = [[<span class="built_in">NSString</span> alloc] init];</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@|%@&quot;</span>,[str <span class="keyword">class</span>], [<span class="built_in">NSString</span> <span class="keyword">class</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">///分别打印</span></span><br><span class="line">__NSArray0|<span class="built_in">NSArray</span></span><br><span class="line">__NSCFConstantString|<span class="built_in">NSString</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="10-动态添加属性"><a href="#10-动态添加属性" class="headerlink" title="10.动态添加属性"></a>10.动态添加属性</h3><ul>
+<li>本质是全局创建Map，以Class为key的外部表</li>
+<li>示例：UIAlertView存在多个，通过此方法区分每个；不建议这么用；不好定位异常</li>
+</ul>
+<h3 id="11-消息派发"><a href="#11-消息派发" class="headerlink" title="11.消息派发"></a>11.消息派发</h3><ul>
+<li>objc_msg_send 有两个隐藏参数 (id,SEL)</li>
+<li>runtime</li>
+<li>尾调用优化：去掉函数栈帧，优化</li>
+</ul>
+<h3 id="12-消息转发"><a href="#12-消息转发" class="headerlink" title="12.消息转发"></a>12.消息转发</h3><ul>
+<li>resolveInstanceMethod/resolveClassMethod<ol>
+<li>配合@dynamic</li>
+</ol>
+</li>
+<li>备用接受者 forwardingTargetForSelector<ol>
+<li>返回接收对象</li>
+<li>1对1</li>
+<li>快速</li>
+</ol>
+</li>
+<li>完成消息转发forwardInvocation<ol>
+<li>修改方法内容</li>
+<li>1对多</li>
+<li>慢</li>
+</ol>
+</li>
+</ul>
+<h3 id="13-方法交换"><a href="#13-方法交换" class="headerlink" title="13.方法交换"></a>13.方法交换</h3><ul>
+<li>用于调试目的<ol>
+<li>用户行为监控</li>
+<li>调试异常</li>
+<li>一般应用层不建议使用</li>
+</ol>
+</li>
+</ul>
+<h3 id="14-类对象意义"><a href="#14-类对象意义" class="headerlink" title="14.类对象意义"></a>14.类对象意义</h3><ul>
+<li>判断对象关系 isKindOf isMemberOf；</li>
+<li>示例：NSProxy 对于isKinfOf 对 class处理可能不一样(消息转发)</li>
+<li>消息传递机制的前提</li>
+</ul>
+<h3 id="15-用前缀避免命名空间冲突"><a href="#15-用前缀避免命名空间冲突" class="headerlink" title="15.用前缀避免命名空间冲突"></a>15.用前缀避免命名空间冲突</h3><ul>
+<li>c函数需要加前缀</li>
+<li>lib对象，自己引用的第三方加前缀</li>
+</ul>
+]]></content>
       <tags>
         <tag>oc</tag>
         <tag>读书笔记</tag>
       </tags>
   </entry>
   <entry>
-    <title>20200908082552</title>
-    <url>/2020/09/08/20200908082552/</url>
-    <content><![CDATA[<p>hexo Tranquilpeak 主题配置<br><a href="https://hilen.github.io/2016/05/16/tranquilpeak-theme-tutorial/">https://hilen.github.io/2016/05/16/tranquilpeak-theme-tutorial/</a></p>
+    <title>Tranquilpeak主题配置</title>
+    <url>/2020/09/08/Tranquilpeak%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AE/</url>
+    <content><![CDATA[<p>hexo Tranquilpeak 主题配置</p>
+<a id="more"></a>
+
+<p><a href="https://github.com/LouisBarranqueiro/hexo-theme-tranquilpeak/blob/master/DOCUMENTATION.md#installation">https://github.com/LouisBarranqueiro/hexo-theme-tranquilpeak/blob/master/DOCUMENTATION.md#installation</a></p>
 ]]></content>
       <tags>
         <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Markdown</title>
+    <url>/2020/09/08/Markdown/</url>
+    <content><![CDATA[<p>常用Markdown编辑工具和语法</p>
+<a id="more"></a>
+<h1 id="Markdown工具"><a href="#Markdown工具" class="headerlink" title="Markdown工具"></a>Markdown工具</h1><h3 id="1-Typora"><a href="#1-Typora" class="headerlink" title="1.Typora"></a>1.Typora</h3><p>网站：<a href="http://typora.io/">http://typora.io</a><br>支持Mac windows</p>
+<h3 id="2-Dillinger"><a href="#2-Dillinger" class="headerlink" title="2.Dillinger"></a>2.Dillinger</h3><p>网站：<a href="http://dillinger.io/">http://dillinger.io</a><br>在线编辑</p>
+<h3 id="3-印象笔记"><a href="#3-印象笔记" class="headerlink" title="3.印象笔记"></a>3.印象笔记</h3><p>支持多平台</p>
+<h1 id="常用语法"><a href="#常用语法" class="headerlink" title="常用语法"></a>常用语法</h1><blockquote>
+<p><code># 大标题(注意有空格)</code><br><code>### 次标题 </code><br><code>##### 依次递减</code><br><code>*斜体*</code><br><code>**重点**</code><br><code>- list 列表(支持层级)</code><br><code>&gt; hello 引用样式(支持层级)</code><br><code>-[] checkBox 代办</code><br><code>*** 分隔线</code><br><code>--- 分隔线</code><br><code>|   |   |</code><br><code>|-|-|</code><br><code>|   |   |</code><br>表格(各个工具可能有差异，typora支持的好)<code> </code> <code>  代码块` 两行之间 `</code>c++ 根据语法着色`</p>
+</blockquote>
+<p>更多语法：<br><a href="https://www.jianshu.com/p/b03a8d7b1719">https://www.jianshu.com/p/b03a8d7b1719</a></p>
+]]></content>
+      <tags>
+        <tag>工具</tag>
       </tags>
   </entry>
 </search>

@@ -11,14 +11,16 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"","dateCreated":"2020-09-08T06:27:15+08:00","dateModified":"2020-09-08T08:07:26+08:00","datePublished":"2020-09-08T06:27:15+08:00","description":"","headline":"Effective-oc 笔记","image":[null,"coverImage.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/","keywords":"oc, 读书笔记","thumbnailUrl":"coverImage.jpg"}</script>
-    <meta property="og:type" content="blog">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"整理更新中\n\n1.oc起源2.减少头文件引用\n如果不使用类方法可以仅声明@class Class 即可\n\n3.多用字面量\n代码整洁、直观\nNSArray arrayWithObject：遇到nil不会崩溃，内部会判断\n\n4.少用define\n建议使用const来替代：\n可以加static 控制作用域、避免冲突\n类型含义明确，维护性好\nstatic 编译器会自行优化为define\n\n\n\n5.枚举\n占用1字节\ntype NS_ENUM oc枚举\n根据编译平台决定使用新、旧协议(c++)\n新协议指的是底层数据类型存储\nswitch 处理enum分支；尽量不用default，覆盖每一个分支，避免新增enum，switch未处理的情况\n\n\n\n6.属性\n类对象保管存储偏移量\n@dynamic 配合CoreData动态添加方法\n\n7.对象内部使用实例变量\nself.var 语法\n\n效率低\n可触发kvo，可使用懒加载\n\n\n_var 语法\n\n不触发kvo\ngetter语法里使用\n\n\n折中方案\n\n写入用setter\n读取用_var\n\n\n\n8.对象等同性\nisEqualToString比isEqual快\n== 判断指针操作\nhash()方法用于比较，自己实现；注意set时 的hash 碰撞问题\n结构对象使用主键比较\n\n9.类簇\noc没有概念上的抽象类，oc的抽象类不写init\n类簇类似抽象类的概念，提供接口，不提供实现\nNSArray 里面是工厂，NSArray class 隐藏 无法通过实例访问12345678NSArray *arr = [[NSArray alloc] init];NSLog(@&quot;%@|%@&quot;,[arr class], [NSArray class]);NSString *str = [[NSString alloc] init];NSLog(@&quot;%@|%@&quot;,[str class], [NSString class]);///分别打印__NSArray0|NSArray__NSCFConstantString|NSString\n\n\n\n10.动态添加属性\n本质是全局创建Map，以Class为key的外部表\n示例：UIAlertView存在多个，通过此方法区分每个；不建议这么用；不好定位异常\n\n11.消息派发\nobjc_msg_send 有两个隐藏参数 (id,SEL)\nruntime\n尾调用优化：去掉函数栈帧，优化\n\n12.消息转发\nresolveInstanceMethod/resolveClassMethod\n配合@dynamic\n\n\n备用接受者 forwardingTargetForSelector\n返回接收对象\n1对1\n快速\n\n\n完成消息转发forwardInvocation\n修改方法内容\n1对多\n慢\n\n\n\n13.方法交换\n用于调试目的\n用户行为监控\n调试异常\n一般应用层不建议使用\n\n\n\n14.类对象意义\n判断对象关系 isKindOf isMemberOf；\n示例：NSProxy 对于isKinfOf 对 class处理可能不一样(消息转发)\n消息传递机制的前提\n\n15.用前缀避免命名空间冲突\nc函数需要加前缀\nlib对象，自己引用的第三方加前缀\n\n","dateCreated":"2020-09-08T06:27:15+08:00","dateModified":"2020-09-08T11:07:59+08:00","datePublished":"2020-09-08T06:27:15+08:00","description":"整理更新中","headline":"Effective-oc 笔记","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/","keywords":"oc, 读书笔记"}</script>
+    <meta name="description" content="整理更新中">
+<meta property="og:type" content="blog">
 <meta property="og:title" content="Effective-oc 笔记">
 <meta property="og:url" content="http://example.com/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name">
+<meta property="og:description" content="整理更新中">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-09-07T22:27:15.000Z">
-<meta property="article:modified_time" content="2020-09-08T00:07:26.325Z">
+<meta property="article:modified_time" content="2020-09-08T03:07:59.710Z">
 <meta property="article:author" content="krela">
 <meta property="article:tag" content="oc">
 <meta property="article:tag" content="读书笔记">
@@ -29,9 +31,6 @@
     
     
     
-    
-        <meta property="og:image" content="http://example.com/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/coverImage.jpg"/>
-        <meta class="swiftype" name="image" data-type="enum" content="http://example.com/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/coverImage.jpg"/>
     
     
     <!--STYLES-->
@@ -218,13 +217,15 @@
 </nav>
 
             
-        <div class="post-header-cover
-                    text-left
-                    "
-             style="background-image:url('/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/coverImage.jpg');"
-             data-behavior="4">
-            
-                <div class="post-header main-content-wrap text-left">
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title">
             Effective-oc 笔记
@@ -243,20 +244,117 @@
     
 </div>
 
-            
-        </div>
-
-            <div id="main" data-behavior="4"
-                 class="hasCover
-                        hasCoverMetaIn
-                        ">
-                
-<article class="post">
-    
     
     <div class="post-content markdown">
         <div class="main-content-wrap">
-            
+            <p>整理更新中</p>
+<a id="more"></a>
+<h3 id="1-oc起源"><a href="#1-oc起源" class="headerlink" title="1.oc起源"></a>1.oc起源</h3><h3 id="2-减少头文件引用"><a href="#2-减少头文件引用" class="headerlink" title="2.减少头文件引用"></a>2.减少头文件引用</h3><ul>
+<li>如果不使用类方法可以仅声明@class Class 即可</li>
+</ul>
+<h3 id="3-多用字面量"><a href="#3-多用字面量" class="headerlink" title="3.多用字面量"></a>3.多用字面量</h3><ul>
+<li>代码整洁、直观</li>
+<li>NSArray arrayWithObject：遇到nil不会崩溃，内部会判断</li>
+</ul>
+<h3 id="4-少用define"><a href="#4-少用define" class="headerlink" title="4.少用define"></a>4.少用define</h3><ul>
+<li>建议使用const来替代：<ol>
+<li>可以加static 控制作用域、避免冲突</li>
+<li>类型含义明确，维护性好</li>
+<li>static 编译器会自行优化为define</li>
+</ol>
+</li>
+</ul>
+<h3 id="5-枚举"><a href="#5-枚举" class="headerlink" title="5.枚举"></a>5.枚举</h3><ul>
+<li>占用1字节</li>
+<li>type NS_ENUM oc枚举<ol>
+<li>根据编译平台决定使用新、旧协议(c++)</li>
+<li>新协议指的是底层数据类型存储</li>
+<li>switch 处理enum分支；尽量不用default，覆盖每一个分支，避免新增enum，switch未处理的情况</li>
+</ol>
+</li>
+</ul>
+<h3 id="6-属性"><a href="#6-属性" class="headerlink" title="6.属性"></a>6.属性</h3><ul>
+<li>类对象保管存储偏移量</li>
+<li>@dynamic 配合CoreData动态添加方法</li>
+</ul>
+<h3 id="7-对象内部使用实例变量"><a href="#7-对象内部使用实例变量" class="headerlink" title="7.对象内部使用实例变量"></a>7.对象内部使用实例变量</h3><ul>
+<li><p>self.var 语法</p>
+<ol>
+<li>效率低</li>
+<li>可触发kvo，可使用懒加载</li>
+</ol>
+</li>
+<li><p><code>_var</code> 语法</p>
+<ol>
+<li>不触发kvo</li>
+<li>getter语法里使用</li>
+</ol>
+</li>
+<li><p>折中方案</p>
+<ol>
+<li>写入用setter</li>
+<li>读取用_var</li>
+</ol>
+</li>
+</ul>
+<h3 id="8-对象等同性"><a href="#8-对象等同性" class="headerlink" title="8.对象等同性"></a>8.对象等同性</h3><ul>
+<li>isEqualToString比isEqual快</li>
+<li>== 判断指针操作</li>
+<li>hash()方法用于比较，自己实现；注意set时 的hash 碰撞问题</li>
+<li>结构对象使用主键比较</li>
+</ul>
+<h3 id="9-类簇"><a href="#9-类簇" class="headerlink" title="9.类簇"></a>9.类簇</h3><ul>
+<li>oc没有概念上的抽象类，oc的抽象类不写init</li>
+<li>类簇类似抽象类的概念，提供接口，不提供实现</li>
+<li>NSArray 里面是工厂，NSArray class 隐藏 无法通过实例访问<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSArray</span> *arr = [[<span class="built_in">NSArray</span> alloc] init];</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@|%@&quot;</span>,[arr <span class="keyword">class</span>], [<span class="built_in">NSArray</span> <span class="keyword">class</span>]);</span><br><span class="line"><span class="built_in">NSString</span> *str = [[<span class="built_in">NSString</span> alloc] init];</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@|%@&quot;</span>,[str <span class="keyword">class</span>], [<span class="built_in">NSString</span> <span class="keyword">class</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">///分别打印</span></span><br><span class="line">__NSArray0|<span class="built_in">NSArray</span></span><br><span class="line">__NSCFConstantString|<span class="built_in">NSString</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="10-动态添加属性"><a href="#10-动态添加属性" class="headerlink" title="10.动态添加属性"></a>10.动态添加属性</h3><ul>
+<li>本质是全局创建Map，以Class为key的外部表</li>
+<li>示例：UIAlertView存在多个，通过此方法区分每个；不建议这么用；不好定位异常</li>
+</ul>
+<h3 id="11-消息派发"><a href="#11-消息派发" class="headerlink" title="11.消息派发"></a>11.消息派发</h3><ul>
+<li>objc_msg_send 有两个隐藏参数 (id,SEL)</li>
+<li>runtime</li>
+<li>尾调用优化：去掉函数栈帧，优化</li>
+</ul>
+<h3 id="12-消息转发"><a href="#12-消息转发" class="headerlink" title="12.消息转发"></a>12.消息转发</h3><ul>
+<li>resolveInstanceMethod/resolveClassMethod<ol>
+<li>配合@dynamic</li>
+</ol>
+</li>
+<li>备用接受者 forwardingTargetForSelector<ol>
+<li>返回接收对象</li>
+<li>1对1</li>
+<li>快速</li>
+</ol>
+</li>
+<li>完成消息转发forwardInvocation<ol>
+<li>修改方法内容</li>
+<li>1对多</li>
+<li>慢</li>
+</ol>
+</li>
+</ul>
+<h3 id="13-方法交换"><a href="#13-方法交换" class="headerlink" title="13.方法交换"></a>13.方法交换</h3><ul>
+<li>用于调试目的<ol>
+<li>用户行为监控</li>
+<li>调试异常</li>
+<li>一般应用层不建议使用</li>
+</ol>
+</li>
+</ul>
+<h3 id="14-类对象意义"><a href="#14-类对象意义" class="headerlink" title="14.类对象意义"></a>14.类对象意义</h3><ul>
+<li>判断对象关系 isKindOf isMemberOf；</li>
+<li>示例：NSProxy 对于isKinfOf 对 class处理可能不一样(消息转发)</li>
+<li>消息传递机制的前提</li>
+</ul>
+<h3 id="15-用前缀避免命名空间冲突"><a href="#15-用前缀避免命名空间冲突" class="headerlink" title="15.用前缀避免命名空间冲突"></a>15.用前缀避免命名空间冲突</h3><ul>
+<li>c函数需要加前缀</li>
+<li>lib对象，自己引用的第三方加前缀</li>
+</ul>
+
             
 
 
@@ -280,9 +378,9 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/09/08/20200908082552/"
-                    data-tooltip="20200908082552"
-                    aria-label="上一篇: 20200908082552"
+                    href="/2020/09/08/Tranquilpeak%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AE/"
+                    data-tooltip="Tranquilpeak主题配置"
+                    aria-label="上一篇: Tranquilpeak主题配置"
                 >
                     
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
@@ -356,9 +454,9 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/09/08/20200908082552/"
-                    data-tooltip="20200908082552"
-                    aria-label="上一篇: 20200908082552"
+                    href="/2020/09/08/Tranquilpeak%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AE/"
+                    data-tooltip="Tranquilpeak主题配置"
+                    aria-label="上一篇: Tranquilpeak主题配置"
                 >
                     
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
