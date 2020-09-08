@@ -6,23 +6,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="">
-    <title>Markdown - null</title>
+    <title>设计模块 - null</title>
     <meta name="author" content="krela">
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"常用Markdown编辑工具和语法\n\nMarkdown工具1.Typora网站：http://typora.io支持Mac windows\n2.Dillinger网站：http://dillinger.io在线编辑\n3.印象笔记支持多平台\n常用语法\n# 大标题(注意有空格)### 次标题 ##### 依次递减*斜体***重点**- list 列表(支持层级)&gt; hello 引用样式(支持层级)-[] checkBox 代办*** 分隔线--- 分隔线|   |   ||-|-||   |   |表格(各个工具可能有差异，typora支持的好)    代码块` 两行之间 `c++ 根据语法着色`\n\n更多语法：https://www.jianshu.com/p/b03a8d7b1719\n","dateCreated":"2020-09-08T09:31:46+08:00","dateModified":"2020-09-08T10:03:22+08:00","datePublished":"2020-09-08T09:31:46+08:00","description":"常用Markdown编辑工具和语法","headline":"Markdown","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/09/08/Markdown/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/09/08/Markdown/","keywords":"工具"}</script>
-    <meta name="description" content="常用Markdown编辑工具和语法">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"挖坑，持续填坑\n\n\nMVC\ncontroller负责model和view的对象管理和生命周期\nmodel和view完全分离\n\n缺点：\ncontroller的业务负担较重\n\nMVP\nMVP+C ，本质还有C的存在\nC持有P对象，P弱引用C\nP的定位和MVC中的C类似，相当于把C的工作拆分成多个P，每个P负责部分业务功能，\nC负责管理P对象管理和生命周期，对P做业务扩展\n\nMVVM\nMVVM+C   类似MVP，C可以有多个VM\nVM持有M对象，持有V的对象\nV不引用VM的头文件，只声明类型；和M分离\n数据响应不再是VM发起，有V建立观察器去监听变化；  实现方法：kvo，KVOController，RAC优点： 进一步减少了VM的负担\n\nMVCS","dateCreated":"2020-09-08T11:35:54+08:00","dateModified":"2020-09-08T12:03:49+08:00","datePublished":"2020-09-08T11:35:54+08:00","description":"挖坑，持续填坑","headline":"设计模块","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/09/08/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%9D%97/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/09/08/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%9D%97/","keywords":"设计模式"}</script>
+    <meta name="description" content="挖坑，持续填坑">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="Markdown">
-<meta property="og:url" content="http://example.com/2020/09/08/Markdown/index.html">
+<meta property="og:title" content="设计模块">
+<meta property="og:url" content="http://example.com/2020/09/08/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%9D%97/index.html">
 <meta property="og:site_name">
-<meta property="og:description" content="常用Markdown编辑工具和语法">
+<meta property="og:description" content="挖坑，持续填坑">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-09-08T01:31:46.000Z">
-<meta property="article:modified_time" content="2020-09-08T02:03:22.848Z">
+<meta property="article:published_time" content="2020-09-08T03:35:54.000Z">
+<meta property="article:modified_time" content="2020-09-08T04:03:49.584Z">
 <meta property="article:author" content="krela">
-<meta property="article:tag" content="工具">
+<meta property="article:tag" content="设计模式">
 <meta name="twitter:card" content="summary">
     
     
@@ -227,12 +227,12 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title">
-            Markdown
+            设计模块
         </h1>
     
     
         <div class="post-meta">
-    <time datetime="2020-09-08T09:31:46+08:00">
+    <time datetime="2020-09-08T11:35:54+08:00">
 	
 		    9月 08, 2020
     	
@@ -246,16 +246,29 @@
     
     <div class="post-content markdown">
         <div class="main-content-wrap">
-            <p>常用Markdown编辑工具和语法</p>
+            <p>挖坑，持续填坑</p>
 <a id="more"></a>
-<h1 id="Markdown工具"><a href="#Markdown工具" class="headerlink" title="Markdown工具"></a>Markdown工具</h1><h3 id="1-Typora"><a href="#1-Typora" class="headerlink" title="1.Typora"></a>1.Typora</h3><p>网站：<a target="_blank" rel="noopener" href="http://typora.io/">http://typora.io</a><br>支持Mac windows</p>
-<h3 id="2-Dillinger"><a href="#2-Dillinger" class="headerlink" title="2.Dillinger"></a>2.Dillinger</h3><p>网站：<a target="_blank" rel="noopener" href="http://dillinger.io/">http://dillinger.io</a><br>在线编辑</p>
-<h3 id="3-印象笔记"><a href="#3-印象笔记" class="headerlink" title="3.印象笔记"></a>3.印象笔记</h3><p>支持多平台</p>
-<h1 id="常用语法"><a href="#常用语法" class="headerlink" title="常用语法"></a>常用语法</h1><blockquote>
-<p><code># 大标题(注意有空格)</code><br><code>### 次标题 </code><br><code>##### 依次递减</code><br><code>*斜体*</code><br><code>**重点**</code><br><code>- list 列表(支持层级)</code><br><code>&gt; hello 引用样式(支持层级)</code><br><code>-[] checkBox 代办</code><br><code>*** 分隔线</code><br><code>--- 分隔线</code><br><code>|   |   |</code><br><code>|-|-|</code><br><code>|   |   |</code><br>表格(各个工具可能有差异，typora支持的好)<code> </code> <code>  代码块` 两行之间 `</code>c++ 根据语法着色`</p>
-</blockquote>
-<p>更多语法：<br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/b03a8d7b1719">https://www.jianshu.com/p/b03a8d7b1719</a></p>
 
+<h3 id="MVC"><a href="#MVC" class="headerlink" title="MVC"></a>MVC</h3><ul>
+<li>controller负责model和view的对象管理和生命周期</li>
+<li>model和view完全分离</li>
+</ul>
+<h5 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h5><ul>
+<li>controller的业务负担较重</li>
+</ul>
+<h3 id="MVP"><a href="#MVP" class="headerlink" title="MVP"></a>MVP</h3><ul>
+<li>MVP+C ，本质还有C的存在</li>
+<li>C持有P对象，P弱引用C</li>
+<li>P的定位和MVC中的C类似，相当于把C的工作拆分成多个P，每个P负责部分业务功能，</li>
+<li>C负责管理P对象管理和生命周期，对P做业务扩展</li>
+</ul>
+<h3 id="MVVM"><a href="#MVVM" class="headerlink" title="MVVM"></a>MVVM</h3><ul>
+<li>MVVM+C   类似MVP，C可以有多个VM</li>
+<li>VM持有M对象，持有V的对象</li>
+<li>V不引用VM的头文件，只声明类型；和M分离</li>
+<li>数据响应不再是VM发起，有V建立观察器去监听变化；<br>  实现方法：kvo，KVOController，RAC<h5 id="优点：-进一步减少了VM的负担"><a href="#优点：-进一步减少了VM的负担" class="headerlink" title="优点： 进一步减少了VM的负担"></a>优点： 进一步减少了VM的负担</h5></li>
+</ul>
+<h3 id="MVCS"><a href="#MVCS" class="headerlink" title="MVCS"></a>MVCS</h3>
             
 
 
@@ -266,7 +279,7 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">标签</span><br/>
                 
-    <a class="tag tag--primary tag--small t-none-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a>
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a>
 
             </div>
         
@@ -276,14 +289,11 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    
-                <a
-                    class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/09/08/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/"
-                    data-tooltip="架构设计"
-                    aria-label="上一篇: 架构设计"
-                >
-                    
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
                     </a>
@@ -293,9 +303,9 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/"
-                    data-tooltip="Effective-oc 笔记"
-                    aria-label="下一篇: Effective-oc 笔记"
+                    href="/2020/09/08/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/"
+                    data-tooltip="架构设计"
+                    aria-label="下一篇: 架构设计"
                 >
                     
                         <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
@@ -352,14 +362,11 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    
-                <a
-                    class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/09/08/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/"
-                    data-tooltip="架构设计"
-                    aria-label="上一篇: 架构设计"
-                >
-                    
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
                     </a>
@@ -369,9 +376,9 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/"
-                    data-tooltip="Effective-oc 笔记"
-                    aria-label="下一篇: Effective-oc 笔记"
+                    href="/2020/09/08/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/"
+                    data-tooltip="架构设计"
+                    aria-label="下一篇: 架构设计"
                 >
                     
                         <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>

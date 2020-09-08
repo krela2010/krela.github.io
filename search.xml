@@ -173,4 +173,48 @@ ctrl+cmd+left/right   文件历史栈切换</code></pre>
         <tag>工具</tag>
       </tags>
   </entry>
+  <entry>
+    <title>架构设计</title>
+    <url>/2020/09/08/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</url>
+    <content><![CDATA[<p>架构学习的记录</p>
+<a id="more"></a>
+<h3 id="组件化设计"><a href="#组件化设计" class="headerlink" title="组件化设计"></a>组件化设计</h3><p>1.功能模块，互相解耦，通过中间层调用<br>2.公共组件抽离，统一维护管理<br>3.开发人员只做业务</p>
+<p>优点：插件化，业务调整，之间互不影响<br>缺点：公共组件的统一维护可以提高效率，但也存在风险</p>
+<h3 id="极端分离设计"><a href="#极端分离设计" class="headerlink" title="极端分离设计"></a>极端分离设计</h3><p>非专业叫法<br>1.所有模块、及其涉及的通用模块完全独立管理，完全解耦<br>2.模块之间 字典数据传递</p>
+<p>优点：完全的模块分离<br>缺点：开发成本高，适合大型、多开发团队的App</p>
+]]></content>
+      <tags>
+        <tag>架构</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>设计模块</title>
+    <url>/2020/09/08/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%9D%97/</url>
+    <content><![CDATA[<p>挖坑，持续填坑</p>
+<a id="more"></a>
+
+<h3 id="MVC"><a href="#MVC" class="headerlink" title="MVC"></a>MVC</h3><ul>
+<li>controller负责model和view的对象管理和生命周期</li>
+<li>model和view完全分离</li>
+</ul>
+<h5 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h5><ul>
+<li>controller的业务负担较重</li>
+</ul>
+<h3 id="MVP"><a href="#MVP" class="headerlink" title="MVP"></a>MVP</h3><ul>
+<li>MVP+C ，本质还有C的存在</li>
+<li>C持有P对象，P弱引用C</li>
+<li>P的定位和MVC中的C类似，相当于把C的工作拆分成多个P，每个P负责部分业务功能，</li>
+<li>C负责管理P对象管理和生命周期，对P做业务扩展</li>
+</ul>
+<h3 id="MVVM"><a href="#MVVM" class="headerlink" title="MVVM"></a>MVVM</h3><ul>
+<li>MVVM+C   类似MVP，C可以有多个VM</li>
+<li>VM持有M对象，持有V的对象</li>
+<li>V不引用VM的头文件，只声明类型；和M分离</li>
+<li>数据响应不再是VM发起，有V建立观察器去监听变化；<br>  实现方法：kvo，KVOController，RAC<h5 id="优点：-进一步减少了VM的负担"><a href="#优点：-进一步减少了VM的负担" class="headerlink" title="优点： 进一步减少了VM的负担"></a>优点： 进一步减少了VM的负担</h5></li>
+</ul>
+<h3 id="MVCS"><a href="#MVCS" class="headerlink" title="MVCS"></a>MVCS</h3>]]></content>
+      <tags>
+        <tag>设计模式</tag>
+      </tags>
+  </entry>
 </search>
