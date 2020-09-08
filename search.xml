@@ -138,6 +138,31 @@ ctrl+cmd+left/right   文件历史栈切换</code></pre>
 <li>c函数需要加前缀</li>
 <li>lib对象，自己引用的第三方加前缀</li>
 </ul>
+<h3 id="16-全能初始化器"><a href="#16-全能初始化器" class="headerlink" title="16.全能初始化器"></a>16.全能初始化器</h3><ul>
+<li><p>和swift的指定初始化器类似，swift 强制性 oc 没有这种约束 designted翻译差异。</p>
+</li>
+<li><p>中文翻译的怪怪的；<br> 我的翻译是：<br> <strong>目标是为了实例的初始化能保证类和其父类的所有成员得到初始化</strong></p>
+<ol>
+<li>全能初始化器的作用是为了保证当前类成员得到初始化</li>
+<li>非全能初始化器应调用当前类全能初始化器</li>
+<li>子类的全能初始化器必须调用父类的全能初始化器</li>
+<li>如果父类的全能初始化器，子类没有实现，那么实例可以直接调用父类的全能初始化器初始化，子类成员变量没有初始化。为了解决这个问题，要么 抛异常，要么 重写父类的全能初始化器</li>
+</ol>
+<p> <strong>这块swift做成了编译检查，而且swift官方文档描述的更清楚</strong></p>
+</li>
+</ul>
+<h3 id="17-实现descripion方法"><a href="#17-实现descripion方法" class="headerlink" title="17.实现descripion方法"></a>17.实现descripion方法</h3><ul>
+<li>自己实现的建议加上类名称和对象地址</li>
+<li>lldb里po 打印的是debugDescripion</li>
+</ul>
+<h3 id="18-使用不可变对象"><a href="#18-使用不可变对象" class="headerlink" title="18.使用不可变对象"></a>18.使用不可变对象</h3><ul>
+<li>涉及到扩展的作用外部ro，内部rw可以点语法修改</li>
+<li>成员变量对外不可变，修改交给类内部</li>
+</ul>
+<h3 id="19-命名方式"><a href="#19-命名方式" class="headerlink" title="19.命名方式"></a>19.命名方式</h3><h3 id="20-为私有方法加前缀"><a href="#20-为私有方法加前缀" class="headerlink" title="20.为私有方法加前缀"></a>20.为私有方法加前缀</h3><ul>
+<li>oc由于动态机制，没有所谓的private函数</li>
+<li>不要用_作为前缀，和苹果自带的冲突</li>
+</ul>
 ]]></content>
       <tags>
         <tag>oc</tag>

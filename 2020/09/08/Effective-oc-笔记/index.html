@@ -11,7 +11,7 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"持续更新中\n\n1.oc起源2.减少头文件引用\n如果不使用类方法可以仅声明@class Class 即可\n\n3.多用字面量\n代码整洁、直观\nNSArray arrayWithObject：遇到nil不会崩溃，内部会判断\n\n4.少用define\n建议使用const来替代：\n可以加static 控制作用域、避免冲突\n类型含义明确，维护性好\nstatic 编译器会自行优化为define\n\n\n\n5.枚举\n占用1字节\ntype NS_ENUM oc枚举\n根据编译平台决定使用新、旧协议(c++)\n新协议指的是底层数据类型存储\nswitch 处理enum分支；尽量不用default，覆盖每一个分支，避免新增enum，switch未处理的情况\n\n\n\n6.属性\n类对象保管存储偏移量\n@dynamic 配合CoreData动态添加方法\n\n7.对象内部使用实例变量\nself.var 语法\n\n效率低\n可触发kvo，可使用懒加载\n\n\n_var 语法\n\n不触发kvo\ngetter语法里使用\n\n\n折中方案\n\n写入用setter\n读取用_var\n\n\n\n8.对象等同性\nisEqualToString比isEqual快\n== 判断指针操作\nhash()方法用于比较，自己实现；注意set时 的hash 碰撞问题\n结构对象使用主键比较\n\n9.类簇\noc没有概念上的抽象类，oc的抽象类不写init\n类簇类似抽象类的概念，提供接口，不提供实现\nNSArray 里面是工厂，NSArray class 隐藏 无法通过实例访问12345678NSArray *arr = [[NSArray alloc] init];NSLog(@&quot;%@|%@&quot;,[arr class], [NSArray class]);NSString *str = [[NSString alloc] init];NSLog(@&quot;%@|%@&quot;,[str class], [NSString class]);///分别打印__NSArray0|NSArray__NSCFConstantString|NSString\n\n\n\n10.动态添加属性\n本质是全局创建Map，以Class为key的外部表\n示例：UIAlertView存在多个，通过此方法区分每个；不建议这么用；不好定位异常\n\n11.消息派发\nobjc_msg_send 有两个隐藏参数 (id,SEL)\nruntime\n尾调用优化：去掉函数栈帧，优化\n\n12.消息转发\nresolveInstanceMethod/resolveClassMethod\n配合@dynamic\n\n\n备用接受者 forwardingTargetForSelector\n返回接收对象\n1对1\n快速\n\n\n完成消息转发forwardInvocation\n修改方法内容\n1对多\n慢\n\n\n\n13.方法交换\n用于调试目的\n用户行为监控\n调试异常\n一般应用层不建议使用\n\n\n\n14.类对象意义\n判断对象关系 isKindOf isMemberOf；\n示例：NSProxy 对于isKinfOf 对 class处理可能不一样(消息转发)\n消息传递机制的前提\n\n15.用前缀避免命名空间冲突\nc函数需要加前缀\nlib对象，自己引用的第三方加前缀\n\n","dateCreated":"2020-09-08T06:27:15+08:00","dateModified":"2020-09-08T11:12:35+08:00","datePublished":"2020-09-08T06:27:15+08:00","description":"持续更新中","headline":"Effective-oc 笔记","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/","keywords":"oc, 读书笔记"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"持续更新中\n\n1.oc起源2.减少头文件引用\n如果不使用类方法可以仅声明@class Class 即可\n\n3.多用字面量\n代码整洁、直观\nNSArray arrayWithObject：遇到nil不会崩溃，内部会判断\n\n4.少用define\n建议使用const来替代：\n可以加static 控制作用域、避免冲突\n类型含义明确，维护性好\nstatic 编译器会自行优化为define\n\n\n\n5.枚举\n占用1字节\ntype NS_ENUM oc枚举\n根据编译平台决定使用新、旧协议(c++)\n新协议指的是底层数据类型存储\nswitch 处理enum分支；尽量不用default，覆盖每一个分支，避免新增enum，switch未处理的情况\n\n\n\n6.属性\n类对象保管存储偏移量\n@dynamic 配合CoreData动态添加方法\n\n7.对象内部使用实例变量\nself.var 语法\n\n效率低\n可触发kvo，可使用懒加载\n\n\n_var 语法\n\n不触发kvo\ngetter语法里使用\n\n\n折中方案\n\n写入用setter\n读取用_var\n\n\n\n8.对象等同性\nisEqualToString比isEqual快\n== 判断指针操作\nhash()方法用于比较，自己实现；注意set时 的hash 碰撞问题\n结构对象使用主键比较\n\n9.类簇\noc没有概念上的抽象类，oc的抽象类不写init\n类簇类似抽象类的概念，提供接口，不提供实现\nNSArray 里面是工厂，NSArray class 隐藏 无法通过实例访问12345678NSArray *arr = [[NSArray alloc] init];NSLog(@&quot;%@|%@&quot;,[arr class], [NSArray class]);NSString *str = [[NSString alloc] init];NSLog(@&quot;%@|%@&quot;,[str class], [NSString class]);///分别打印__NSArray0|NSArray__NSCFConstantString|NSString\n\n\n\n10.动态添加属性\n本质是全局创建Map，以Class为key的外部表\n示例：UIAlertView存在多个，通过此方法区分每个；不建议这么用；不好定位异常\n\n11.消息派发\nobjc_msg_send 有两个隐藏参数 (id,SEL)\nruntime\n尾调用优化：去掉函数栈帧，优化\n\n12.消息转发\nresolveInstanceMethod/resolveClassMethod\n配合@dynamic\n\n\n备用接受者 forwardingTargetForSelector\n返回接收对象\n1对1\n快速\n\n\n完成消息转发forwardInvocation\n修改方法内容\n1对多\n慢\n\n\n\n13.方法交换\n用于调试目的\n用户行为监控\n调试异常\n一般应用层不建议使用\n\n\n\n14.类对象意义\n判断对象关系 isKindOf isMemberOf；\n示例：NSProxy 对于isKinfOf 对 class处理可能不一样(消息转发)\n消息传递机制的前提\n\n15.用前缀避免命名空间冲突\nc函数需要加前缀\nlib对象，自己引用的第三方加前缀\n\n16.全能初始化器\n和swift的指定初始化器类似，swift 强制性 oc 没有这种约束 designted翻译差异。\n\n中文翻译的怪怪的； 我的翻译是： 目标是为了实例的初始化能保证类和其父类的所有成员得到初始化\n\n全能初始化器的作用是为了保证当前类成员得到初始化\n非全能初始化器应调用当前类全能初始化器\n子类的全能初始化器必须调用父类的全能初始化器\n如果父类的全能初始化器，子类没有实现，那么实例可以直接调用父类的全能初始化器初始化，子类成员变量没有初始化。为了解决这个问题，要么 抛异常，要么 重写父类的全能初始化器\n\n 这块swift做成了编译检查，而且swift官方文档描述的更清楚\n\n\n17.实现descripion方法\n自己实现的建议加上类名称和对象地址\nlldb里po 打印的是debugDescripion\n\n18.使用不可变对象\n涉及到扩展的作用外部ro，内部rw可以点语法修改\n成员变量对外不可变，修改交给类内部\n\n19.命名方式20.为私有方法加前缀\noc由于动态机制，没有所谓的private函数\n不要用_作为前缀，和苹果自带的冲突\n\n","dateCreated":"2020-09-08T06:27:15+08:00","dateModified":"2020-09-08T18:27:07+08:00","datePublished":"2020-09-08T06:27:15+08:00","description":"持续更新中","headline":"Effective-oc 笔记","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/","keywords":"oc, 读书笔记"}</script>
     <meta name="description" content="持续更新中">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Effective-oc 笔记">
@@ -20,7 +20,7 @@
 <meta property="og:description" content="持续更新中">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-09-07T22:27:15.000Z">
-<meta property="article:modified_time" content="2020-09-08T03:12:35.294Z">
+<meta property="article:modified_time" content="2020-09-08T10:27:07.913Z">
 <meta property="article:author" content="krela">
 <meta property="article:tag" content="oc">
 <meta property="article:tag" content="读书笔记">
@@ -354,6 +354,31 @@
 <li>c函数需要加前缀</li>
 <li>lib对象，自己引用的第三方加前缀</li>
 </ul>
+<h3 id="16-全能初始化器"><a href="#16-全能初始化器" class="headerlink" title="16.全能初始化器"></a>16.全能初始化器</h3><ul>
+<li><p>和swift的指定初始化器类似，swift 强制性 oc 没有这种约束 designted翻译差异。</p>
+</li>
+<li><p>中文翻译的怪怪的；<br> 我的翻译是：<br> <strong>目标是为了实例的初始化能保证类和其父类的所有成员得到初始化</strong></p>
+<ol>
+<li>全能初始化器的作用是为了保证当前类成员得到初始化</li>
+<li>非全能初始化器应调用当前类全能初始化器</li>
+<li>子类的全能初始化器必须调用父类的全能初始化器</li>
+<li>如果父类的全能初始化器，子类没有实现，那么实例可以直接调用父类的全能初始化器初始化，子类成员变量没有初始化。为了解决这个问题，要么 抛异常，要么 重写父类的全能初始化器</li>
+</ol>
+<p> <strong>这块swift做成了编译检查，而且swift官方文档描述的更清楚</strong></p>
+</li>
+</ul>
+<h3 id="17-实现descripion方法"><a href="#17-实现descripion方法" class="headerlink" title="17.实现descripion方法"></a>17.实现descripion方法</h3><ul>
+<li>自己实现的建议加上类名称和对象地址</li>
+<li>lldb里po 打印的是debugDescripion</li>
+</ul>
+<h3 id="18-使用不可变对象"><a href="#18-使用不可变对象" class="headerlink" title="18.使用不可变对象"></a>18.使用不可变对象</h3><ul>
+<li>涉及到扩展的作用外部ro，内部rw可以点语法修改</li>
+<li>成员变量对外不可变，修改交给类内部</li>
+</ul>
+<h3 id="19-命名方式"><a href="#19-命名方式" class="headerlink" title="19.命名方式"></a>19.命名方式</h3><h3 id="20-为私有方法加前缀"><a href="#20-为私有方法加前缀" class="headerlink" title="20.为私有方法加前缀"></a>20.为私有方法加前缀</h3><ul>
+<li>oc由于动态机制，没有所谓的private函数</li>
+<li>不要用_作为前缀，和苹果自带的冲突</li>
+</ul>
 
             
 
@@ -408,7 +433,7 @@
             <a
                 class="post-action-btn btn btn--default btn-open-shareoptions"
                 href="#btn-open-shareoptions"
-                aria-label="Share this post"
+                aria-label="Diesen Beitrag teilen"
             >
                 <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
@@ -419,7 +444,7 @@
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
             
                 <i class="fa fa-list" aria-hidden="true"></i>
             </a>
@@ -484,7 +509,7 @@
             <a
                 class="post-action-btn btn btn--default btn-open-shareoptions"
                 href="#btn-open-shareoptions"
-                aria-label="Share this post"
+                aria-label="Diesen Beitrag teilen"
             >
                 <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
@@ -495,7 +520,7 @@
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
             
                 <i class="fa fa-list" aria-hidden="true"></i>
             </a>
