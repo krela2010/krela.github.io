@@ -6,21 +6,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="">
-    <title>Effective-oc 笔记 - null</title>
+    <title>Effective-oc 笔记(上) - null</title>
     <meta name="author" content="krela">
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"持续更新中\n\n1.oc起源2.减少头文件引用\n如果不使用类方法可以仅声明@class Class 即可\n\n3.多用字面量\n代码整洁、直观\nNSArray arrayWithObject：遇到nil不会崩溃，内部会判断\n\n4.少用define\n建议使用const来替代：\n可以加static 控制作用域、避免冲突\n类型含义明确，维护性好\nstatic 编译器会自行优化为define\n\n\n\n5.枚举\n占用1字节\ntype NS_ENUM oc枚举\n根据编译平台决定使用新、旧协议(c++)\n新协议指的是底层数据类型存储\nswitch 处理enum分支；尽量不用default，覆盖每一个分支，避免新增enum，switch未处理的情况\n\n\n\n6.属性\n类对象保管存储偏移量\n@dynamic 配合CoreData动态添加方法\n\n7.对象内部使用实例变量\nself.var 语法\n\n效率低\n可触发kvo，可使用懒加载\n\n\n_var 语法\n\n不触发kvo\ngetter语法里使用\n\n\n折中方案\n\n写入用setter\n读取用_var\n\n\n\n8.对象等同性\nisEqualToString比isEqual快\n== 判断指针操作\nhash()方法用于比较，自己实现；注意set时 的hash 碰撞问题\n结构对象使用主键比较\n\n9.类簇\noc没有概念上的抽象类，oc的抽象类不写init\n类簇类似抽象类的概念，提供接口，不提供实现\nNSArray 里面是工厂，NSArray class 隐藏 无法通过实例访问12345678NSArray *arr = [[NSArray alloc] init];NSLog(@&quot;%@|%@&quot;,[arr class], [NSArray class]);NSString *str = [[NSString alloc] init];NSLog(@&quot;%@|%@&quot;,[str class], [NSString class]);///分别打印__NSArray0|NSArray__NSCFConstantString|NSString\n\n\n\n10.动态添加属性\n本质是全局创建Map，以Class为key的外部表\n示例：UIAlertView存在多个，通过此方法区分每个；不建议这么用；不好定位异常\n\n11.消息派发\nobjc_msg_send 有两个隐藏参数 (id,SEL)\nruntime\n尾调用优化：去掉函数栈帧，优化\n\n12.消息转发\nresolveInstanceMethod/resolveClassMethod\n配合@dynamic\n\n\n备用接受者 forwardingTargetForSelector\n返回接收对象\n1对1\n快速\n\n\n完成消息转发forwardInvocation\n修改方法内容\n1对多\n慢\n\n\n\n13.方法交换\n用于调试目的\n用户行为监控\n调试异常\n一般应用层不建议使用\n\n\n\n14.类对象意义\n判断对象关系 isKindOf isMemberOf；\n示例：NSProxy 对于isKinfOf 对 class处理可能不一样(消息转发)\n消息传递机制的前提\n\n15.用前缀避免命名空间冲突\nc函数需要加前缀\nlib对象，自己引用的第三方加前缀\n\n16.全能初始化器\n和swift的指定初始化器类似，swift 强制性 oc 没有这种约束 designted翻译差异。\n\n中文翻译的怪怪的； 我的翻译是： 目标是为了实例的初始化能保证类和其父类的所有成员得到初始化\n\n全能初始化器的作用是为了保证当前类成员得到初始化\n非全能初始化器应调用当前类全能初始化器\n子类的全能初始化器必须调用父类的全能初始化器\n如果父类的全能初始化器，子类没有实现，那么实例可以直接调用父类的全能初始化器初始化，子类成员变量没有初始化。为了解决这个问题，要么 抛异常，要么 重写父类的全能初始化器\n\n 这块swift做成了编译检查，而且swift官方文档描述的更清楚\n\n\n17.实现descripion方法\n自己实现的建议加上类名称和对象地址\nlldb里po 打印的是debugDescripion\n\n18.使用不可变对象\n涉及到扩展的作用外部ro，内部rw可以点语法修改\n成员变量对外不可变，修改交给类内部\n\n19.命名方式20.为私有方法加前缀\noc由于动态机制，没有所谓的private函数\n不要用_作为前缀，和苹果自带的冲突\n\n21.oc错误类型\n使用抽象类建议抛出异常\nNSError** 使用\n\n22.NSCopying协议\ncopy方法调用copyWithZone；注意重写的应是copyWithZone\n\n23.delegate对象间通信\ndelegate属性weak\n自定义代理调用需要判断是否实现方法\n位域代替responseToselector\n\n24.类拆分成多个分类\n方便管理类\n函数调用栈里可以看到分类信息\n\n25.分类方法加前缀\n分类加前缀\n分类方法加前缀\n\n26.分类中不能添加属性\n可以通过同名函数做到模拟属性的效果 不推荐\n关联值添加属性 不推荐感觉翻译的还是有点问题原文：“你可能通过属性特质修改了某个属性的管理语义”理解：如果要给一个类批量修改属性@property，一般只记得在主类的头文件修改；如果设置了关联值，很可能忘记修改，维护性差\n\n27.匿名分类隐藏实现细节\n和c++混编时，c++对象放到匿名分类里，避免重复引用头文件造成\n修改ro属性，内部为rw\n隐藏遵守的协议\n私有属性，没在.h里，一般看不到；私有变量和放在impl里作用相同\n\n28.协议实现匿名函数\npop面向协议编程\n隐藏实现，仅暴露协议内容\n\n29.理解引用计数\nretainCount 不推荐；因为如果autorelease了retainCount值不准确\nmrc return [对象 autorelease],避免调用者不释放\n\nARC简化引用计数","dateCreated":"2020-09-08T06:27:15+08:00","dateModified":"2020-09-09T07:40:10+08:00","datePublished":"2020-09-08T06:27:15+08:00","description":"持续更新中","headline":"Effective-oc 笔记","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/","keywords":"oc, 读书笔记"}</script>
-    <meta name="description" content="持续更新中">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"前五章内容：熟悉oc 1-5对象、消息、runtime 6-14接口与API 15-22协议与分类 23-28内存管理 29-36\n\n1.oc起源2.减少头文件引用\n如果不使用类方法可以仅声明@class Class 即可\n\n3.多用字面量\n代码整洁、直观\nNSArray arrayWithObject：遇到nil不会崩溃，内部会判断\n\n4.少用define\n建议使用const来替代：\n可以加static 控制作用域、避免冲突\n类型含义明确，维护性好\nstatic 编译器会自行优化为define\n\n\n\n5.枚举\n占用1字节\ntype NS_ENUM oc枚举\n根据编译平台决定使用新、旧协议(c++)\n新协议指的是底层数据类型存储\nswitch 处理enum分支；尽量不用default，覆盖每一个分支，避免新增enum，switch未处理的情况\n\n\n\n6.属性\n类对象保管存储偏移量\n@dynamic 配合CoreData动态添加方法\n\n7.对象内部使用实例变量\nself.var 语法\n\n效率低\n可触发kvo，可使用懒加载\n\n\n_var 语法\n\n不触发kvo\ngetter语法里使用\n\n\n折中方案\n\n写入用setter\n读取用_var\n\n\n\n8.对象等同性\nisEqualToString比isEqual快\n== 判断指针操作\nhash()方法用于比较，自己实现；注意set时 的hash 碰撞问题\n结构对象使用主键比较\n\n9.类簇\noc没有概念上的抽象类，oc的抽象类不写init\n类簇类似抽象类的概念，提供接口，不提供实现\nNSArray 里面是工厂，NSArray class 隐藏 无法通过实例访问12345678NSArray *arr = [[NSArray alloc] init];NSLog(@&quot;%@|%@&quot;,[arr class], [NSArray class]);NSString *str = [[NSString alloc] init];NSLog(@&quot;%@|%@&quot;,[str class], [NSString class]);///分别打印__NSArray0|NSArray__NSCFConstantString|NSString\n\n\n\n10.动态添加属性\n本质是全局创建Map，以Class为key的外部表\n示例：UIAlertView存在多个，通过此方法区分每个；不建议这么用；不好定位异常\n\n11.消息派发\nobjc_msg_send 有两个隐藏参数 (id,SEL)\nruntime\n尾调用优化：去掉函数栈帧，优化\n\n12.消息转发\nresolveInstanceMethod/resolveClassMethod\n配合@dynamic\n\n\n备用接受者 forwardingTargetForSelector\n返回接收对象\n1对1\n快速\n\n\n完成消息转发forwardInvocation\n修改方法内容\n1对多\n慢\n\n\n\n13.方法交换\n用于调试目的\n用户行为监控\n调试异常\n一般应用层不建议使用\n\n\n\n14.类对象意义\n判断对象关系 isKindOf isMemberOf；\n示例：NSProxy 对于isKinfOf 对 class处理可能不一样(消息转发)\n消息传递机制的前提\n\n15.用前缀避免命名空间冲突\nc函数需要加前缀\nlib对象，自己引用的第三方加前缀\n\n16.全能初始化器\n和swift的指定初始化器类似，swift 强制性 oc 没有这种约束 designted翻译差异。\n\n中文翻译的怪怪的； 我的翻译是： 目标是为了实例的初始化能保证类和其父类的所有成员得到初始化\n\n全能初始化器的作用是为了保证当前类成员得到初始化\n非全能初始化器应调用当前类全能初始化器\n子类的全能初始化器必须调用父类的全能初始化器\n如果父类的全能初始化器，子类没有实现，那么实例可以直接调用父类的全能初始化器初始化，子类成员变量没有初始化。为了解决这个问题，要么 抛异常，要么 重写父类的全能初始化器\n\n 这块swift做成了编译检查，而且swift官方文档描述的更清楚\n\n\n17.实现descripion方法\n自己实现的建议加上类名称和对象地址\nlldb里po 打印的是debugDescripion\n\n18.使用不可变对象\n涉及到扩展的作用外部ro，内部rw可以点语法修改\n成员变量对外不可变，修改交给类内部\n\n19.命名方式20.为私有方法加前缀\noc由于动态机制，没有所谓的private函数\n不要用_作为前缀，和苹果自带的冲突\n\n21.oc错误类型\n使用抽象类建议抛出异常\nNSError** 使用\n\n22.NSCopying协议\ncopy方法调用copyWithZone；注意重写的应是copyWithZone\n\n23.delegate对象间通信\ndelegate属性weak\n自定义代理调用需要判断是否实现方法\n位域代替responseToselector\n\n24.类拆分成多个分类\n方便管理类\n函数调用栈里可以看到分类信息\n\n25.分类方法加前缀\n分类加前缀\n分类方法加前缀\n\n26.分类中不能添加属性\n可以通过同名函数做到模拟属性的效果 不推荐\n关联值添加属性 不推荐感觉翻译的还是有点问题原文：“你可能通过属性特质修改了某个属性的管理语义”理解：如果要给一个类批量修改属性@property，一般只记得在主类的头文件修改；如果设置了关联值，很可能忘记修改，维护性差\n\n27.匿名分类隐藏实现细节\n和c++混编时，c++对象放到匿名分类里，避免重复引用头文件造成\n修改ro属性，内部为rw\n隐藏遵守的协议\n私有属性，没在.h里，一般看不到；私有变量和放在impl里作用相同\n\n28.协议实现匿名函数\npop面向协议编程\n隐藏实现，仅暴露协议内容\n\n29.理解引用计数\nretainCount 不推荐；因为如果autorelease了retainCount值不准确\nmrc return [对象 autorelease],避免调用者不释放\n\n30.ARC简化引用计数\nautorelease 后的返回函数 接收强类型对象 编译会自动retain\n不能复写release函数\nCF对象自行释放\n\n31.dealloc作用\n不要调用存取方法\n可能并不会触发、在应用异常退出；可以在ApplicationWillTerminate里释放\n某些文件句柄、socket系统映射文件，不要直接释放、调用相应close方法\n释放c对象\n释放通知、kvo\n\n\n32.捕获异常\narc 下不建议 try catch ，加很多辅助代码\n如果objc++ 可以处理try catch\n\n33.弱引用避免循环引用\nweak属性 避免出现引用闭环\n\n34.自动释放块\n可以在循环中创建对象使用，控制内存\n\n35.僵尸对象调试\n打开编译开关\n原理：生成僵尸子类，由僵尸子类处理消息\n\n36.retainCount\n不建议用\n由于autorelease，某一个时刻不代表真实值\n优化原因，可能永远不为0\n常量区对象也会有retainCount值，int.max\n\n","dateCreated":"2020-09-08T06:27:15+08:00","dateModified":"2020-09-10T08:16:37+08:00","datePublished":"2020-09-08T06:27:15+08:00","description":"前五章内容：熟悉oc 1-5对象、消息、runtime 6-14接口与API 15-22协议与分类 23-28内存管理 29-36","headline":"Effective-oc 笔记(上)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/","keywords":"oc, 读书笔记"}</script>
+    <meta name="description" content="前五章内容：熟悉oc 1-5对象、消息、runtime 6-14接口与API 15-22协议与分类 23-28内存管理 29-36">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="Effective-oc 笔记">
+<meta property="og:title" content="Effective-oc 笔记(上)">
 <meta property="og:url" content="http://example.com/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name">
-<meta property="og:description" content="持续更新中">
+<meta property="og:description" content="前五章内容：熟悉oc 1-5对象、消息、runtime 6-14接口与API 15-22协议与分类 23-28内存管理 29-36">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-09-07T22:27:15.000Z">
-<meta property="article:modified_time" content="2020-09-08T23:40:10.555Z">
+<meta property="article:modified_time" content="2020-09-10T00:16:37.118Z">
 <meta property="article:author" content="krela">
 <meta property="article:tag" content="oc">
 <meta property="article:tag" content="读书笔记">
@@ -228,7 +228,7 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title">
-            Effective-oc 笔记
+            Effective-oc 笔记(上)
         </h1>
     
     
@@ -247,7 +247,7 @@
     
     <div class="post-content markdown">
         <div class="main-content-wrap">
-            <p>持续更新中</p>
+            <p>前五章内容：<br>熟悉oc 1-5<br>对象、消息、runtime 6-14<br>接口与API 15-22<br>协议与分类 23-28<br>内存管理 29-36</p>
 <a id="more"></a>
 <h3 id="1-oc起源"><a href="#1-oc起源" class="headerlink" title="1.oc起源"></a>1.oc起源</h3><h3 id="2-减少头文件引用"><a href="#2-减少头文件引用" class="headerlink" title="2.减少头文件引用"></a>2.减少头文件引用</h3><ul>
 <li>如果不使用类方法可以仅声明@class Class 即可</li>
@@ -417,7 +417,40 @@
 <li>retainCount 不推荐；因为如果autorelease了retainCount值不准确</li>
 <li>mrc return [对象 autorelease],避免调用者不释放</li>
 </ul>
-<h3 id="ARC简化引用计数"><a href="#ARC简化引用计数" class="headerlink" title="ARC简化引用计数"></a>ARC简化引用计数</h3>
+<h3 id="30-ARC简化引用计数"><a href="#30-ARC简化引用计数" class="headerlink" title="30.ARC简化引用计数"></a>30.ARC简化引用计数</h3><ul>
+<li>autorelease 后的返回函数 接收强类型对象 编译会自动retain</li>
+<li>不能复写release函数</li>
+<li>CF对象自行释放</li>
+</ul>
+<h3 id="31-dealloc作用"><a href="#31-dealloc作用" class="headerlink" title="31.dealloc作用"></a>31.dealloc作用</h3><ul>
+<li>不要调用存取方法</li>
+<li>可能并不会触发、在应用异常退出；可以在ApplicationWillTerminate里释放</li>
+<li>某些文件句柄、socket系统映射文件，不要直接释放、调用相应close方法</li>
+<li>释放c对象</li>
+<li>释放通知、kvo</li>
+<li></li>
+</ul>
+<h3 id="32-捕获异常"><a href="#32-捕获异常" class="headerlink" title="32.捕获异常"></a>32.捕获异常</h3><ul>
+<li>arc 下不建议 try catch ，加很多辅助代码</li>
+<li>如果objc++ 可以处理try catch</li>
+</ul>
+<h3 id="33-弱引用避免循环引用"><a href="#33-弱引用避免循环引用" class="headerlink" title="33.弱引用避免循环引用"></a>33.弱引用避免循环引用</h3><ul>
+<li>weak属性 避免出现引用闭环</li>
+</ul>
+<h3 id="34-自动释放块"><a href="#34-自动释放块" class="headerlink" title="34.自动释放块"></a>34.自动释放块</h3><ul>
+<li>可以在循环中创建对象使用，控制内存</li>
+</ul>
+<h3 id="35-僵尸对象调试"><a href="#35-僵尸对象调试" class="headerlink" title="35.僵尸对象调试"></a>35.僵尸对象调试</h3><ul>
+<li>打开编译开关</li>
+<li>原理：生成僵尸子类，由僵尸子类处理消息</li>
+</ul>
+<h3 id="36-retainCount"><a href="#36-retainCount" class="headerlink" title="36.retainCount"></a>36.retainCount</h3><ul>
+<li>不建议用</li>
+<li>由于autorelease，某一个时刻不代表真实值</li>
+<li>优化原因，可能永远不为0</li>
+<li>常量区对象也会有retainCount值，int.max</li>
+</ul>
+
             
 
 

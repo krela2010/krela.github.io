@@ -6,23 +6,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="">
-    <title>Markdown - null</title>
+    <title>Effective-oc 笔记(下) - null</title>
     <meta name="author" content="krela">
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"常用Markdown编辑工具和语法\n\nMarkdown工具1.Typora网站：http://typora.io支持Mac windows\n2.Dillinger网站：http://dillinger.io在线编辑\n3.印象笔记支持多平台\n常用语法\n# 大标题(注意有空格)### 次标题 ##### 依次递减*斜体***重点**- list 列表(支持层级)&gt; hello 引用样式(支持层级)-[] checkBox 代办*** 分隔线--- 分隔线|   |   ||-|-||   |   |表格(各个工具可能有差异，typora支持的好)    代码块` 两行之间 `c++ 根据语法着色`\n\n更多语法：https://www.jianshu.com/p/b03a8d7b1719\n","dateCreated":"2020-09-08T09:31:46+08:00","dateModified":"2020-09-08T10:03:22+08:00","datePublished":"2020-09-08T09:31:46+08:00","description":"常用Markdown编辑工具和语法","headline":"Markdown","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/09/08/Markdown/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/09/08/Markdown/","keywords":"工具"}</script>
-    <meta name="description" content="常用Markdown编辑工具和语法">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"6、7章Block和GCD 37-46系统框架 47-52\n\n37.理解Block\nblock在定义范围有效；栈block的生命周期，括号范围内\n堆block，生命周期被管理\n\n38.typedef 常用Block\ntypdef void(^DKBLock)(void *);\n好处 修改方便、易读\n建议根据使用场景，同类型block 声明为不同name\n\n39.Block的好处\ndelegate的缺点、如果包含多个委托，同一个函数要区分\nblock更集中，易维护、易读\n建议多个参数，整理为一个handler，参数之间可以配合使用\n\n40.块里的循环引用问题\n主动打破 块里将block对象释放（不执行就会有问题）\nblock持有者 使用完处理掉\n\n41.多用派发队列，少用锁\n多个synchronized(self),共享锁，不推荐\n异步调用设置方法，由于涉及拷贝块，衡量下拷贝和执行的速度\n\n42.多用GCD，少用performSelector\nperformSelector局限多，参数支持最多2个\nperformSelector返回值限定id，基础类型需要做转换；返回值是c语言结构体就不建议用\n\n43.GCD和NSOperation\ndispatch_once 执行一次；单例\nNSOperation：可以取消、依赖、kvo观察任务状态\n\n44.Dispatch Group\ndispatch_group_wait 阻塞等待完成执行\ndispatch_group_notify 非阻塞等待完成\ndispatch_apply \n\n45.dispatch_once标准推荐写法\n\nstatic Class *instance = nil;static dispatch_group_t token;dispatch_once {&amp;token, ^{ instance = [[Class alloc]init]}}return instance;\n\n\n比synchronized快\n\n46.不要使用dispatch_get_current_queue系统框架47.","dateCreated":"2020-09-09T21:54:47+08:00","dateModified":"2020-09-10T08:25:09+08:00","datePublished":"2020-09-09T21:54:47+08:00","description":"6、7章Block和GCD 37-46系统框架 47-52","headline":"Effective-oc 笔记(下)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/09/09/Effective-oc-%E7%AC%94%E8%AE%B0%EF%BC%88%EF%BC%89/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/09/09/Effective-oc-%E7%AC%94%E8%AE%B0%EF%BC%88%EF%BC%89/","keywords":"oc, 读书笔记"}</script>
+    <meta name="description" content="6、7章Block和GCD 37-46系统框架 47-52">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="Markdown">
-<meta property="og:url" content="http://example.com/2020/09/08/Markdown/index.html">
+<meta property="og:title" content="Effective-oc 笔记(下)">
+<meta property="og:url" content="http://example.com/2020/09/09/Effective-oc-%E7%AC%94%E8%AE%B0%EF%BC%88%EF%BC%89/index.html">
 <meta property="og:site_name">
-<meta property="og:description" content="常用Markdown编辑工具和语法">
+<meta property="og:description" content="6、7章Block和GCD 37-46系统框架 47-52">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-09-08T01:31:46.000Z">
-<meta property="article:modified_time" content="2020-09-08T02:03:22.848Z">
+<meta property="article:published_time" content="2020-09-09T13:54:47.000Z">
+<meta property="article:modified_time" content="2020-09-10T00:25:09.410Z">
 <meta property="article:author" content="krela">
-<meta property="article:tag" content="工具">
+<meta property="article:tag" content="oc">
+<meta property="article:tag" content="读书笔记">
 <meta name="twitter:card" content="summary">
     
     
@@ -227,14 +228,14 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title">
-            Markdown
+            Effective-oc 笔记(下)
         </h1>
     
     
         <div class="post-meta">
-    <time datetime="2020-09-08T09:31:46+08:00">
+    <time datetime="2020-09-09T21:54:47+08:00">
 	
-		    9月 08, 2020
+		    9月 09, 2020
     	
     </time>
     
@@ -246,16 +247,51 @@
     
     <div class="post-content markdown">
         <div class="main-content-wrap">
-            <p>常用Markdown编辑工具和语法</p>
+            <p>6、7章<br>Block和GCD 37-46<br>系统框架 47-52</p>
 <a id="more"></a>
-<h1 id="Markdown工具"><a href="#Markdown工具" class="headerlink" title="Markdown工具"></a>Markdown工具</h1><h3 id="1-Typora"><a href="#1-Typora" class="headerlink" title="1.Typora"></a>1.Typora</h3><p>网站：<a target="_blank" rel="noopener" href="http://typora.io/">http://typora.io</a><br>支持Mac windows</p>
-<h3 id="2-Dillinger"><a href="#2-Dillinger" class="headerlink" title="2.Dillinger"></a>2.Dillinger</h3><p>网站：<a target="_blank" rel="noopener" href="http://dillinger.io/">http://dillinger.io</a><br>在线编辑</p>
-<h3 id="3-印象笔记"><a href="#3-印象笔记" class="headerlink" title="3.印象笔记"></a>3.印象笔记</h3><p>支持多平台</p>
-<h1 id="常用语法"><a href="#常用语法" class="headerlink" title="常用语法"></a>常用语法</h1><blockquote>
-<p><code># 大标题(注意有空格)</code><br><code>### 次标题 </code><br><code>##### 依次递减</code><br><code>*斜体*</code><br><code>**重点**</code><br><code>- list 列表(支持层级)</code><br><code>&gt; hello 引用样式(支持层级)</code><br><code>-[] checkBox 代办</code><br><code>*** 分隔线</code><br><code>--- 分隔线</code><br><code>|   |   |</code><br><code>|-|-|</code><br><code>|   |   |</code><br>表格(各个工具可能有差异，typora支持的好)<code> </code> <code>  代码块` 两行之间 `</code>c++ 根据语法着色`</p>
+<h3 id="37-理解Block"><a href="#37-理解Block" class="headerlink" title="37.理解Block"></a>37.理解Block</h3><ul>
+<li>block在定义范围有效；栈block的生命周期，括号范围内</li>
+<li>堆block，生命周期被管理</li>
+</ul>
+<h3 id="38-typedef-常用Block"><a href="#38-typedef-常用Block" class="headerlink" title="38.typedef 常用Block"></a>38.typedef 常用Block</h3><ul>
+<li>typdef void(^DKBLock)(void *);</li>
+<li>好处 修改方便、易读</li>
+<li>建议根据使用场景，同类型block 声明为不同name</li>
+</ul>
+<h3 id="39-Block的好处"><a href="#39-Block的好处" class="headerlink" title="39.Block的好处"></a>39.Block的好处</h3><ul>
+<li>delegate的缺点、如果包含多个委托，同一个函数要区分</li>
+<li>block更集中，易维护、易读</li>
+<li>建议多个参数，整理为一个handler，参数之间可以配合使用</li>
+</ul>
+<h3 id="40-块里的循环引用问题"><a href="#40-块里的循环引用问题" class="headerlink" title="40.块里的循环引用问题"></a>40.块里的循环引用问题</h3><ul>
+<li>主动打破 块里将block对象释放（不执行就会有问题）</li>
+<li>block持有者 使用完处理掉</li>
+</ul>
+<h3 id="41-多用派发队列，少用锁"><a href="#41-多用派发队列，少用锁" class="headerlink" title="41.多用派发队列，少用锁"></a>41.多用派发队列，少用锁</h3><ul>
+<li>多个synchronized(self),共享锁，不推荐</li>
+<li>异步调用设置方法，由于涉及拷贝块，衡量下拷贝和执行的速度</li>
+</ul>
+<h3 id="42-多用GCD，少用performSelector"><a href="#42-多用GCD，少用performSelector" class="headerlink" title="42.多用GCD，少用performSelector"></a>42.多用GCD，少用performSelector</h3><ul>
+<li>performSelector局限多，参数支持最多2个</li>
+<li>performSelector返回值限定id，基础类型需要做转换；返回值是c语言结构体就不建议用</li>
+</ul>
+<h3 id="43-GCD和NSOperation"><a href="#43-GCD和NSOperation" class="headerlink" title="43.GCD和NSOperation"></a>43.GCD和NSOperation</h3><ul>
+<li>dispatch_once 执行一次；单例</li>
+<li>NSOperation：可以取消、依赖、kvo观察任务状态</li>
+</ul>
+<h3 id="44-Dispatch-Group"><a href="#44-Dispatch-Group" class="headerlink" title="44.Dispatch Group"></a>44.Dispatch Group</h3><ul>
+<li>dispatch_group_wait 阻塞等待完成执行</li>
+<li>dispatch_group_notify 非阻塞等待完成</li>
+<li>dispatch_apply </li>
+</ul>
+<h3 id="45-dispatch-once"><a href="#45-dispatch-once" class="headerlink" title="45.dispatch_once"></a>45.dispatch_once</h3><p>标准推荐写法</p>
+<blockquote>
+<p>static Class *instance = nil;<br>static dispatch_group_t token;<br>dispatch_once {&amp;token, ^{ instance = [[Class alloc]init]}}<br>return instance;</p>
 </blockquote>
-<p>更多语法：<br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/b03a8d7b1719">https://www.jianshu.com/p/b03a8d7b1719</a></p>
-
+<ul>
+<li>比synchronized快</li>
+</ul>
+<h3 id="46-不要使用dispatch-get-current-queue"><a href="#46-不要使用dispatch-get-current-queue" class="headerlink" title="46.不要使用dispatch_get_current_queue"></a>46.不要使用dispatch_get_current_queue</h3><h1 id="系统框架"><a href="#系统框架" class="headerlink" title="系统框架"></a>系统框架</h1><h3 id="47"><a href="#47" class="headerlink" title="47."></a>47.</h3>
             
 
 
@@ -266,7 +302,7 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">标签</span><br/>
                 
-    <a class="tag tag--primary tag--small t-none-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a>
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/oc/" rel="tag">oc</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" rel="tag">读书笔记</a>
 
             </div>
         
@@ -276,14 +312,11 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    
-                <a
-                    class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/09/08/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/"
-                    data-tooltip="架构设计"
-                    aria-label="上一篇: 架构设计"
-                >
-                    
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
                     </a>
@@ -293,9 +326,9 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/"
-                    data-tooltip="Effective-oc 笔记(上)"
-                    aria-label="下一篇: Effective-oc 笔记(上)"
+                    href="/2020/09/08/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%9D%97/"
+                    data-tooltip="设计模式"
+                    aria-label="下一篇: 设计模式"
                 >
                     
                         <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
@@ -352,14 +385,11 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    
-                <a
-                    class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/09/08/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/"
-                    data-tooltip="架构设计"
-                    aria-label="上一篇: 架构设计"
-                >
-                    
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
                     </a>
@@ -369,9 +399,9 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/09/08/Effective-oc-%E7%AC%94%E8%AE%B0/"
-                    data-tooltip="Effective-oc 笔记(上)"
-                    aria-label="下一篇: Effective-oc 笔记(上)"
+                    href="/2020/09/08/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%9D%97/"
+                    data-tooltip="设计模式"
+                    aria-label="下一篇: 设计模式"
                 >
                     
                         <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
