@@ -217,6 +217,117 @@
     <section class="postShorten-group main-content-wrap">
     
     
+    <article class="postShorten postShorten--thumbnailimg-bottom">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title">
+                    
+                        <a
+                            class="link-unstyled"
+                            href="/2020/09/11/frame-%E5%92%8C-bounds/"
+                            aria-label=": frame 和 bounds"
+                        >
+                            frame 和 bounds
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time datetime="2020-09-11T17:52:10+08:00">
+	
+		    9月 11, 2020
+    	
+    </time>
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content">
+                    <h5 id="概念上frame以parentView为基准-bonuds以自己为基准"><a href="#概念上frame以parentView为基准-bonuds以自己为基准" class="headerlink" title="概念上frame以parentView为基准,bonuds以自己为基准"></a>概念上frame以parentView为基准,bonuds以自己为基准</h5><h3 id="在正常的情况下-非transform"><a href="#在正常的情况下-非transform" class="headerlink" title="在正常的情况下(非transform)"></a>在正常的情况下(非transform)</h3><p><strong>调整size</strong><br>1.frame和bonuds的size一样<br>2.调整view的frame的size,bonuds也会跟着改<br>3.调整bonuds的size,bonuds会以view的中心点固定调整,frame的size同步,但origin的坐标会根据发生变化.<br>例如bonuds的width由200变为160,变化值40,frame的origin.x 会 +20</p>
+<p><strong>调整origin</strong><br>1.调整frame的origin,位置发生变化,bonuds的origin不变<br>2.调整bounds的origin(很少调整),位置发生绝对值变化,frame得origin跟着同步;特殊的是,如果有subView,<br>subView的绝对位置没变,不跟着父view调整</p>
+<h3 id="transform下"><a href="#transform下" class="headerlink" title="transform下"></a>transform下</h3><p>1.bounds不变<br>2.frame是包含view的最小正方形</p>
+<p>文字描述,不好理解<br>详细 参考<br><a target="_blank" rel="noopener" href="https://medium.com/%E5%BD%BC%E5%BE%97%E6%BD%98%E7%9A%84-swift-ios-app-%E9%96%8B%E7%99%BC%E5%95%8F%E9%A1%8C%E8%A7%A3%E7%AD%94%E9%9B%86/ios-sdk-%E7%9A%84-frame-bounds-c54a4bfd9603">https://medium.com/%E5%BD%BC%E5%BE%97%E6%BD%98%E7%9A%84-swift-ios-app-%E9%96%8B%E7%99%BC%E5%95%8F%E9%A1%8C%E8%A7%A3%E7%AD%94%E9%9B%86/ios-sdk-%E7%9A%84-frame-bounds-c54a4bfd9603</a></p>
+
+                    
+                        
+
+
+                    
+                    
+                        <p>
+                            <a
+                                href="/2020/09/11/frame-%E5%92%8C-bounds/#post-footer"
+                                class="postShorten-excerpt_link link"
+                                aria-label=""
+                            >
+                                评论和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title">
+                    
+                        <a
+                            class="link-unstyled"
+                            href="/2020/09/10/20200910213941/"
+                            aria-label=": 20200910213941"
+                        >
+                            20200910213941
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time datetime="2020-09-10T21:39:41+08:00">
+	
+		    9月 10, 2020
+    	
+    </time>
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content">
+                    <p>常见问题</p>
+<h3 id="删除sceneDelegate"><a href="#删除sceneDelegate" class="headerlink" title="删除sceneDelegate"></a>删除sceneDelegate</h3><p>info.plist<br>Application Scene Maifest 删除<br>AppDelegate里加上：var window: UIWindow?<br>删除scene相关的代码</p>
+<h3 id="NavgationController"><a href="#NavgationController" class="headerlink" title="NavgationController"></a>NavgationController</h3><p>不能再被NavgationController指向，会有2个bar</p>
+<h3 id="Float-amp-CGFloat"><a href="#Float-amp-CGFloat" class="headerlink" title="Float &amp; CGFloat"></a>Float &amp; CGFloat</h3><p>The Float and CGFloat data types sound so similar you might think they were identical, but they aren’t: CGFloat is flexible in that its precision adapts to the type of device it’s running on, whereas Float is always a fixed precision. Thus, you never lose precision converting from Float to CGFloat, whereas you might going the other way</p>
+<p>let myCGFloat = CGFloat(myFloat)</p>
+<h3 id="bonuds-amp-frame"><a href="#bonuds-amp-frame" class="headerlink" title="bonuds &amp; frame"></a>bonuds &amp; frame</h3>
+                    
+                        
+
+
+                    
+                    
+                        <p>
+                            <a
+                                href="/2020/09/10/20200910213941/#post-footer"
+                                class="postShorten-excerpt_link link"
+                                aria-label=""
+                            >
+                                评论和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
     <article class="postShorten postShorten--thumbnailimg-right">
         <div class="postShorten-wrap">
             
