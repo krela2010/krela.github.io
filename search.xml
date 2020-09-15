@@ -368,14 +368,9 @@ ctrl+cmd+left/right   文件历史栈切换</code></pre>
       </tags>
   </entry>
   <entry>
-    <title>20200910213941</title>
+    <title></title>
     <url>/2020/09/10/20200910213941/</url>
-    <content><![CDATA[<p>常见问题</p>
-<h3 id="删除sceneDelegate"><a href="#删除sceneDelegate" class="headerlink" title="删除sceneDelegate"></a>删除sceneDelegate</h3><p>info.plist<br>Application Scene Maifest 删除<br>AppDelegate里加上：var window: UIWindow?<br>删除scene相关的代码</p>
-<h3 id="NavgationController"><a href="#NavgationController" class="headerlink" title="NavgationController"></a>NavgationController</h3><p>不能再被NavgationController指向，会有2个bar</p>
-<h3 id="Float-amp-CGFloat"><a href="#Float-amp-CGFloat" class="headerlink" title="Float &amp; CGFloat"></a>Float &amp; CGFloat</h3><p>The Float and CGFloat data types sound so similar you might think they were identical, but they aren’t: CGFloat is flexible in that its precision adapts to the type of device it’s running on, whereas Float is always a fixed precision. Thus, you never lose precision converting from Float to CGFloat, whereas you might going the other way</p>
-<p>let myCGFloat = CGFloat(myFloat)</p>
-<h3 id="bonuds-amp-frame"><a href="#bonuds-amp-frame" class="headerlink" title="bonuds &amp; frame"></a>bonuds &amp; frame</h3>]]></content>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>frame 和 bounds</title>
