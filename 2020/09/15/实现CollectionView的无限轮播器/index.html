@@ -11,7 +11,7 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"通过CollectionView快速实现一个无限轮播器,基于原生uikit\n\n\n核心逻辑是在collection的dateSource\n123func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -&gt; Int &#123;  return infiniteSize&#125;\n\n\ninfiniteSize可以指定一个非常大的值,但不要指定Int.max,会越界崩溃\n例如let infiniteSize = 100000\n12345func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -&gt; UICollectionViewCell &#123;  let cell = collectionView.dequeueReusableCell(withReuseIdentifier: &quot;ColorCell&quot;, for: indexPath)  cell.backgroundColor = colorList[indexPath.row % colorList.count]  return cell&#125;\n\ncell通过对集合取余来控制集合索引写完之后,现在可以实现向右的无限滑动,目前,但是向左还不行\n原理就是通过设置一个很大的数量itemSize,来模拟无限循环的效果向左的思路是把默认的collection的索引指向itemSize的中间值,这样左右都有infiniteSize/2的数量了\n可以在viewDidload中加上\n1234let midIndexPath &#x3D; IndexPath(row: infiniteSize &#x2F; size &#x2F; 2 * size, section: 0)             collectionView.scrollToItem(at: midIndexPath,                                              at: .centeredHorizontally,                                        animated: false)\n\nsize是数据容器的大小,确保index指向容器的第一个\n这样就完成了,方法比较取巧,\n优点:\n快速,方便\n由于reuseable的cell并不会占用内存资源\n原生实现,易于维护\n\n缺点:\n伪无限循环,到了infinitySize上限,就滚不动了\n\n","dateCreated":"2020-09-15T13:33:47+08:00","dateModified":"2020-09-15T14:07:43+08:00","datePublished":"2020-09-15T13:33:47+08:00","description":"通过CollectionView快速实现一个无限轮播器,基于原生uikit","headline":"快速实现CollectionView的无限轮播器","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/09/15/%E5%AE%9E%E7%8E%B0CollectionView%E7%9A%84%E6%97%A0%E9%99%90%E8%BD%AE%E6%92%AD%E5%99%A8/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/09/15/%E5%AE%9E%E7%8E%B0CollectionView%E7%9A%84%E6%97%A0%E9%99%90%E8%BD%AE%E6%92%AD%E5%99%A8/","keywords":"uikit"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"通过CollectionView快速实现一个无限轮播器,基于原生uikit\n\n\n核心逻辑是在collection的dateSource\n123func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -&gt; Int &#123;  return infiniteSize&#125;\n\n\ninfiniteSize可以指定一个非常大的值,但不要指定Int.max,会越界崩溃\n例如let infiniteSize = 100000\n123456func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -&gt; UICollectionViewCell &#123;  let cell = collectionView.dequeueReusableCell(withReuseIdentifier: &quot;ColorCell&quot;, for: indexPath)  guard let size = listSize, size &gt; 0 else &#123; return cell&#125;  cell.backgroundColor = colorList[indexPath.row % size]  return cell&#125;\n\ncell通过对集合取余来控制集合索引写完之后,现在可以实现向右的无限滑动,目前,但是向左还不行\n原理就是通过设置一个很大的数量itemSize,来模拟无限循环的效果向左的思路是把默认的collection的索引指向itemSize的中间值,这样左右都有infiniteSize/2的数量了\n可以在viewDidload中加上\n12345guard let size &#x3D; listSize, size &gt; 0 else &#123; return &#125;let midIndexPath &#x3D; IndexPath(row: infiniteSize &#x2F; size &#x2F; 2 * size, section: 0)             collectionView.scrollToItem(at: midIndexPath,                                              at: .centeredHorizontally,                                        animated: false)\n\nsize是数据容器的大小,确保index指向容器的第一个\n这样就完成了,方法比较取巧,\n优点:\n快速,方便\n由于reuseable的cell并不会占用内存资源\n原生实现,易于维护\n\n缺点:\n伪无限循环,到了infinitySize上限,就滚不动了\n\n","dateCreated":"2020-09-15T13:33:47+08:00","dateModified":"2020-09-15T14:13:09+08:00","datePublished":"2020-09-15T13:33:47+08:00","description":"通过CollectionView快速实现一个无限轮播器,基于原生uikit","headline":"快速实现CollectionView的无限轮播器","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/09/15/%E5%AE%9E%E7%8E%B0CollectionView%E7%9A%84%E6%97%A0%E9%99%90%E8%BD%AE%E6%92%AD%E5%99%A8/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/09/15/%E5%AE%9E%E7%8E%B0CollectionView%E7%9A%84%E6%97%A0%E9%99%90%E8%BD%AE%E6%92%AD%E5%99%A8/","keywords":"uikit"}</script>
     <meta name="description" content="通过CollectionView快速实现一个无限轮播器,基于原生uikit">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="快速实现CollectionView的无限轮播器">
@@ -21,7 +21,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://miro.medium.com/max/600/1*ZYZmgctLW304fZ3UqYheLw.gif">
 <meta property="article:published_time" content="2020-09-15T05:33:47.000Z">
-<meta property="article:modified_time" content="2020-09-15T06:07:43.183Z">
+<meta property="article:modified_time" content="2020-09-15T06:13:09.714Z">
 <meta property="article:author" content="krela">
 <meta property="article:tag" content="uikit">
 <meta name="twitter:card" content="summary">
@@ -257,12 +257,12 @@
 
 <p>infiniteSize可以指定一个非常大的值,但不要指定Int.max,会越界崩溃</p>
 <p>例如<br><em>let infiniteSize = 100000</em></p>
-<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">func collection<span class="constructor">View(<span class="params">_</span> <span class="params">collectionView</span>: UICollectionView, <span class="params">cellForItemAt</span> <span class="params">indexPath</span>: IndexPath)</span> -&gt; UICollectionViewCell &#123;</span><br><span class="line">  <span class="keyword">let</span> cell = collectionView.dequeue<span class="constructor">ReusableCell(<span class="params">withReuseIdentifier</span>: <span class="string">&quot;ColorCell&quot;</span>, <span class="params">for</span>: <span class="params">indexPath</span>)</span></span><br><span class="line">  cell.backgroundColor = colorList<span class="literal">[<span class="identifier">indexPath</span>.<span class="identifier">row</span> % <span class="identifier">colorList</span>.<span class="identifier">count</span>]</span></span><br><span class="line">  return cell</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">func collection<span class="constructor">View(<span class="params">_</span> <span class="params">collectionView</span>: UICollectionView, <span class="params">cellForItemAt</span> <span class="params">indexPath</span>: IndexPath)</span> -&gt; UICollectionViewCell &#123;</span><br><span class="line">  <span class="keyword">let</span> cell = collectionView.dequeue<span class="constructor">ReusableCell(<span class="params">withReuseIdentifier</span>: <span class="string">&quot;ColorCell&quot;</span>, <span class="params">for</span>: <span class="params">indexPath</span>)</span></span><br><span class="line">  guard <span class="keyword">let</span> size = listSize, size &gt; <span class="number">0</span> <span class="keyword">else</span> &#123; return cell&#125;</span><br><span class="line">  cell.backgroundColor = colorList<span class="literal">[<span class="identifier">indexPath</span>.<span class="identifier">row</span> % <span class="identifier">size</span>]</span></span><br><span class="line">  return cell</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>cell通过对集合取余来控制集合索引<br>写完之后,现在可以实现向右的无限滑动,目前,但是向左还不行</p>
 <h4 id="原理就是通过设置一个很大的数量itemSize-来模拟无限循环的效果"><a href="#原理就是通过设置一个很大的数量itemSize-来模拟无限循环的效果" class="headerlink" title="原理就是通过设置一个很大的数量itemSize,来模拟无限循环的效果"></a>原理就是通过设置一个很大的数量itemSize,来模拟无限循环的效果</h4><p>向左的思路是把默认的collection的索引指向itemSize的中间值,这样左右都有infiniteSize/2的数量了</p>
 <p>可以在viewDidload中加上</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">let midIndexPath &#x3D; IndexPath(row: infiniteSize &#x2F; size &#x2F; 2 * size, section: 0)</span><br><span class="line">             collectionView.scrollToItem(at: midIndexPath,</span><br><span class="line">                                              at: .centeredHorizontally,</span><br><span class="line">                                        animated: false)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">guard let size &#x3D; listSize, size &gt; 0 else &#123; return &#125;</span><br><span class="line">let midIndexPath &#x3D; IndexPath(row: infiniteSize &#x2F; size &#x2F; 2 * size, section: 0)</span><br><span class="line">             collectionView.scrollToItem(at: midIndexPath,</span><br><span class="line">                                              at: .centeredHorizontally,</span><br><span class="line">                                        animated: false)</span><br></pre></td></tr></table></figure>
 
 <p>size是数据容器的大小,确保index指向容器的第一个</p>
 <p>这样就完成了,方法比较取巧,</p>
@@ -325,7 +325,7 @@
             <a
                 class="post-action-btn btn btn--default btn-open-shareoptions"
                 href="#btn-open-shareoptions"
-                aria-label="Diesen Beitrag teilen"
+                aria-label="Share this post"
             >
                 <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
@@ -336,7 +336,7 @@
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
             
                 <i class="fa fa-list" aria-hidden="true"></i>
             </a>
@@ -398,7 +398,7 @@
             <a
                 class="post-action-btn btn btn--default btn-open-shareoptions"
                 href="#btn-open-shareoptions"
-                aria-label="Diesen Beitrag teilen"
+                aria-label="Share this post"
             >
                 <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
@@ -409,7 +409,7 @@
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
             
                 <i class="fa fa-list" aria-hidden="true"></i>
             </a>
