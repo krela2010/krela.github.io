@@ -1,0 +1,657 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="">
+    <title>24个好用的Extension让代码更整洁 - null</title>
+    <meta name="author" content="krela">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"24个好用的Extension让代码更整洁(转自Medium)\n\n​    扩展(Extension)是swift和oc最好用的功能之一，能够无侵入的对现有系统类和工程添加新方法\n作为一个iOS和Android的双料开发者，我经常能看到Android代码的功能方法更简洁，易懂；\n当然通过扩展，我们也可以把这些特性使用在swift上，使swift项目也更精炼，更加好用\n​    以下代码是基于swift，但其实对于oc，大部分也可以很容易的移植\n\n\n\n\n1.String.trim() and Swift.trimmed​    我们经常会用到string的trim功能，帮助把string里的空格，制表符，换行符等特殊符号去掉\n扩展可以这么写\n1234567891011import Foundationextension String &#123;    var trimmed: String &#123;        self.trimmingCharacters(in: .whitespacesAndNewlines)    &#125;        mutating func trim() &#123;        self = self.trimmed    &#125;&#125;\n\n用法：\n123var str1 = &quot;  a b c d e   \\n&quot;var str2 = str1.trimmedstr1.trim()\n\n\n\n2. Int.toDouble() and Double.toInt()​    Int和Double,CGFloat的转换是项目中经常会用到.但实际使用上遇到Double(a),必须要求a是非可选类型,所以经常要做额外处理\n可以对Int和Double的扩展:\n12345678910111213import Foundationextension Int &#123;    func toDouble() -&gt; Double &#123;        Double(self)    &#125;&#125;extension Double &#123;    func toInt() -&gt; Int &#123;        Int(self)    &#125;&#125;\n\n\n\n用法:\n12let a = 15.78let b = a.toInt()\n\n\n\n3. String.toDate(…) and Date.toString(…)​    对Date和String的转换做易用的封装\n扩展:\n1234567891011121314151617import Foundationextension String &#123;    func toDate(format: String) -&gt; Date? &#123;        let df = DateFormatter()        df.dateFormat = format        return df.date(from: self)    &#125;&#125;extension Date &#123;    func toString(format: String) -&gt; String &#123;        let df = DateFormatter()        df.dateFormat = format        return df.string(from: self)    &#125;&#125;\n\n\n\n用法:\n123let strDate = &quot;2020-08-10 15:00:00&quot;let date = strDate.toDate(format: &quot;yyyy-MM-dd HH:mm:ss&quot;)let strDate2 = date?.toString(format: &quot;yyyy-MM-dd HH:mm:ss&quot;)\n\n\n\n​    \n4.Int.fenToYuan()​    没什么可说的,金额的分转元\n扩展:\n12345678import Foundationextension Int &#123;    func fenToYuan() -&gt; Double &#123;        Double(self) / 100    &#125;&#125;\n\n\n\n用法:\n12let fen = 12350let yuan = fen.fenToYuan()\n\n\n\n\n\n5.String.asCoordinates()​    string转成坐标,包括两个值,精度和纬度,在3D场景下还有高度数据,高度不是很常用\n我们根据string里的逗号来解析,转成CLLocationCoordinate2D对象\n扩展\n12345678910111213141516import Foundationimport CoreLocationextension String &#123;    var asCoordinates: CLLocationCoordinate2D? &#123;        let components = self.components(separatedBy: &quot;,&quot;)        if components.count != 2 &#123; return nil &#125;        let strLat = components[0].trimmed        let strLng = components[1].trimmed        if let dLat = Double(strLat),            let dLng = Double(strLng) &#123;            return CLLocationCoordinate2D(latitude: dLat, longitude: dLng)        &#125;        return nil    &#125;&#125;\n\n\n\n用法:\n12let strCoordinates = &quot;41.6168, 41.6367&quot;let coordinates = strCoordinates.asCoordinates\n\n\n\n6.String.asURL()​    URL是用处理链接的常用类,很灵活,可以连接不同组建,可以把各种类型处理为URLs,同时,也经常会配合着string的使用\n扩展:\n1234567import Foundationextension String &#123;    var asURL: URL? &#123;        URL(string: self)    &#125;&#125;\n\n\n\n用法:\n12let strUrl = &quot;https://medium.com&quot;let url = strUrl.asURL\n\n\n\n7.UIDevice.vibrate()​    iPhone的震动效果是手机行业内做的最好的,可以主动调用这个\n扩展:\n12345678import UIKitimport AudioToolboxextension UIDevice &#123;    static func vibrate() &#123;        AudioServicesPlaySystemSound(1519)    &#125;&#125;\n\n用法:\n1UIDevice.vibrate()\n\n\n\n\n\n8.String.width(…) and String.height(…)​    计算UILabel里的text占用的宽度,根据Font计算\n扩展:\n123456789101112131415161718192021222324252627282930313233import UIKitextension String &#123;    func height(withConstrainedWidth width: CGFloat, font: UIFont) -&gt; CGFloat &#123;        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [.font: font], context: nil)        return ceil(boundingBox.height)    &#125;    func width(withConstrainedHeight height: CGFloat, font: UIFont) -&gt; CGFloat &#123;        let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: height)        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [.font: font], context: nil)        return ceil(boundingBox.width)    &#125;&#125;extension NSAttributedString &#123;    func height(withConstrainedWidth width: CGFloat) -&gt; CGFloat &#123;        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)        let boundingBox = boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, context: nil)        return ceil(boundingBox.height)    &#125;    func width(withConstrainedHeight height: CGFloat) -&gt; CGFloat &#123;        let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: height)        let boundingBox = boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, context: nil)        return ceil(boundingBox.width)    &#125;&#125;\n\n用法:\n12let text = &quot;Hello, world!&quot;let textHeight = text.height(withConstrainedWidth: 100, font: UIFont.systemFont(ofSize: 16))\n\n\n\n9.String.containsOnlyDigits​    检查string是否只含有数字\n扩展:\n12345678import Foundationextension String &#123;    var containsOnlyDigits: Bool &#123;        let notDigits = NSCharacterSet.decimalDigits.inverted        return rangeOfCharacter(from: notDigits, options: String.CompareOptions.literal, range: nil) == nil    &#125;&#125;\n\n用法:\n12let digitsOnlyYes = &quot;1234567890&quot;.containsOnlyDigitslet digitsOnlyNo = &quot;12345+789&quot;.containsOnlyDigits\n\n\n\n10.String.isAlphanumeric​    检查string是否只有数字和大小写字母,经常用于密码格式验证\n扩展\n1234567import Foundationextension String &#123;    var isAlphanumeric: Bool &#123;        !isEmpty &amp;&amp; range(of: &quot;[^a-zA-Z0-9]&quot;, options: .regularExpression) == nil    &#125;&#125;\n\n用法:\n12let alphanumericYes = &quot;asd3kJh43saf&quot;.isAlphanumericlet alphanumericNo = &quot;Kkncs+_s3mM.&quot;.isAlphanumeric\n\n\n\n\n\n11.String 下标​    swift的截取内容是比较繁琐的,比如:获取第n位内容,可以只设置一个Int参数\n扩展:\n12345678910111213141516171819202122232425262728293031323334353637383940import Foundationextension String &#123;    subscript (i: Int) -&gt; Character &#123;        return self[index(startIndex, offsetBy: i)]    &#125;        subscript (bounds: CountableRange&lt;Int&gt;) -&gt; Substring &#123;        let start = index(startIndex, offsetBy: bounds.lowerBound)        let end = index(startIndex, offsetBy: bounds.upperBound)        if end &lt; start &#123; return &quot;&quot; &#125;        return self[start..&lt;end]    &#125;        subscript (bounds: CountableClosedRange&lt;Int&gt;) -&gt; Substring &#123;        let start = index(startIndex, offsetBy: bounds.lowerBound)        let end = index(startIndex, offsetBy: bounds.upperBound)        if end &lt; start &#123; return &quot;&quot; &#125;        return self[start...end]    &#125;        subscript (bounds: CountablePartialRangeFrom&lt;Int&gt;) -&gt; Substring &#123;        let start = index(startIndex, offsetBy: bounds.lowerBound)        let end = index(endIndex, offsetBy: -1)        if end &lt; start &#123; return &quot;&quot; &#125;        return self[start...end]    &#125;        subscript (bounds: PartialRangeThrough&lt;Int&gt;) -&gt; Substring &#123;        let end = index(startIndex, offsetBy: bounds.upperBound)        if end &lt; startIndex &#123; return &quot;&quot; &#125;        return self[startIndex...end]    &#125;        subscript (bounds: PartialRangeUpTo&lt;Int&gt;) -&gt; Substring &#123;        let end = index(startIndex, offsetBy: bounds.upperBound)        if end &lt; startIndex &#123; return &quot;&quot; &#125;        return self[startIndex..&lt;end]    &#125;&#125;\n\n用法:\n12let subscript1 = &quot;Hello, world!&quot;[7...]let subscript2 = &quot;Hello, world!&quot;[7...11]\n\n12. UIImage.squared​    如果需要用户提交一张方形照片,他们很少有标准的方形照片,但一般App里的头像控件往往都是圆形或者方形的\n这个扩展可以快速的做处理\n扩展:\n1234567891011121314151617181920212223242526272829303132import UIKitextension UIImage &#123;    var squared: UIImage? &#123;        let originalWidth  = size.width        let originalHeight = size.height        var x: CGFloat = 0.0        var y: CGFloat = 0.0        var edge: CGFloat = 0.0                if (originalWidth &gt; originalHeight) &#123;            // landscape            edge = originalHeight            x = (originalWidth - edge) / 2.0            y = 0.0                    &#125; else if (originalHeight &gt; originalWidth) &#123;            // portrait            edge = originalWidth            x = 0.0            y = (originalHeight - originalWidth) / 2.0        &#125; else &#123;            // square            edge = originalWidth        &#125;                let cropSquare = CGRect(x: x, y: y, width: edge, height: edge)        guard let imageRef = cgImage?.cropping(to: cropSquare) else &#123; return nil &#125;                return UIImage(cgImage: imageRef, scale: scale, orientation: imageOrientation)    &#125;&#125;\n\n​    以上是类方法,也可以改为成实例方法\n用法:\n12let img = UIImage() // Must be a real UIImagelet imgSquared = img.squared // img.squared() for method\n\n13.UIImage.resized(…)​    图片资源上传服务器的时候,会有大小限制,往往会处理成一张小尺寸照片\n扩展:\n123456789101112131415161718192021import UIKitextension UIImage &#123;    func resized(maxSize: CGFloat) -&gt; UIImage? &#123;        let scale: CGFloat        if size.width &gt; size.height &#123;            scale = maxSize / size.width        &#125;        else &#123;            scale = maxSize / size.height        &#125;                let newWidth = size.width * scale        let newHeight = size.height * scale        UIGraphicsBeginImageContext(CGSize(width: newWidth, height: newHeight))        draw(in: CGRect(x: 0, y: 0, width: newWidth, height: newHeight))        let newImage = UIGraphicsGetImageFromCurrentImageContext()        UIGraphicsEndImageContext()        return newImage    &#125;&#125;\n\n用法\n12let img2 = UIImage() // Must be a real UIImagelet img2Thumb = img2.resized(maxSize: 512)\n\n可以结合第12条一起使用\n12let img = UIImage() // Must be a real UIImagelet imgPrepared = img.squared?.resized(maxSize: 512)\n\n14.Int.toString()​    一般可以用”‘\\(num)”的方法把Int类型转为string,但是有个问题,如果你的num是可选类型,则会把”optional”也加进去,Kotlin处理可选类型比较优雅:对任意类型someVar?.toString,返回可选string\n​    可惜,swift不允许对Any扩展,但至少可以给Int加上\n扩展\n1234567import Foundationextension Int &#123;    func toString() -&gt; String &#123;        &quot;\\(self)&quot;    &#125;&#125;\n\n用法\n12let i1 = 15let i1AsString = i1.toString()\n\n15.Double.toString()​    和14同理,对Double加toString方法,但限制是保留两位小数\n扩展:\n1234567import Foundationextension Double &#123;    func toString() -&gt; String &#123;        String(format: &quot;%.02f&quot;, self)    &#125;&#125;\n\n用法:\n12let d1 = 15.67let d1AsString = d1.toString()\n\n\n\n16.Double.toPrice()​    用的地方不多,转成”323,232,21.33$”这种格式\n扩展:\n1234567891011121314import Foundationextension Double &#123;    func toPrice(currency: String) -&gt; String &#123;        let nf = NumberFormatter()        nf.decimalSeparator = &quot;,&quot;        nf.groupingSeparator = &quot;.&quot;        nf.groupingSize = 3        nf.usesGroupingSeparator = true        nf.minimumFractionDigits = 2        nf.maximumFractionDigits = 2        return (nf.string(from: NSNumber(value: self)) ?? &quot;?&quot;) + currency    &#125;&#125;\n\n用法:\n12let dPrice = 16.50let strPrice = dPrice.toPrice(currency: &quot;€&quot;)\n\n17.String.asDict​    把JSON格式的string拆成字典,swift很方便\n扩展:\n123456789import Foundationextension String &#123;    var asDict: [String: Any]? &#123;        guard let data = self.data(using: .utf8) else &#123; return nil &#125;        return try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]    &#125;&#125;\n\n用法:\n12let json = &quot;&#123;\\&quot;hello\\&quot;: \\&quot;world\\&quot;&#125;&quot;let dictFromJson = json.asDict\n\n18.String.asArray​    和上个类似,转成集合类型\n扩展:\n12345678import Foundationextension String &#123;    var asArray: [Any]? &#123;        guard let data = self.data(using: .utf8) else &#123; return nil &#125;        return try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [Any]    &#125;&#125;\n\n用法:\n12let json2 = &quot;[1, 2, 3]&quot;let arrFromJson2 = json2.asArray\n\n\n\n19.String.asAttributedString​    有时我们需要一些跨平台的文本格式,最常用的是HTML格式,UILabel可以对粗体,下划线等要是做处理.把HTML格式转成NSAttributedString格式,然后给UILabel.attributedText赋值使用\n扩展:\n12345678import Foundationextension String &#123;    var asAttributedString: NSAttributedString? &#123;        guard let data = self.data(using: .utf8) else &#123; return nil &#125;        return try? NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil)    &#125;&#125;\n\n用法:\n12let htmlString = &quot;&lt;p&gt;Hello, &lt;strong&gt;world!&lt;/string&gt;&lt;/p&gt;&quot;let attrString = htmlString.asAttributedString\n\n\n\n20.Bundle.appVersion​    可以从Info.plist里加载app的版本信息,用途有:\n\n获取版本信息\n检查是否有更新\n展示版本信息\n支持邮件里包含版本信息\n\n扩展:\n1234567891011import Foundationextension Bundle &#123;    var appVersion: String? &#123;        self.infoDictionary?[&quot;CFBundleShortVersionString&quot;] as? String    &#125;        static var mainAppVersion: String? &#123;        Bundle.main.appVersion    &#125;&#125;\n\n用法:\n1let appVersion = Bundle.mainAppVersion\n\n\n\n\n\n原文:\n\nhttps://medium.com/better-programming/24-swift-extensions-for-cleaner-code-41e250c9c4c3\n\n原文确实只有20个…","dateCreated":"2020-09-21T12:58:33+08:00","dateModified":"2020-09-21T13:01:08+08:00","datePublished":"2020-09-21T12:58:33+08:00","description":"24个好用的Extension让代码更整洁(转自Medium)\n\n​    扩展(Extension)是swift和oc最好用的功能之一，能够无侵入的对现有系统类和工程添加新方法\n作为一个iOS和Android的双料开发者，我经常能看到Android代码的功能方法更简洁，易懂；\n当然通过扩展，我们也可以把这些特性使用在swift上，使swift项目也更精炼，更加好用\n​    以下代码是基于swift，但其实对于oc，大部分也可以很容易的移植","headline":"24个好用的Extension让代码更整洁","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/09/21/24%E4%B8%AA%E5%A5%BD%E7%94%A8%E7%9A%84Extension%E8%AE%A9%E4%BB%A3%E7%A0%81%E6%9B%B4%E6%95%B4%E6%B4%81/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/09/21/24%E4%B8%AA%E5%A5%BD%E7%94%A8%E7%9A%84Extension%E8%AE%A9%E4%BB%A3%E7%A0%81%E6%9B%B4%E6%95%B4%E6%B4%81/","keywords":"效率, medium"}</script>
+    <meta name="description" content="24个好用的Extension让代码更整洁(转自Medium)  ​    扩展(Extension)是swift和oc最好用的功能之一，能够无侵入的对现有系统类和工程添加新方法 作为一个iOS和Android的双料开发者，我经常能看到Android代码的功能方法更简洁，易懂； 当然通过扩展，我们也可以把这些特性使用在swift上，使swift项目也更精炼，更加好用 ​    以下代码是基于swi">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="24个好用的Extension让代码更整洁">
+<meta property="og:url" content="http://example.com/2020/09/21/24%E4%B8%AA%E5%A5%BD%E7%94%A8%E7%9A%84Extension%E8%AE%A9%E4%BB%A3%E7%A0%81%E6%9B%B4%E6%95%B4%E6%B4%81/index.html">
+<meta property="og:site_name">
+<meta property="og:description" content="24个好用的Extension让代码更整洁(转自Medium)  ​    扩展(Extension)是swift和oc最好用的功能之一，能够无侵入的对现有系统类和工程添加新方法 作为一个iOS和Android的双料开发者，我经常能看到Android代码的功能方法更简洁，易懂； 当然通过扩展，我们也可以把这些特性使用在swift上，使swift项目也更精炼，更加好用 ​    以下代码是基于swi">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/0_HQm1yU37T9Kn0Sqk.jpg">
+<meta property="article:published_time" content="2020-09-21T04:58:33.000Z">
+<meta property="article:modified_time" content="2020-09-21T05:01:08.661Z">
+<meta property="article:author" content="krela">
+<meta property="article:tag" content="效率">
+<meta property="article:tag" content="medium">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/0_HQm1yU37T9Kn0Sqk.jpg">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style-q1xm6d2tdcpkqfz9o6p1p6qdzbvnnvu0hbyenhmww9tanqfaayxelx72glmt.min.css">
+
+    <!--STYLES END-->
+    
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/"
+            aria-label=""
+        >
+            
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="打开链接: /#about"
+            >
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/"
+                            
+                            rel="noopener"
+                            title="首页"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-categories"
+                            
+                            rel="noopener"
+                            title="分类"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-tags"
+                            
+                            rel="noopener"
+                            title="标签"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-archives"
+                            
+                            rel="noopener"
+                            title="归档"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="http://stackoverflow.com/users"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Stack Overflow"
+                        >
+                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Stack Overflow</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/mailto"
+                            
+                            rel="noopener"
+                            title="邮箱"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/atom.xml"
+                            
+                            rel="noopener"
+                            title="RSS"
+                        >
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            24个好用的Extension让代码更整洁
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2020-09-21T12:58:33+08:00">
+	
+		    9月 21, 2020
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <h3 id="24个好用的Extension让代码更整洁-转自Medium"><a href="#24个好用的Extension让代码更整洁-转自Medium" class="headerlink" title="24个好用的Extension让代码更整洁(转自Medium)"></a>24个好用的Extension让代码更整洁(转自Medium)</h3><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/0_HQm1yU37T9Kn0Sqk.jpg" alt="avatar" style="zoom:50%;" />
+
+<p>​    扩展(Extension)是swift和oc最好用的功能之一，能够无侵入的对现有系统类和工程添加新方法</p>
+<p>作为一个iOS和Android的双料开发者，我经常能看到Android代码的功能方法更简洁，易懂；</p>
+<p>当然通过扩展，我们也可以把这些特性使用在swift上，使swift项目也更精炼，更加好用</p>
+<p>​    以下代码是基于swift，但其实对于oc，大部分也可以很容易的移植</p>
+<a id="more"></a>
+
+
+
+<h4 id="1-String-trim-and-Swift-trimmed"><a href="#1-String-trim-and-Swift-trimmed" class="headerlink" title="1.String.trim() and Swift.trimmed"></a>1.String.trim() and Swift.trimmed</h4><p>​    我们经常会用到string的trim功能，帮助把string里的空格，制表符，换行符等特殊符号去掉</p>
+<p>扩展可以这么写</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Foundation</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">String</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> trimmed: <span class="type">String</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.trimmingCharacters(<span class="keyword">in</span>: .whitespacesAndNewlines)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">mutating</span> <span class="function"><span class="keyword">func</span> <span class="title">trim</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="keyword">self</span> = <span class="keyword">self</span>.trimmed</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用法：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">var</span> str<span class="number">1</span> = <span class="string">&quot;  a b c d e   \n&quot;</span></span><br><span class="line"><span class="attribute">var</span> str<span class="number">2</span> = str<span class="number">1</span>.trimmed</span><br><span class="line"><span class="attribute">str1</span>.trim()</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="2-Int-toDouble-and-Double-toInt"><a href="#2-Int-toDouble-and-Double-toInt" class="headerlink" title="2. Int.toDouble() and Double.toInt()"></a>2. Int.toDouble() and Double.toInt()</h4><p>​    Int和Double,CGFloat的转换是项目中经常会用到.但实际使用上遇到Double(a),必须要求a是非可选类型,所以经常要做额外处理</p>
+<p>可以对Int和Double的扩展:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Foundation</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">Int</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">toDouble</span><span class="params">()</span></span> -&gt; <span class="type">Double</span> &#123;</span><br><span class="line">        <span class="type">Double</span>(<span class="keyword">self</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">Double</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">toInt</span><span class="params">()</span></span> -&gt; <span class="type">Int</span> &#123;</span><br><span class="line">        <span class="type">Int</span>(<span class="keyword">self</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>用法:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="number">15.78</span></span><br><span class="line"><span class="keyword">let</span> b = a.toInt()</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="3-String-toDate-…-and-Date-toString-…"><a href="#3-String-toDate-…-and-Date-toString-…" class="headerlink" title="3. String.toDate(…) and Date.toString(…)"></a>3. String.toDate(…) and Date.toString(…)</h4><p>​    对Date和String的转换做易用的封装</p>
+<p>扩展:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Foundation</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">String</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">toDate</span><span class="params">(format: String)</span></span> -&gt; <span class="type">Date?</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> df = <span class="type">DateFormatter</span>()</span><br><span class="line">        df.dateFormat = format</span><br><span class="line">        <span class="keyword">return</span> df.date(from: <span class="keyword">self</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">Date</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">toString</span><span class="params">(format: String)</span></span> -&gt; <span class="type">String</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> df = <span class="type">DateFormatter</span>()</span><br><span class="line">        df.dateFormat = format</span><br><span class="line">        <span class="keyword">return</span> df.string(from: <span class="keyword">self</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>用法:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> strDate = <span class="string">&quot;2020-08-10 15:00:00&quot;</span></span><br><span class="line"><span class="keyword">let</span> date = strDate.toDate(format: <span class="string">&quot;yyyy-MM-dd HH:mm:ss&quot;</span>)</span><br><span class="line"><span class="keyword">let</span> strDate2 = date?.<span class="built_in">toString</span>(format: <span class="string">&quot;yyyy-MM-dd HH:mm:ss&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>​    </p>
+<h4 id="4-Int-fenToYuan"><a href="#4-Int-fenToYuan" class="headerlink" title="4.Int.fenToYuan()"></a>4.Int.fenToYuan()</h4><p>​    没什么可说的,金额的分转元</p>
+<p>扩展:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> Foundation</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">Int</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">fenToYuan</span><span class="params">()</span></span> -&gt; <span class="type">Double</span> &#123;</span><br><span class="line">        <span class="type">Double</span>(<span class="keyword">self</span>) / <span class="number">100</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>用法:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> fen = <span class="number">12350</span></span><br><span class="line"><span class="keyword">let</span> yuan = fen.fenToYuan()</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="5-String-asCoordinates"><a href="#5-String-asCoordinates" class="headerlink" title="5.String.asCoordinates()"></a>5.String.asCoordinates()</h4><p>​    string转成坐标,包括两个值,精度和纬度,在3D场景下还有高度数据,高度不是很常用</p>
+<p>我们根据string里的逗号来解析,转成CLLocationCoordinate2D对象</p>
+<p>扩展</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Foundation</span><br><span class="line"><span class="keyword">import</span> CoreLocation</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">String</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> asCoordinates: <span class="type">CLLocationCoordinate2D?</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> components = <span class="keyword">self</span>.components(separatedBy: <span class="string">&quot;,&quot;</span>)</span><br><span class="line">        <span class="keyword">if</span> components.<span class="built_in">count</span> != <span class="number">2</span> &#123; <span class="keyword">return</span> <span class="literal">nil</span> &#125;</span><br><span class="line">        <span class="keyword">let</span> strLat = components[<span class="number">0</span>].trimmed</span><br><span class="line">        <span class="keyword">let</span> strLng = components[<span class="number">1</span>].trimmed</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">let</span> dLat = <span class="type">Double</span>(strLat),</span><br><span class="line">            <span class="keyword">let</span> dLng = <span class="type">Double</span>(strLng) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="type">CLLocationCoordinate2D</span>(latitude: dLat, longitude: dLng)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>用法:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> strCoordinates = <span class="string">&quot;41.6168, 41.6367&quot;</span></span><br><span class="line"><span class="keyword">let</span> coordinates = strCoordinates.asCoordinates</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="6-String-asURL"><a href="#6-String-asURL" class="headerlink" title="6.String.asURL()"></a>6.String.asURL()</h4><p>​    URL是用处理链接的常用类,很灵活,可以连接不同组建,可以把各种类型处理为URLs,同时,也经常会配合着string的使用</p>
+<p>扩展:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Foundation</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">String</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> asURL: <span class="type">URL?</span> &#123;</span><br><span class="line">        <span class="type">URL</span>(string: <span class="keyword">self</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>用法:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> strUrl = <span class="string">&quot;https://medium.com&quot;</span></span><br><span class="line"><span class="keyword">let</span> url = strUrl.asURL</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="7-UIDevice-vibrate"><a href="#7-UIDevice-vibrate" class="headerlink" title="7.UIDevice.vibrate()"></a>7.UIDevice.vibrate()</h4><p>​    iPhone的震动效果是手机行业内做的最好的,可以主动调用这个</p>
+<p>扩展:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> UIKit</span><br><span class="line"><span class="keyword">import</span> AudioToolbox</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">UIDevice</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="function"><span class="keyword">func</span> <span class="title">vibrate</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="type">AudioServicesPlaySystemSound</span>(<span class="number">1519</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用法:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">UIDevice</span>.vibrate()</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="8-String-width-…-and-String-height-…"><a href="#8-String-width-…-and-String-height-…" class="headerlink" title="8.String.width(…) and String.height(…)"></a>8.String.width(…) and String.height(…)</h4><p>​    计算UILabel里的text占用的宽度,根据Font计算</p>
+<p>扩展:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> UIKit</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">String</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">height</span><span class="params">(withConstrainedWidth width: CGFloat, font: UIFont)</span></span> -&gt; <span class="type">CGFloat</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> constraintRect = <span class="type">CGSize</span>(width: width, height: .greatestFiniteMagnitude)</span><br><span class="line">        <span class="keyword">let</span> boundingBox = <span class="keyword">self</span>.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [.font: font], context: <span class="literal">nil</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ceil(boundingBox.height)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">width</span><span class="params">(withConstrainedHeight height: CGFloat, font: UIFont)</span></span> -&gt; <span class="type">CGFloat</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> constraintRect = <span class="type">CGSize</span>(width: .greatestFiniteMagnitude, height: height)</span><br><span class="line">        <span class="keyword">let</span> boundingBox = <span class="keyword">self</span>.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [.font: font], context: <span class="literal">nil</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ceil(boundingBox.width)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">NSAttributedString</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">height</span><span class="params">(withConstrainedWidth width: CGFloat)</span></span> -&gt; <span class="type">CGFloat</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> constraintRect = <span class="type">CGSize</span>(width: width, height: .greatestFiniteMagnitude)</span><br><span class="line">        <span class="keyword">let</span> boundingBox = boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, context: <span class="literal">nil</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ceil(boundingBox.height)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">width</span><span class="params">(withConstrainedHeight height: CGFloat)</span></span> -&gt; <span class="type">CGFloat</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> constraintRect = <span class="type">CGSize</span>(width: .greatestFiniteMagnitude, height: height)</span><br><span class="line">        <span class="keyword">let</span> boundingBox = boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, context: <span class="literal">nil</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ceil(boundingBox.width)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用法:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> text = <span class="string">&quot;Hello, world!&quot;</span></span><br><span class="line"><span class="keyword">let</span> textHeight = text.height(withConstrainedWidth: <span class="number">100</span>, font: <span class="type">UIFont</span>.systemFont(ofSize: <span class="number">16</span>))</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="9-String-containsOnlyDigits"><a href="#9-String-containsOnlyDigits" class="headerlink" title="9.String.containsOnlyDigits"></a>9.String.containsOnlyDigits</h4><p>​    检查string是否只含有数字</p>
+<p>扩展:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Foundation</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">String</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> containsOnlyDigits: <span class="type">Bool</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> notDigits = <span class="type">NSCharacterSet</span>.decimalDigits.inverted</span><br><span class="line">        <span class="keyword">return</span> rangeOfCharacter(from: notDigits, options: <span class="type">String</span>.<span class="type">CompareOptions</span>.literal, range: <span class="literal">nil</span>) == <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用法:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> digitsOnlyYes = <span class="string">&quot;1234567890&quot;</span>.containsOnlyDigits</span><br><span class="line"><span class="keyword">let</span> digitsOnlyNo = <span class="string">&quot;12345+789&quot;</span>.containsOnlyDigits</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="10-String-isAlphanumeric"><a href="#10-String-isAlphanumeric" class="headerlink" title="10.String.isAlphanumeric"></a>10.String.isAlphanumeric</h4><p>​    检查string是否只有数字和大小写字母,经常用于密码格式验证</p>
+<p>扩展</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Foundation</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">String</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> isAlphanumeric: <span class="type">Bool</span> &#123;</span><br><span class="line">        !isEmpty &amp;&amp; range(of: <span class="string">&quot;[^a-zA-Z0-9]&quot;</span>, options: .regularExpression) == <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用法:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> alphanumericYes = <span class="string">&quot;asd3kJh43saf&quot;</span>.isAlphanumeric</span><br><span class="line"><span class="keyword">let</span> alphanumericNo = <span class="string">&quot;Kkncs+_s3mM.&quot;</span>.isAlphanumeric</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="11-String-下标"><a href="#11-String-下标" class="headerlink" title="11.String 下标"></a>11.String 下标</h3><p>​    swift的截取内容是比较繁琐的,比如:获取第n位内容,可以只设置一个Int参数</p>
+<p>扩展:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Foundation</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">String</span> </span>&#123;</span><br><span class="line">    <span class="keyword">subscript</span> (i: <span class="type">Int</span>) -&gt; <span class="type">Character</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>[index(startIndex, offsetBy: i)]</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">subscript</span> (bounds: <span class="type">CountableRange</span>&lt;<span class="type">Int</span>&gt;) -&gt; <span class="type">Substring</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> start = index(startIndex, offsetBy: bounds.lowerBound)</span><br><span class="line">        <span class="keyword">let</span> end = index(startIndex, offsetBy: bounds.upperBound)</span><br><span class="line">        <span class="keyword">if</span> end &lt; start &#123; <span class="keyword">return</span> <span class="string">&quot;&quot;</span> &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>[start..&lt;end]</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">subscript</span> (bounds: <span class="type">CountableClosedRange</span>&lt;<span class="type">Int</span>&gt;) -&gt; <span class="type">Substring</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> start = index(startIndex, offsetBy: bounds.lowerBound)</span><br><span class="line">        <span class="keyword">let</span> end = index(startIndex, offsetBy: bounds.upperBound)</span><br><span class="line">        <span class="keyword">if</span> end &lt; start &#123; <span class="keyword">return</span> <span class="string">&quot;&quot;</span> &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>[start...end]</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">subscript</span> (bounds: <span class="type">CountablePartialRangeFrom</span>&lt;<span class="type">Int</span>&gt;) -&gt; <span class="type">Substring</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> start = index(startIndex, offsetBy: bounds.lowerBound)</span><br><span class="line">        <span class="keyword">let</span> end = index(endIndex, offsetBy: -<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">if</span> end &lt; start &#123; <span class="keyword">return</span> <span class="string">&quot;&quot;</span> &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>[start...end]</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">subscript</span> (bounds: <span class="type">PartialRangeThrough</span>&lt;<span class="type">Int</span>&gt;) -&gt; <span class="type">Substring</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> end = index(startIndex, offsetBy: bounds.upperBound)</span><br><span class="line">        <span class="keyword">if</span> end &lt; startIndex &#123; <span class="keyword">return</span> <span class="string">&quot;&quot;</span> &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>[startIndex...end]</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">subscript</span> (bounds: <span class="type">PartialRangeUpTo</span>&lt;<span class="type">Int</span>&gt;) -&gt; <span class="type">Substring</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> end = index(startIndex, offsetBy: bounds.upperBound)</span><br><span class="line">        <span class="keyword">if</span> end &lt; startIndex &#123; <span class="keyword">return</span> <span class="string">&quot;&quot;</span> &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>[startIndex..&lt;end]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用法:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> subscript1 = <span class="string">&quot;Hello, world!&quot;</span>[<span class="number">7</span>...]</span><br><span class="line"><span class="keyword">let</span> subscript2 = <span class="string">&quot;Hello, world!&quot;</span>[<span class="number">7</span>...<span class="number">11</span>]</span><br></pre></td></tr></table></figure>
+
+<h4 id="12-UIImage-squared"><a href="#12-UIImage-squared" class="headerlink" title="12. UIImage.squared"></a>12. UIImage.squared</h4><p>​    如果需要用户提交一张方形照片,他们很少有标准的方形照片,但一般App里的头像控件往往都是圆形或者方形的</p>
+<p>这个扩展可以快速的做处理</p>
+<p>扩展:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> UIKit</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">UIImage</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> squared: <span class="type">UIImage?</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> originalWidth  = size.width</span><br><span class="line">        <span class="keyword">let</span> originalHeight = size.height</span><br><span class="line">        <span class="keyword">var</span> x: <span class="type">CGFloat</span> = <span class="number">0.0</span></span><br><span class="line">        <span class="keyword">var</span> y: <span class="type">CGFloat</span> = <span class="number">0.0</span></span><br><span class="line">        <span class="keyword">var</span> edge: <span class="type">CGFloat</span> = <span class="number">0.0</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (originalWidth &gt; originalHeight) &#123;</span><br><span class="line">            <span class="comment">// landscape</span></span><br><span class="line">            edge = originalHeight</span><br><span class="line">            x = (originalWidth - edge) / <span class="number">2.0</span></span><br><span class="line">            y = <span class="number">0.0</span></span><br><span class="line">            </span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (originalHeight &gt; originalWidth) &#123;</span><br><span class="line">            <span class="comment">// portrait</span></span><br><span class="line">            edge = originalWidth</span><br><span class="line">            x = <span class="number">0.0</span></span><br><span class="line">            y = (originalHeight - originalWidth) / <span class="number">2.0</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// square</span></span><br><span class="line">            edge = originalWidth</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">let</span> cropSquare = <span class="type">CGRect</span>(x: x, y: y, width: edge, height: edge)</span><br><span class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> imageRef = cgImage?.cropping(to: cropSquare) <span class="keyword">else</span> &#123; <span class="keyword">return</span> <span class="literal">nil</span> &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> <span class="type">UIImage</span>(cgImage: imageRef, scale: scale, orientation: imageOrientation)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​    以上是类方法,也可以改为成实例方法</p>
+<p>用法:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> img = <span class="type">UIImage</span>() <span class="comment">// Must be a real UIImage</span></span><br><span class="line"><span class="keyword">let</span> imgSquared = img.squared <span class="comment">// img.squared() for method</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="13-UIImage-resized-…"><a href="#13-UIImage-resized-…" class="headerlink" title="13.UIImage.resized(…)"></a>13.UIImage.resized(…)</h4><p>​    图片资源上传服务器的时候,会有大小限制,往往会处理成一张小尺寸照片</p>
+<p>扩展:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> UIKit</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">UIImage</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">resized</span><span class="params">(maxSize: CGFloat)</span></span> -&gt; <span class="type">UIImage?</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> scale: <span class="type">CGFloat</span></span><br><span class="line">        <span class="keyword">if</span> size.width &gt; size.height &#123;</span><br><span class="line">            scale = maxSize / size.width</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            scale = maxSize / size.height</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">let</span> newWidth = size.width * scale</span><br><span class="line">        <span class="keyword">let</span> newHeight = size.height * scale</span><br><span class="line">        <span class="type">UIGraphicsBeginImageContext</span>(<span class="type">CGSize</span>(width: newWidth, height: newHeight))</span><br><span class="line">        draw(<span class="keyword">in</span>: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: newWidth, height: newHeight))</span><br><span class="line">        <span class="keyword">let</span> newImage = <span class="type">UIGraphicsGetImageFromCurrentImageContext</span>()</span><br><span class="line">        <span class="type">UIGraphicsEndImageContext</span>()</span><br><span class="line">        <span class="keyword">return</span> newImage</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用法</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> img2 = <span class="type">UIImage</span>() <span class="comment">// Must be a real UIImage</span></span><br><span class="line"><span class="keyword">let</span> img2Thumb = img2.resized(maxSize: <span class="number">512</span>)</span><br></pre></td></tr></table></figure>
+
+<p>可以结合第12条一起使用</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> img = <span class="type">UIImage</span>() <span class="comment">// Must be a real UIImage</span></span><br><span class="line"><span class="keyword">let</span> imgPrepared = img.squared?.resized(maxSize: <span class="number">512</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="14-Int-toString"><a href="#14-Int-toString" class="headerlink" title="14.Int.toString()"></a>14.Int.toString()</h4><p>​    一般可以用”‘\(num)”的方法把Int类型转为string,但是有个问题,如果你的num是可选类型,则会把”optional”也加进去,Kotlin处理可选类型比较优雅:对任意类型someVar?.toString,返回可选string</p>
+<p>​    可惜,swift不允许对Any扩展,但至少可以给Int加上</p>
+<p>扩展</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Foundation</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">Int</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">toString</span><span class="params">()</span></span> -&gt; <span class="type">String</span> &#123;</span><br><span class="line">        <span class="string">&quot;\(self)&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用法</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> i1 = <span class="number">15</span></span><br><span class="line"><span class="keyword">let</span> i1AsString = i1.<span class="built_in">toString</span>()</span><br></pre></td></tr></table></figure>
+
+<h4 id="15-Double-toString"><a href="#15-Double-toString" class="headerlink" title="15.Double.toString()"></a>15.Double.toString()</h4><p>​    和14同理,对Double加toString方法,但限制是保留两位小数</p>
+<p>扩展:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Foundation</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">Double</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">toString</span><span class="params">()</span></span> -&gt; <span class="type">String</span> &#123;</span><br><span class="line">        <span class="type">String</span>(format: <span class="string">&quot;%.02f&quot;</span>, <span class="keyword">self</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用法:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> d1 = <span class="number">15.67</span></span><br><span class="line"><span class="keyword">let</span> d1AsString = d1.<span class="built_in">toString</span>()</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="16-Double-toPrice"><a href="#16-Double-toPrice" class="headerlink" title="16.Double.toPrice()"></a>16.Double.toPrice()</h4><p>​    用的地方不多,转成”323,232,21.33$”这种格式</p>
+<p>扩展:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Foundation</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">Double</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">toPrice</span><span class="params">(currency: String)</span></span> -&gt; <span class="type">String</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> nf = <span class="type">NumberFormatter</span>()</span><br><span class="line">        nf.decimalSeparator = <span class="string">&quot;,&quot;</span></span><br><span class="line">        nf.groupingSeparator = <span class="string">&quot;.&quot;</span></span><br><span class="line">        nf.groupingSize = <span class="number">3</span></span><br><span class="line">        nf.usesGroupingSeparator = <span class="literal">true</span></span><br><span class="line">        nf.minimumFractionDigits = <span class="number">2</span></span><br><span class="line">        nf.maximumFractionDigits = <span class="number">2</span></span><br><span class="line">        <span class="keyword">return</span> (nf.string(from: <span class="type">NSNumber</span>(value: <span class="keyword">self</span>)) ?? <span class="string">&quot;?&quot;</span>) + currency</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用法:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> dPrice = <span class="number">16.50</span></span><br><span class="line"><span class="keyword">let</span> strPrice = dPrice.toPrice(currency: <span class="string">&quot;€&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="17-String-asDict"><a href="#17-String-asDict" class="headerlink" title="17.String.asDict"></a>17.String.asDict</h4><p>​    把JSON格式的string拆成字典,swift很方便</p>
+<p>扩展:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> Foundation</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">String</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> asDict: [<span class="type">String</span>: <span class="type">Any</span>]? &#123;</span><br><span class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> data = <span class="keyword">self</span>.data(using: .utf8) <span class="keyword">else</span> &#123; <span class="keyword">return</span> <span class="literal">nil</span> &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">try</span>? <span class="type">JSONSerialization</span>.jsonObject(with: data, options: .allowFragments) <span class="keyword">as</span>? [<span class="type">String</span>: <span class="type">Any</span>]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用法:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> json = <span class="string">&quot;&#123;\&quot;hello\&quot;: \&quot;world\&quot;&#125;&quot;</span></span><br><span class="line"><span class="keyword">let</span> dictFromJson = json.asDict</span><br></pre></td></tr></table></figure>
+
+<h4 id="18-String-asArray"><a href="#18-String-asArray" class="headerlink" title="18.String.asArray"></a>18.String.asArray</h4><p>​    和上个类似,转成集合类型</p>
+<p>扩展:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Foundation</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">String</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> asArray: [<span class="type">Any</span>]? &#123;</span><br><span class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> data = <span class="keyword">self</span>.data(using: .utf8) <span class="keyword">else</span> &#123; <span class="keyword">return</span> <span class="literal">nil</span> &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">try</span>? <span class="type">JSONSerialization</span>.jsonObject(with: data, options: .allowFragments) <span class="keyword">as</span>? [<span class="type">Any</span>]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用法:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> json2 = <span class="string">&quot;[1, 2, 3]&quot;</span></span><br><span class="line"><span class="keyword">let</span> arrFromJson2 = json2.asArray</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="19-String-asAttributedString"><a href="#19-String-asAttributedString" class="headerlink" title="19.String.asAttributedString"></a>19.String.asAttributedString</h4><p>​    有时我们需要一些跨平台的文本格式,最常用的是HTML格式,UILabel可以对粗体<strong>,下划线等要是做处理.把HTML格式转成NSAttributedString格式,然后给UILabel.attributedText赋值使用</p>
+<p>扩展:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Foundation</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">String</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> asAttributedString: <span class="type">NSAttributedString?</span> &#123;</span><br><span class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> data = <span class="keyword">self</span>.data(using: .utf8) <span class="keyword">else</span> &#123; <span class="keyword">return</span> <span class="literal">nil</span> &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">try</span>? <span class="type">NSAttributedString</span>(data: data, options: [.documentType: <span class="type">NSAttributedString</span>.<span class="type">DocumentType</span>.html], documentAttributes: <span class="literal">nil</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用法:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> htmlString = <span class="string">&quot;&lt;p&gt;Hello, &lt;strong&gt;world!&lt;/string&gt;&lt;/p&gt;&quot;</span></span><br><span class="line"><span class="keyword">let</span> attrString = htmlString.asAttributedString</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="20-Bundle-appVersion"><a href="#20-Bundle-appVersion" class="headerlink" title="20.Bundle.appVersion"></a>20.Bundle.appVersion</h4><p>​    可以从Info.plist里加载app的版本信息,用途有:</p>
+<ul>
+<li>获取版本信息</li>
+<li>检查是否有更新</li>
+<li>展示版本信息</li>
+<li>支持邮件里包含版本信息</li>
+</ul>
+<p>扩展:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Foundation</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">Bundle</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> appVersion: <span class="type">String?</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.infoDictionary?[<span class="string">&quot;CFBundleShortVersionString&quot;</span>] <span class="keyword">as</span>? <span class="type">String</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">var</span> mainAppVersion: <span class="type">String?</span> &#123;</span><br><span class="line">        <span class="type">Bundle</span>.main.appVersion</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用法:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> appVersion = <span class="type">Bundle</span>.mainAppVersion</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>原文:</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://medium.com/better-programming/24-swift-extensions-for-cleaner-code-41e250c9c4c3">https://medium.com/better-programming/24-swift-extensions-for-cleaner-code-41e250c9c4c3</a></p>
+</blockquote>
+<h3 id="原文确实只有20个…"><a href="#原文确实只有20个…" class="headerlink" title="原文确实只有20个…"></a>原文确实只有20个…</h3>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/medium/" rel="tag">medium</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/%E6%95%88%E7%8E%87/" rel="tag">效率</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/09/15/%E5%AE%9E%E7%8E%B0CollectionView%E7%9A%84%E6%97%A0%E9%99%90%E8%BD%AE%E6%92%AD%E5%99%A8/"
+                    data-tooltip="快速实现CollectionView的无限轮播器"
+                    aria-label="下一篇: 快速实现CollectionView的无限轮播器"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2020 krela. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/09/15/%E5%AE%9E%E7%8E%B0CollectionView%E7%9A%84%E6%97%A0%E9%99%90%E8%BD%AE%E6%92%AD%E5%99%A8/"
+                    data-tooltip="快速实现CollectionView的无限轮播器"
+                    aria-label="下一篇: 快速实现CollectionView的无限轮播器"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <h4 id="about-card-name">krela</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/script-efzwyj1ubluyv8iapkoolcjuvxznfol9f88lx15p6wxkixuzt5pme1zhhnhc.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+
+
+
+
+    </body>
+</html>

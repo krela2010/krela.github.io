@@ -6,20 +6,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="">
-    <title>20200915133333 - null</title>
+    <title>当App启动时,发生了什么(转自Medium) - null</title>
     <meta name="author" content="krela">
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"","dateCreated":"2020-09-15T13:33:33+08:00","dateModified":"2020-09-15T13:33:33+08:00","datePublished":"2020-09-15T13:33:33+08:00","description":"","headline":"20200915133333","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/09/15/20200915133333/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/09/15/20200915133333/"}</script>
-    <meta property="og:type" content="blog">
-<meta property="og:title" content="20200915133333">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"​    你是否想过在按下app icon图标时到application::didFinishLaunchingWithOptions:?之间发生了什么\n​    iPhone app技术上讲可以概括的描述为一个函数UIApplicationMain(::::)\n​    下面一起探究以下其中原理\n\n\nUIApplication​    如果你研究UIApplicationMain(::::)这个方法,你会发现他的返回值是Int32类型.其实,这个方法从来不会真的退出,直到app退出,和你的app生命周期一致\n​    第一件事,app调用一个类UIApplication这个类非常重要,是控制,协同app运行的关键\n​    每个app只有一个该对象实例,是单例模式,UIApplication.shared就是这个单例对象\nUIApplicationDelegate​    另一件事,创建AppDelegate,是一个遵守UIApplicationDelegate协议的对象,你可能对它已经很熟悉了,处理app交互的根对象\n​    UIApplicationDelegate有一堆方法,用来管理你的app\n​    你是否注意到@UIApplicationMain标记在类声明之前?UIApplicationMain(::::)根据这个标记知道哪个类是Appdelegate.这个类也是和app的生命周期同步.也被指向为UIApplication的代理对象\n​    应用对象遇到重要的runtime事件时,会通知AppDelegate,例如app运行,内存警告,app终止,给予响应的机会\n​    在iOS13,上述的一些响应职责被SceneDelegate接手处理了.负责app生命周期的响应职责由appDelegate处理,一些和app显示,窗口交互的响应职责由sceneDelegate处理\nStoryboard?​    此时,app的基础功能已经就绪了,UIApplicationMain(::::)开始准备处理交互了\n​    首先,需要找到main storyboard,这个行为是和Info.plist的key叫做”Main storyboard file base name”有关\n​    如果使用storyboard绘制界面,app会实例化UIWindow,UIVindow是UIView的子类.这个实例化的window是你用户界面的基础\n​    一旦实例化完成,window被赋值SceneDelegate的属性(在iOS13之前是AppDelegate的属性)\n​    如果你观察SceneDelegate里的scene(_:willConnectTo:options:)方法,你能注意到瞎买你的注释:\n\nIf using a storyboard, the window property will automatically be initialized and attached to the scene.\n\n​    现在开始window属性和app生命周期保持一致了\nViewController的初始化​    用户虽然创建了UIWindow的实例,但是现在却看不到任何东西的,用户并不会直接和window交互,能看到的是window里的rootViewController属性\n​    rootViewController包含着你的initial view controller,你可以通过storyboard指定initial view controller,在”Attributes inspector”,选中”Is initial view controller”\n​    选中之后就被赋值给rootViewController属性,它是window现在唯一的直接的subview.其他的view都是rootview的subview\n​    现在是时候调用application:didFinishLaunchingWithOptions:方法了\n​    但window还是不可见,最一步需要调用makeKeyAndVisible()实例方法\n​    此时app已经就绪,功能开始执行了\n无No Storyboard​    有些项目不使用storyboard,靠纯代码绘制界面,这种情况下,你必须要在UIApplicationMain里自己写相关代码\n​    在iOS13之前,写上述代码的位置在didFinishLaunchingWithOptions,现在要写在SceneDelegate里的 (_willConnectTo:options:)方法里\n​    你要写的代码内容:\n\n实例化UIWindow,赋值给SceneDelegate’s window属性\n实例化你的initial view controller并且赋值给window的 rootViewController属性\n调用makeKeyAndVisible()展示界面\n\n代码:\n123456789func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) &#123;        window = self.window ?? UIWindow()    window?.backgroundColor = .white    window?.rootViewController = ViewController()    window?.makeKeyAndVisible()        guard let _ = (scene as? UIWindowScene) else &#123; return &#125;&#125;\n\n\n\n\n\n总结​    上述的过程都是不可见的,在app内部处理,很多人没有思考过其中的细节.是app生命周期重要的部分\n","dateCreated":"2020-09-15T13:33:33+08:00","dateModified":"2020-09-21T13:02:51+08:00","datePublished":"2020-09-15T13:33:33+08:00","description":"​    你是否想过在按下app icon图标时到application::didFinishLaunchingWithOptions:?之间发生了什么\n​    iPhone app技术上讲可以概括的描述为一个函数UIApplicationMain(::::)\n​    下面一起探究以下其中原理","headline":"当App启动时,发生了什么(转自Medium)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/09/15/20200915133333/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/09/15/20200915133333/","keywords":"Medium, swift"}</script>
+    <meta name="description" content="​    你是否想过在按下app icon图标时到application::didFinishLaunchingWithOptions:?之间发生了什么 ​    iPhone app技术上讲可以概括的描述为一个函数UIApplicationMain(::::) ​    下面一起探究以下其中原理">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="当App启动时,发生了什么(转自Medium)">
 <meta property="og:url" content="http://example.com/2020/09/15/20200915133333/index.html">
 <meta property="og:site_name">
+<meta property="og:description" content="​    你是否想过在按下app icon图标时到application::didFinishLaunchingWithOptions:?之间发生了什么 ​    iPhone app技术上讲可以概括的描述为一个函数UIApplicationMain(::::) ​    下面一起探究以下其中原理">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-09-15T05:33:33.000Z">
-<meta property="article:modified_time" content="2020-09-15T05:33:33.204Z">
+<meta property="article:modified_time" content="2020-09-21T05:02:51.609Z">
 <meta property="article:author" content="krela">
+<meta property="article:tag" content="Medium">
+<meta property="article:tag" content="swift">
 <meta name="twitter:card" content="summary">
     
     
@@ -224,7 +228,7 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title">
-            20200915133333
+            当App启动时,发生了什么(转自Medium)
         </h1>
     
     
@@ -243,13 +247,64 @@
     
     <div class="post-content markdown">
         <div class="main-content-wrap">
-            
+            <p>​    你是否想过在按下app icon图标时到application::<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/uikit/uiapplicationdelegate/1622921-application?language=objc">didFinishLaunchingWithOptions</a>:?之间发生了什么</p>
+<p>​    iPhone app技术上讲可以概括的描述为一个函数<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/uikit/1622933-uiapplicationmain">UIApplicationMain(<em>:</em>:<em>:</em>:)</a></p>
+<p>​    下面一起探究以下其中原理</p>
+<a id="more"></a>
+
+<h4 id="UIApplication"><a href="#UIApplication" class="headerlink" title="UIApplication"></a>UIApplication</h4><p>​    如果你研究UIApplicationMain(<em>:</em>:<em>:</em>:)这个方法,你会发现他的返回值是Int32类型.其实,这个方法从来不会真的退出,直到app退出,和你的app生命周期一致</p>
+<p>​    第一件事,app调用一个类<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/uikit/uiapplication">UIApplication</a>这个类非常重要,是控制,协同app运行的关键</p>
+<p>​    每个app只有一个该对象实例,是单例模式,UIApplication.shared就是这个单例对象</p>
+<h4 id="UIApplicationDelegate"><a href="#UIApplicationDelegate" class="headerlink" title="UIApplicationDelegate"></a>UIApplicationDelegate</h4><p>​    另一件事,创建AppDelegate,是一个遵守<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/uikit/uiapplicationdelegate">UIApplicationDelegate</a>协议的对象,你可能对它已经很熟悉了,处理app交互的根对象</p>
+<p>​    UIApplicationDelegate有一堆方法,用来管理你的app</p>
+<p>​    你是否注意到@UIApplicationMain标记在类声明之前?UIApplicationMain(<em>:</em>:<em>:</em>:)根据这个标记知道哪个类是Appdelegate.这个类也是和app的生命周期同步.也被指向为UIApplication的代理对象</p>
+<p>​    应用对象遇到重要的runtime事件时,会通知AppDelegate,例如app运行,内存警告,app终止,给予响应的机会</p>
+<p>​    在iOS13,上述的一些响应职责被SceneDelegate接手处理了.负责app生命周期的响应职责由appDelegate处理,一些和app显示,窗口交互的响应职责由sceneDelegate处理</p>
+<h4 id="Storyboard"><a href="#Storyboard" class="headerlink" title="Storyboard?"></a>Storyboard?</h4><p>​    此时,app的基础功能已经就绪了,UIApplicationMain(<em>:</em>:<em>:</em>:)开始准备处理交互了</p>
+<p>​    首先,需要找到main storyboard,这个行为是和Info.plist的key叫做”Main storyboard file base name”有关</p>
+<p>​    如果使用storyboard绘制界面,app会实例化UIWindow,UIVindow是UIView的子类.这个实例化的window是你用户界面的基础</p>
+<p>​    一旦实例化完成,window被赋值SceneDelegate的属性(在iOS13之前是AppDelegate的属性)</p>
+<p>​    如果你观察SceneDelegate里的scene(_:willConnectTo:options:)方法,你能注意到瞎买你的注释:</p>
+<blockquote>
+<p>If using a storyboard, the <code>window</code> property will automatically be initialized and attached to the scene.</p>
+</blockquote>
+<p>​    现在开始window属性和app生命周期保持一致了</p>
+<h4 id="ViewController的初始化"><a href="#ViewController的初始化" class="headerlink" title="ViewController的初始化"></a>ViewController的初始化</h4><p>​    用户虽然创建了UIWindow的实例,但是现在却看不到任何东西的,用户并不会直接和window交互,能看到的是window里的rootViewController属性</p>
+<p>​    rootViewController包含着你的initial view controller,你可以通过storyboard指定initial view controller,在”Attributes inspector”,选中”Is initial view controller”</p>
+<p>​    选中之后就被赋值给rootViewController属性,它是window现在唯一的直接的subview.其他的view都是rootview的subview</p>
+<p>​    现在是时候调用application:didFinishLaunchingWithOptions:方法了</p>
+<p>​    但window还是不可见,最一步需要调用<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/uikit/uiwindow/1621601-makekeyandvisible">makeKeyAndVisible()</a>实例方法</p>
+<p>​    此时app已经就绪,功能开始执行了</p>
+<h4 id="无No-Storyboard"><a href="#无No-Storyboard" class="headerlink" title="无No Storyboard"></a>无No Storyboard</h4><p>​    有些项目不使用storyboard,靠纯代码绘制界面,这种情况下,你必须要在UIApplicationMain里自己写相关代码</p>
+<p>​    在iOS13之前,写上述代码的位置在didFinishLaunchingWithOptions,现在要写在SceneDelegate<code>里的 </code>(_willConnectTo:options:)方法里</p>
+<p>​    你要写的代码内容:</p>
+<ul>
+<li>实例化UIWindow,赋值给SceneDelegate<code>’s </code>window属性</li>
+<li>实例化你的initial view controller并且赋值给window<code>的 </code>rootViewController属性</li>
+<li>调用makeKeyAndVisible()展示界面</li>
+</ul>
+<p>代码:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">scene</span><span class="params">(<span class="number">_</span> scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions)</span></span> &#123;</span><br><span class="line">    </span><br><span class="line">    window = <span class="keyword">self</span>.window ?? <span class="type">UIWindow</span>()</span><br><span class="line">    window?.backgroundColor = .white</span><br><span class="line">    window?.rootViewController = <span class="type">ViewController</span>()</span><br><span class="line">    window?.makeKeyAndVisible()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">guard</span> <span class="keyword">let</span> <span class="number">_</span> = (scene <span class="keyword">as</span>? <span class="type">UIWindowScene</span>) <span class="keyword">else</span> &#123; <span class="keyword">return</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>​    上述的过程都是不可见的,在app内部处理,很多人没有思考过其中的细节.是app生命周期重要的部分</p>
+
             
 
 
         </div>
     </div>
     <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/Medium/" rel="tag">Medium</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/swift/" rel="tag">swift</a>
+
+            </div>
         
         
             <div class="post-actions-wrap">
