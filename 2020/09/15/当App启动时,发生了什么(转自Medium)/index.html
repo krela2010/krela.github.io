@@ -11,11 +11,11 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"​    你是否想过在按下app icon图标时到application::didFinishLaunchingWithOptions:?之间发生了什么\n​    iPhone app技术上讲可以概括的描述为一个函数UIApplicationMain(::::)\n​    下面一起探究以下其中原理\n\n\nUIApplication​    如果你研究UIApplicationMain(::::)这个方法,你会发现他的返回值是Int32类型.其实,这个方法从来不会真的退出,直到app退出,和你的app生命周期一致\n​    第一件事,app调用一个类UIApplication这个类非常重要,是控制,协同app运行的关键\n​    每个app只有一个该对象实例,是单例模式,UIApplication.shared就是这个单例对象\nUIApplicationDelegate​    另一件事,创建AppDelegate,是一个遵守UIApplicationDelegate协议的对象,你可能对它已经很熟悉了,处理app交互的根对象\n​    UIApplicationDelegate有一堆方法,用来管理你的app\n​    你是否注意到@UIApplicationMain标记在类声明之前?UIApplicationMain(::::)根据这个标记知道哪个类是Appdelegate.这个类也是和app的生命周期同步.也被指向为UIApplication的代理对象\n​    应用对象遇到重要的runtime事件时,会通知AppDelegate,例如app运行,内存警告,app终止,给予响应的机会\n​    在iOS13,上述的一些响应职责被SceneDelegate接手处理了.负责app生命周期的响应职责由appDelegate处理,一些和app显示,窗口交互的响应职责由sceneDelegate处理\nStoryboard?​    此时,app的基础功能已经就绪了,UIApplicationMain(::::)开始准备处理交互了\n​    首先,需要找到main storyboard,这个行为是和Info.plist的key叫做”Main storyboard file base name”有关\n​    如果使用storyboard绘制界面,app会实例化UIWindow,UIVindow是UIView的子类.这个实例化的window是你用户界面的基础\n​    一旦实例化完成,window被赋值SceneDelegate的属性(在iOS13之前是AppDelegate的属性)\n​    如果你观察SceneDelegate里的scene(_:willConnectTo:options:)方法,你能注意到瞎买你的注释:\n\nIf using a storyboard, the window property will automatically be initialized and attached to the scene.\n\n​    现在开始window属性和app生命周期保持一致了\nViewController的初始化​    用户虽然创建了UIWindow的实例,但是现在却看不到任何东西的,用户并不会直接和window交互,能看到的是window里的rootViewController属性\n​    rootViewController包含着你的initial view controller,你可以通过storyboard指定initial view controller,在”Attributes inspector”,选中”Is initial view controller”\n​    选中之后就被赋值给rootViewController属性,它是window现在唯一的直接的subview.其他的view都是rootview的subview\n​    现在是时候调用application:didFinishLaunchingWithOptions:方法了\n​    但window还是不可见,最一步需要调用makeKeyAndVisible()实例方法\n​    此时app已经就绪,功能开始执行了\n无No Storyboard​    有些项目不使用storyboard,靠纯代码绘制界面,这种情况下,你必须要在UIApplicationMain里自己写相关代码\n​    在iOS13之前,写上述代码的位置在didFinishLaunchingWithOptions,现在要写在SceneDelegate里的 (_willConnectTo:options:)方法里\n​    你要写的代码内容:\n\n实例化UIWindow,赋值给SceneDelegate’s window属性\n实例化你的initial view controller并且赋值给window的 rootViewController属性\n调用makeKeyAndVisible()展示界面\n\n代码:\n123456789func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) &#123;        window = self.window ?? UIWindow()    window?.backgroundColor = .white    window?.rootViewController = ViewController()    window?.makeKeyAndVisible()        guard let _ = (scene as? UIWindowScene) else &#123; return &#125;&#125;\n\n\n\n\n\n总结​    上述的过程都是不可见的,在app内部处理,很多人没有思考过其中的细节.是app生命周期重要的部分\n","dateCreated":"2020-09-15T13:33:33+08:00","dateModified":"2020-09-21T13:02:51+08:00","datePublished":"2020-09-15T13:33:33+08:00","description":"​    你是否想过在按下app icon图标时到application::didFinishLaunchingWithOptions:?之间发生了什么\n​    iPhone app技术上讲可以概括的描述为一个函数UIApplicationMain(::::)\n​    下面一起探究以下其中原理","headline":"当App启动时,发生了什么(转自Medium)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/09/15/20200915133333/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/09/15/20200915133333/","keywords":"Medium, swift"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"​    你是否想过在按下app icon图标时到application::didFinishLaunchingWithOptions:?之间发生了什么\n​    iPhone app技术上讲可以概括的描述为一个函数UIApplicationMain(::::)\n​    下面一起探究以下其中原理\n\n\nUIApplication​    如果你研究UIApplicationMain(::::)这个方法,你会发现他的返回值是Int32类型.其实,这个方法从来不会真的退出,直到app退出,和你的app生命周期一致\n​    第一件事,app调用一个类UIApplication这个类非常重要,是控制,协同app运行的关键\n​    每个app只有一个该对象实例,是单例模式,UIApplication.shared就是这个单例对象\nUIApplicationDelegate​    另一件事,创建AppDelegate,是一个遵守UIApplicationDelegate协议的对象,你可能对它已经很熟悉了,处理app交互的根对象\n​    UIApplicationDelegate有一堆方法,用来管理你的app\n​    你是否注意到@UIApplicationMain标记在类声明之前?UIApplicationMain(::::)根据这个标记知道哪个类是Appdelegate.这个类也是和app的生命周期同步.也被指向为UIApplication的代理对象\n​    应用对象遇到重要的runtime事件时,会通知AppDelegate,例如app运行,内存警告,app终止,给予响应的机会\n​    在iOS13,上述的一些响应职责被SceneDelegate接手处理了.负责app生命周期的响应职责由appDelegate处理,一些和app显示,窗口交互的响应职责由sceneDelegate处理\nStoryboard?​    此时,app的基础功能已经就绪了,UIApplicationMain(::::)开始准备处理交互了\n​    首先,需要找到main storyboard,这个行为是和Info.plist的key叫做”Main storyboard file base name”有关\n​    如果使用storyboard绘制界面,app会实例化UIWindow,UIVindow是UIView的子类.这个实例化的window是你用户界面的基础\n​    一旦实例化完成,window被赋值SceneDelegate的属性(在iOS13之前是AppDelegate的属性)\n​    如果你观察SceneDelegate里的scene(_:willConnectTo:options:)方法,你能注意到瞎买你的注释:\n\nIf using a storyboard, the window property will automatically be initialized and attached to the scene.\n\n​    现在开始window属性和app生命周期保持一致了\nViewController的初始化​    用户虽然创建了UIWindow的实例,但是现在却看不到任何东西的,用户并不会直接和window交互,能看到的是window里的rootViewController属性\n​    rootViewController包含着你的initial view controller,你可以通过storyboard指定initial view controller,在”Attributes inspector”,选中”Is initial view controller”\n​    选中之后就被赋值给rootViewController属性,它是window现在唯一的直接的subview.其他的view都是rootview的subview\n​    现在是时候调用application:didFinishLaunchingWithOptions:方法了\n​    但window还是不可见,最一步需要调用makeKeyAndVisible()实例方法\n​    此时app已经就绪,功能开始执行了\n无No Storyboard​    有些项目不使用storyboard,靠纯代码绘制界面,这种情况下,你必须要在UIApplicationMain里自己写相关代码\n​    在iOS13之前,写上述代码的位置在didFinishLaunchingWithOptions,现在要写在SceneDelegate里的 (_willConnectTo:options:)方法里\n​    你要写的代码内容:\n\n实例化UIWindow,赋值给SceneDelegate’s window属性\n实例化你的initial view controller并且赋值给window的 rootViewController属性\n调用makeKeyAndVisible()展示界面\n\n代码:\n123456789func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) &#123;        window = self.window ?? UIWindow()    window?.backgroundColor = .white    window?.rootViewController = ViewController()    window?.makeKeyAndVisible()        guard let _ = (scene as? UIWindowScene) else &#123; return &#125;&#125;\n\n\n\n\n\n总结​    上述的过程都是不可见的,在app内部处理,很多人没有思考过其中的细节.是app生命周期重要的部分\n","dateCreated":"2020-09-15T13:33:33+08:00","dateModified":"2020-09-21T13:02:51+08:00","datePublished":"2020-09-15T13:33:33+08:00","description":"​    你是否想过在按下app icon图标时到application::didFinishLaunchingWithOptions:?之间发生了什么\n​    iPhone app技术上讲可以概括的描述为一个函数UIApplicationMain(::::)\n​    下面一起探究以下其中原理","headline":"当App启动时,发生了什么(转自Medium)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/09/15/%E5%BD%93App%E5%90%AF%E5%8A%A8%E6%97%B6,%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88(%E8%BD%AC%E8%87%AAMedium)/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/09/15/%E5%BD%93App%E5%90%AF%E5%8A%A8%E6%97%B6,%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88(%E8%BD%AC%E8%87%AAMedium)/","keywords":"Medium, swift"}</script>
     <meta name="description" content="​    你是否想过在按下app icon图标时到application::didFinishLaunchingWithOptions:?之间发生了什么 ​    iPhone app技术上讲可以概括的描述为一个函数UIApplicationMain(::::) ​    下面一起探究以下其中原理">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="当App启动时,发生了什么(转自Medium)">
-<meta property="og:url" content="http://example.com/2020/09/15/20200915133333/index.html">
+<meta property="og:url" content="http://example.com/2020/09/15/%E5%BD%93App%E5%90%AF%E5%8A%A8%E6%97%B6,%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88(%E8%BD%AC%E8%87%AAMedium)/index.html">
 <meta property="og:site_name">
 <meta property="og:description" content="​    你是否想过在按下app icon图标时到application::didFinishLaunchingWithOptions:?之间发生了什么 ​    iPhone app技术上讲可以概括的描述为一个函数UIApplicationMain(::::) ​    下面一起探究以下其中原理">
 <meta property="og:locale" content="zh_CN">
@@ -329,7 +329,7 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/09/11/frame-%E5%92%8C-bounds/"
+                    href="/2020/09/11/frame%E5%92%8Cbounds%E7%9A%84%E5%8C%BA%E5%88%AB/"
                     data-tooltip="frame 和 bounds"
                     aria-label="下一篇: frame 和 bounds"
                 >
@@ -345,7 +345,7 @@
             <a
                 class="post-action-btn btn btn--default btn-open-shareoptions"
                 href="#btn-open-shareoptions"
-                aria-label="Diesen Beitrag teilen"
+                aria-label="Share this post"
             >
                 <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
@@ -356,7 +356,7 @@
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
             
                 <i class="fa fa-list" aria-hidden="true"></i>
             </a>
@@ -405,7 +405,7 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/09/11/frame-%E5%92%8C-bounds/"
+                    href="/2020/09/11/frame%E5%92%8Cbounds%E7%9A%84%E5%8C%BA%E5%88%AB/"
                     data-tooltip="frame 和 bounds"
                     aria-label="下一篇: frame 和 bounds"
                 >
@@ -421,7 +421,7 @@
             <a
                 class="post-action-btn btn btn--default btn-open-shareoptions"
                 href="#btn-open-shareoptions"
-                aria-label="Diesen Beitrag teilen"
+                aria-label="Share this post"
             >
                 <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
@@ -432,7 +432,7 @@
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
             
                 <i class="fa fa-list" aria-hidden="true"></i>
             </a>

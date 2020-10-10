@@ -1,0 +1,484 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="">
+    <title>Swift下实现方法交换method swizzle(转自Medium) - null</title>
+    <meta name="author" content="krela">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"\n方法交换是oc的技术,可以借助runtime的动态派发的特性实现两个方法的实现部分互换;\n那么在swift如果实现呢?\n\n\n在我们深入挖掘实现细节之前,需要对selectors相关的概念做一些说明\n什么是selectorsselector表示的一个类对象的方法的名称,selector没有具体实现,不做任何事情,唯一的目标的就是标识一个方法\n为什么使用方法交换(method swizzling)有以下场景可以用到:\n方便的在App监测一个ViewController到另一个ViewController的切换;\n具体方法是修改viewWillAppear的selector,添加一些监控行为\n实现如下:\n1234@objc dynamic func _swizzled_viewWillAppear(_ animated: Bool) &#123;\t_swizzled_viewWillAppear(animated)\t//你要监控的行为&#125;\n\n\n@objc说明用到oc的特性方法\n\ndynamic说明用到了动态\n\n这不是会循环调用么?为什么要调用自己? 不会,因为切换后内括号内的调用其实是调用了原有的ViewWillAppear\n\n\n通过method_exchangeImplementations方法,实现两个方法的交换\n12345let selector1 = #selector(UIViewController.viewWillAppear(_:))let selector2 = #selector(UIViewController.swizzled_viewWillAppear(:))let originalMethod = class_getInstanceMethod(UIViewController.self, selector1)!let swizzleMethod = class_getInstanceMethod(UIViewController.self, selector2)!method_exchangeImplementations(originalMethod, swizzleMethod)\n\n\n\n前面的实现整理到一起就完成了:\n1234567891011121314extension UIViewController &#123;    @objc dynamic func _swizzled_viewWillAppear(_ animated: Bool) &#123;        _swizzled_viewWillAppear(animated)\t//你要监控的行为    &#125;        static func swizzleViewWillAppear() &#123;        let selector1 = #selector(UIViewController.viewWillAppear(_:))        let selector2 = #selector(UIViewController._swizzled_viewWillAppear(_:))        let originalMethod = class_getInstanceMethod(UIViewController.self, selector1)!        let swizzleMethod = class_getInstanceMethod(UIViewController.self, selector2)!        method_exchangeImplementations(originalMethod, swizzleMethod)    &#125;&#125;\n\n\n\n别忘了调用方法交换\n1UIViewController.swizzleViewWillAppear()\n\n现在,UIViewController的所有实例和子类实例调用viewWillAppear时,都会触发 _swizzled_viewWillAppear\n备注:有两点要注意:\n\n如果你要实现方法交换,你的类必须继承自NSObject\n\n你要交换的方法必须具有动态属性@objc dynamic\n\n\n","dateCreated":"2020-09-30T10:22:42+08:00","dateModified":"2020-09-30T11:06:12+08:00","datePublished":"2020-09-30T10:22:42+08:00","description":"\n方法交换是oc的技术,可以借助runtime的动态派发的特性实现两个方法的实现部分互换;\n那么在swift如果实现呢?","headline":"Swift下实现方法交换method swizzle(转自Medium)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/09/30/Swift%E4%B8%8B%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95%E4%BA%A4%E6%8D%A2method%20swizzle/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/09/30/Swift%E4%B8%8B%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95%E4%BA%A4%E6%8D%A2method%20swizzle/","keywords":"swift"}</script>
+    <meta name="description" content="方法交换是oc的技术,可以借助runtime的动态派发的特性实现两个方法的实现部分互换; 那么在swift如果实现呢?">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Swift下实现方法交换method swizzle(转自Medium)">
+<meta property="og:url" content="http://example.com/2020/09/30/Swift%E4%B8%8B%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95%E4%BA%A4%E6%8D%A2method%20swizzle/index.html">
+<meta property="og:site_name">
+<meta property="og:description" content="方法交换是oc的技术,可以借助runtime的动态派发的特性实现两个方法的实现部分互换; 那么在swift如果实现呢?">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/20200930102055.png">
+<meta property="article:published_time" content="2020-09-30T02:22:42.000Z">
+<meta property="article:modified_time" content="2020-09-30T03:06:12.177Z">
+<meta property="article:author" content="krela">
+<meta property="article:tag" content="swift">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/20200930102055.png">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style-q1xm6d2tdcpkqfz9o6p1p6qdzbvnnvu0hbyenhmww9tanqfaayxelx72glmt.min.css">
+
+    <!--STYLES END-->
+    
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/"
+            aria-label=""
+        >
+            
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="打开链接: /#about"
+            >
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/"
+                            
+                            rel="noopener"
+                            title="首页"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-categories"
+                            
+                            rel="noopener"
+                            title="分类"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-tags"
+                            
+                            rel="noopener"
+                            title="标签"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-archives"
+                            
+                            rel="noopener"
+                            title="归档"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="http://stackoverflow.com/users"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Stack Overflow"
+                        >
+                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Stack Overflow</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/mailto"
+                            
+                            rel="noopener"
+                            title="邮箱"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/atom.xml"
+                            
+                            rel="noopener"
+                            title="RSS"
+                        >
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            Swift下实现方法交换method swizzle(转自Medium)
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2020-09-30T10:22:42+08:00">
+	
+		    9月 30, 2020
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/20200930102055.png"></p>
+<p>方法交换是oc的技术,可以借助runtime的动态派发的特性实现两个方法的实现部分互换;</p>
+<p>那么在swift如果实现呢?</p>
+<a id="more"></a>
+
+<p>在我们深入挖掘实现细节之前,需要对<code>selectors</code>相关的概念做一些说明</p>
+<h4 id="什么是selectors"><a href="#什么是selectors" class="headerlink" title="什么是selectors"></a>什么是selectors</h4><p><code>selector</code>表示的一个类对象的方法的名称,<code>selector</code>没有具体实现,不做任何事情,唯一的目标的就是标识一个方法</p>
+<h4 id="为什么使用方法交换-method-swizzling"><a href="#为什么使用方法交换-method-swizzling" class="headerlink" title="为什么使用方法交换(method swizzling)"></a>为什么使用方法交换(method swizzling)</h4><p>有以下场景可以用到:</p>
+<p>方便的在App监测一个<code>ViewController</code>到另一个<code>ViewController</code>的切换;</p>
+<p>具体方法是修改<code>viewWillAppear</code>的<code>selector,添加一些监控行为</code></p>
+<p>实现如下:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@objc</span> <span class="keyword">dynamic</span> <span class="function"><span class="keyword">func</span> <span class="title">_swizzled_viewWillAppear</span><span class="params">(<span class="number">_</span> animated: Bool)</span></span> &#123;</span><br><span class="line">	_swizzled_viewWillAppear(animated)</span><br><span class="line">	<span class="comment">//你要监控的行为</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>@objc</code>说明用到oc的特性方法</p>
+</li>
+<li><p><code>dynamic</code>说明用到了动态</p>
+</li>
+<li><p>这不是会循环调用么?为什么要调用自己? 不会,因为切换后内括号内的调用其实是调用了原有的<code>ViewWillAppear</code></p>
+</li>
+</ul>
+<p>通过<code>method_exchangeImplementations</code>方法,实现两个方法的交换</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> selector1 = #selector(<span class="type">UIViewController</span>.viewWillAppear(<span class="number">_</span>:))</span><br><span class="line"><span class="keyword">let</span> selector2 = #selector(<span class="type">UIViewController</span>.swizzled_viewWillAppear(:))</span><br><span class="line"><span class="keyword">let</span> originalMethod = class_getInstanceMethod(<span class="type">UIViewController</span>.<span class="keyword">self</span>, selector1)!</span><br><span class="line"><span class="keyword">let</span> swizzleMethod = class_getInstanceMethod(<span class="type">UIViewController</span>.<span class="keyword">self</span>, selector2)!</span><br><span class="line">method_exchangeImplementations(originalMethod, swizzleMethod)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>前面的实现整理到一起就完成了:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">UIViewController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@objc</span> <span class="keyword">dynamic</span> <span class="function"><span class="keyword">func</span> <span class="title">_swizzled_viewWillAppear</span><span class="params">(<span class="number">_</span> animated: Bool)</span></span> &#123;</span><br><span class="line">        _swizzled_viewWillAppear(animated)</span><br><span class="line">	<span class="comment">//你要监控的行为</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">static</span> <span class="function"><span class="keyword">func</span> <span class="title">swizzleViewWillAppear</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="keyword">let</span> selector1 = #selector(<span class="type">UIViewController</span>.viewWillAppear(<span class="number">_</span>:))</span><br><span class="line">        <span class="keyword">let</span> selector2 = #selector(<span class="type">UIViewController</span>._swizzled_viewWillAppear(<span class="number">_</span>:))</span><br><span class="line">        <span class="keyword">let</span> originalMethod = class_getInstanceMethod(<span class="type">UIViewController</span>.<span class="keyword">self</span>, selector1)!</span><br><span class="line">        <span class="keyword">let</span> swizzleMethod = class_getInstanceMethod(<span class="type">UIViewController</span>.<span class="keyword">self</span>, selector2)!</span><br><span class="line">        method_exchangeImplementations(originalMethod, swizzleMethod)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>别忘了调用方法交换</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">UIViewController</span>.swizzleViewWillAppear()</span><br></pre></td></tr></table></figure>
+
+<p>现在,<code>UIViewController</code>的所有实例和子类实例调用viewWillAppear时,都会触发<code> _swizzled_viewWillAppear</code></p>
+<h4 id="备注"><a href="#备注" class="headerlink" title="备注:"></a>备注:</h4><p>有两点要注意:</p>
+<ul>
+<li><p>如果你要实现方法交换,你的类必须继承自<code>NSObject</code></p>
+</li>
+<li><p>你要交换的方法必须具有动态属性<code>@objc dynamic</code></p>
+</li>
+</ul>
+
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/swift/" rel="tag">swift</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/09/26/%E9%85%8D%E7%BD%AE%E9%AB%98%E6%95%88%E7%9A%84%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/"
+                    data-tooltip="配置高效的开发环境"
+                    aria-label="下一篇: 配置高效的开发环境"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2020 krela. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/09/26/%E9%85%8D%E7%BD%AE%E9%AB%98%E6%95%88%E7%9A%84%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/"
+                    data-tooltip="配置高效的开发环境"
+                    aria-label="下一篇: 配置高效的开发环境"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <h4 id="about-card-name">krela</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('https://cdn.jsdelivr.net/gh/krela2010/picstore/img/0_HQm1yU37T9Kn0Sqk.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/script-efzwyj1ubluyv8iapkoolcjuvxznfol9f88lx15p6wxkixuzt5pme1zhhnhc.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+
+
+
+
+    </body>
+</html>
