@@ -755,4 +755,127 @@ ctrl+cmd+left/right   文件历史栈切换</code></pre>
         <tag>vi</tag>
       </tags>
   </entry>
+  <entry>
+    <title>LLVM学习</title>
+    <url>/2020/10/12/LLVM%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[<p>LLVM是可重用,可扩展的编译器和工具链后端的集合,可以方便的对新编程语言与新运行平台做最小化的兼容处理</p>
+<a id="more"></a>
+
+<h3 id="llvm官网"><a href="#llvm官网" class="headerlink" title="llvm官网"></a>llvm官网</h3><p><a href="https://llvm.org/">https://llvm.org</a></p>
+<h3 id="为什么不再使用gcc"><a href="#为什么不再使用gcc" class="headerlink" title="为什么不再使用gcc"></a>为什么不再使用gcc</h3><h6 id="三段式编译工具链"><a href="#三段式编译工具链" class="headerlink" title="三段式编译工具链"></a>三段式编译工具链</h6><ul>
+<li><p>gcc是GNU组织的开源的传统三段式的编译器套件</p>
+</li>
+<li><p>传统的三段式编译工具链如图:</p>
+</li>
+<li><p>分为前端,优化器,后端</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/krela2010/picstore/master/img/llvm.png"></p>
+<ul>
+<li><p>前端(Frontend):解析代码,检查静态语法,创建语法树(AST)</p>
+</li>
+<li><p>优化器(Optimizer):根据选项,做部分代码优化</p>
+</li>
+<li><p>后端(Backend):生成机器码(汇编)</p>
+</li>
+</ul>
+<p><img src="http://www.aosabook.org/images/llvm/RetargetableCompiler.png" alt="[Retargetablity]"></p>
+<p><strong>三段式的优点:</strong></p>
+<p>编译器的维护者只需要关注前端的逻辑,和后端分离,避免了为增加一种语言,需要再重复实现后端逻辑的冗余工作量</p>
+<p><strong>gcc的问题</strong></p>
+<ul>
+<li>gcc是一个完整的可执行文件,后端的优化器不能给其它语言提供重用的接口,即使是开源的,对于新增一种语言的代价也很大,需要重新实现相应的前端,优化等逻辑</li>
+<li>对于苹果而言,gcc对于自家的语言支持不给力,效率和插件,工具支持薄弱等问题</li>
+<li>性能问题gcc效率低,clang更快</li>
+<li>对整体工具链的掌控lldb 支持新语言等</li>
+</ul>
+<h3 id="llvm"><a href="#llvm" class="headerlink" title="llvm"></a>llvm</h3><ul>
+<li><p>llvm是指的是优化器和后端</p>
+</li>
+<li><p>llvm全称Low Level Virtual Machine(低级虚拟机),本身定位是虚拟机,类似jvm,属于编译器后端</p>
+</li>
+<li><p>IR:llvm最重要的一个部分就是IR全程为 Intermediate Representation (中间代码)</p>
+</li>
+</ul>
+<p>优势:</p>
+<ul>
+<li><p>优化器:共享优化器,每次新增语言都可以重用以前的优化器</p>
+</li>
+<li><p>llvm下的三段式编译结构</p>
+</li>
+</ul>
+<p><img src="http://www.aosabook.org/images/llvm/LLVMCompiler1.png" alt="[LLVM&#39;s Implementation of the Three-Phase Design]"></p>
+<ul>
+<li><p>Clang是c语言系列的前端编译器,</p>
+</li>
+<li><p>swift是swift语言的前端编译器,相比Clang多了sil</p>
+<ul>
+<li>Swift 中间语言（Swift Intermediate Language，SIL）是一门高级且专用于 Swift 的中间语言，适用于对 Swift 代码的进一步分析和优化</li>
+</ul>
+</li>
+</ul>
+<h3 id="编译流程"><a href="#编译流程" class="headerlink" title="编译流程"></a>编译流程</h3><ol>
+<li><p>预处理:</p>
+<ol>
+<li>宏展开</li>
+</ol>
+</li>
+<li><p>词法分析</p>
+<ol>
+<li><p>词法分析</p>
+</li>
+<li><p>预处理代码文本转为token</p>
+</li>
+<li><p>不校验语义</p>
+<figure class="highlight gams"><table><tr><td class="code"><pre><span class="line"><span class="meta"><span class="meta-keyword">$clang</span> -fmodules -fsyntax-only -Xclang -dump-tokens main.m</span></span><br></pre></td></tr></table></figure>
+
+<p>展示为以token为单位的结构代码</p>
+</li>
+</ol>
+</li>
+<li><p>语法分析(Semantic Analysis)</p>
+<ol>
+<li><p>Clang中由Parser和Sema两个模块实现</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-id">#clang</span> <span class="selector-tag">-fmodules</span> <span class="selector-tag">-fsyntax-only</span> <span class="selector-tag">-Xclang</span> <span class="selector-tag">-ast-dump</span> <span class="selector-tag">main</span><span class="selector-class">.m</span></span><br></pre></td></tr></table></figure>
+
+<p>生成语法树</p>
+<p><strong>静态分析(Static Analysis)</strong></p>
+<ol>
+<li>通过语法树进行静态分析,找出非语法性错误</li>
+<li>`模拟代码执行路径,</li>
+<li>Checker</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>CodeGen-IR 代码生成</p>
+<ol>
+<li>与oc runtime桥接<ol>
+<li>Class/Meta Class/Protocol/Category内存结构生成,放在指定section中</li>
+<li>Method/Ivar/Property内存结构生成</li>
+<li>Class中method_list/ivar_list/property_list结构生成</li>
+</ol>
+</li>
+<li>BitCode<ol>
+<li>IR 生成二进制码</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>生成汇编(Assemble)</p>
+</li>
+<li><p>生成Target相关Object(Mach-O)</p>
+</li>
+<li><p>链接</p>
+</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/llvm-03.png"></p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
+<li><p><a href="http://www.aosabook.org/en/llvm.html">http://www.aosabook.org/en/llvm.html</a></p>
+</li>
+<li><p>《玩转编译器，Clang有意思》 –sunny孙源</p>
+</li>
+</ul>
+]]></content>
+  </entry>
 </search>
