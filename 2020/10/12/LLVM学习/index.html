@@ -11,7 +11,7 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"LLVM是可重用,可扩展的编译器和工具链后端的集合,可以方便的对新编程语言与新运行平台做最小化的兼容处理\n\n\nllvm官网https://llvm.org\n为什么不再使用gcc三段式编译工具链\ngcc是GNU组织的开源的传统三段式的编译器套件\n\n传统的三段式编译工具链如图:\n\n分为前端,优化器,后端\n\n\n\n\n前端(Frontend):解析代码,检查静态语法,创建语法树(AST)\n\n优化器(Optimizer):根据选项,做部分代码优化\n\n后端(Backend):生成机器码(汇编)\n\n\n\n三段式的优点:\n编译器的维护者只需要关注前端的逻辑,和后端分离,避免了为增加一种语言,需要再重复实现后端逻辑的冗余工作量\ngcc的问题\n\ngcc是一个完整的可执行文件,后端的优化器不能给其它语言提供重用的接口,即使是开源的,对于新增一种语言的代价也很大,需要重新实现相应的前端,优化等逻辑\n对于苹果而言,gcc对于自家的语言支持不给力,效率和插件,工具支持薄弱等问题\n性能问题gcc效率低,clang更快\n对整体工具链的掌控lldb 支持新语言等\n\nllvm\nllvm是指的是优化器和后端\n\nllvm全称Low Level Virtual Machine(低级虚拟机),本身定位是虚拟机,类似jvm,属于编译器后端\n\nIR:llvm最重要的一个部分就是IR全程为 Intermediate Representation (中间代码)\n\n\n优势:\n\n优化器:共享优化器,每次新增语言都可以重用以前的优化器\n\nllvm下的三段式编译结构\n\n\n\n\nClang是c语言系列的前端编译器,\n\nswift是swift语言的前端编译器,相比Clang多了sil\n\nSwift 中间语言（Swift Intermediate Language，SIL）是一门高级且专用于 Swift 的中间语言，适用于对 Swift 代码的进一步分析和优化\n\n\n\n编译流程\n预处理:\n\n宏展开\n\n\n词法分析\n\n词法分析\n\n预处理代码文本转为token\n\n不校验语义\n1$clang -fmodules -fsyntax-only -Xclang -dump-tokens main.m\n\n展示为以token为单位的结构代码\n\n\n\n语法分析(Semantic Analysis)\n\nClang中由Parser和Sema两个模块实现\n1#clang -fmodules -fsyntax-only -Xclang -ast-dump main.m\n\n生成语法树\n静态分析(Static Analysis)\n\n通过语法树进行静态分析,找出非语法性错误\n`模拟代码执行路径,\nChecker\n\n\n\n\nCodeGen-IR 代码生成\n\n与oc runtime桥接\nClass/Meta Class/Protocol/Category内存结构生成,放在指定section中\nMethod/Ivar/Property内存结构生成\nClass中method_list/ivar_list/property_list结构生成\n\n\nBitCode\nIR 生成二进制码\n\n\n\n\n生成汇编(Assemble)\n\n生成Target相关Object(Mach-O)\n\n链接\n\n\n\n参考资料\nhttp://www.aosabook.org/en/llvm.html\n\n《玩转编译器，Clang有意思》 –sunny孙源\n\n\n","dateCreated":"2020-10-12T09:49:06+08:00","dateModified":"2020-10-12T14:42:25+08:00","datePublished":"2020-10-12T09:49:06+08:00","description":"LLVM是可重用,可扩展的编译器和工具链后端的集合,可以方便的对新编程语言与新运行平台做最小化的兼容处理","headline":"LLVM学习","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/10/12/LLVM%E5%AD%A6%E4%B9%A0/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/10/12/LLVM%E5%AD%A6%E4%B9%A0/"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"LLVM是可重用,可扩展的编译器和工具链后端的集合,可以方便的对新编程语言与新运行平台做最小化的兼容处理\n\n\nllvm官网https://llvm.org\n为什么不再使用gcc三段式编译工具链\ngcc是GNU组织的开源的传统三段式的编译器套件\n\n传统的三段式编译工具链如图:\n\n分为前端,优化器,后端\n\n\n\n\n前端(Frontend):解析代码,检查静态语法,创建语法树(AST)\n\n优化器(Optimizer):根据选项,做部分代码优化\n\n后端(Backend):生成机器码(汇编)\n\n\n\n三段式的优点:\n编译器的维护者只需要关注前端的逻辑,和后端分离,避免了为增加一种语言,需要再重复实现后端逻辑的冗余工作量\ngcc的问题\n\ngcc是一个完整的可执行文件,后端的优化器不能给其它语言提供重用的接口,即使是开源的,对于新增一种语言的代价也很大,需要重新实现相应的前端,优化等逻辑\n对于苹果而言,gcc对于自家的语言支持不给力,效率和插件,工具支持薄弱等问题\n性能问题gcc效率低,clang更快\n对整体工具链的掌控lldb 支持新语言等\n\nllvm\nllvm是指的是优化器和后端\n\nllvm全称Low Level Virtual Machine(低级虚拟机),本身定位是虚拟机,类似jvm,属于编译器后端\n\nIR:llvm最重要的一个部分就是IR全程为 Intermediate Representation (中间代码)\n\n\n优势:\n\n优化器:共享优化器,每次新增语言都可以重用以前的优化器\n\nllvm下的三段式编译结构\n\n\n\n\nClang是c语言系列的前端编译器,\n\nswift是swift语言的前端编译器,相比Clang多了sil\n\nSwift 中间语言（Swift Intermediate Language，SIL）是一门高级且专用于 Swift 的中间语言，适用于对 Swift 代码的进一步分析和优化\n\n\n\n编译流程\n预处理:\n\n宏展开\n\n\n词法分析\n\n词法分析\n\n预处理代码文本转为token\n\n不校验语义\n1$clang -fmodules -fsyntax-only -Xclang -dump-tokens main.m\n\n展示为以token为单位的结构代码\n\n\n\n语法分析(Semantic Analysis)\n\nClang中由Parser和Sema两个模块实现\n1#clang -fmodules -fsyntax-only -Xclang -ast-dump main.m\n\n生成语法树\n静态分析(Static Analysis)\n\n通过语法树进行静态分析,找出非语法性错误\n`模拟代码执行路径,\nChecker\n\n\n\n\nCodeGen-IR 代码生成\n\n与oc runtime桥接\nClass/Meta Class/Protocol/Category内存结构生成,放在指定section中\nMethod/Ivar/Property内存结构生成\nClass中method_list/ivar_list/property_list结构生成\n\n\nBitCode\nIR 生成二进制码\n\n\n\n\n生成汇编(Assemble)\n\n生成Target相关Object(Mach-O)\n\n链接\n\n\n\n参考资料\nhttp://www.aosabook.org/en/llvm.html\n\n《玩转编译器，Clang有意思》 –sunny孙源\n\n\n","dateCreated":"2020-10-12T09:49:06+08:00","dateModified":"2020-10-12T14:47:06+08:00","datePublished":"2020-10-12T09:49:06+08:00","description":"LLVM是可重用,可扩展的编译器和工具链后端的集合,可以方便的对新编程语言与新运行平台做最小化的兼容处理","headline":"LLVM学习","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/10/12/LLVM%E5%AD%A6%E4%B9%A0/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/10/12/LLVM%E5%AD%A6%E4%B9%A0/","keywords":"编译器"}</script>
     <meta name="description" content="LLVM是可重用,可扩展的编译器和工具链后端的集合,可以方便的对新编程语言与新运行平台做最小化的兼容处理">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="LLVM学习">
@@ -24,8 +24,9 @@
 <meta property="og:image" content="http://www.aosabook.org/images/llvm/LLVMCompiler1.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/llvm-03.png">
 <meta property="article:published_time" content="2020-10-12T01:49:06.000Z">
-<meta property="article:modified_time" content="2020-10-12T06:42:25.311Z">
+<meta property="article:modified_time" content="2020-10-12T06:47:06.315Z">
 <meta property="article:author" content="krela">
+<meta property="article:tag" content="编译器">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/krela2010/picstore/master/img/llvm.png">
     
@@ -376,17 +377,27 @@
     </div>
     <div id="post-footer" class="post-footer main-content-wrap">
         
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" rel="tag">编译器</a>
+
+            </div>
+        
         
             <div class="post-actions-wrap">
     <nav>
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a
-                        class="post-action-btn btn btn--disabled"
-                        aria-hidden="true"
-                    >
-                        
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/10/12/%E6%8C%81%E7%BB%AD%E7%BB%A7%E6%89%BFCI/"
+                    data-tooltip="持续继承"
+                    aria-label="上一篇: 持续继承"
+                >
+                    
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
                     </a>
@@ -412,7 +423,7 @@
             <a
                 class="post-action-btn btn btn--default btn-open-shareoptions"
                 href="#btn-open-shareoptions"
-                aria-label="Share this post"
+                aria-label="Diesen Beitrag teilen"
             >
                 <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
@@ -423,7 +434,7 @@
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
             
                 <i class="fa fa-list" aria-hidden="true"></i>
             </a>
@@ -455,11 +466,14 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a
-                        class="post-action-btn btn btn--disabled"
-                        aria-hidden="true"
-                    >
-                        
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/10/12/%E6%8C%81%E7%BB%AD%E7%BB%A7%E6%89%BFCI/"
+                    data-tooltip="持续继承"
+                    aria-label="上一篇: 持续继承"
+                >
+                    
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
                     </a>
@@ -485,7 +499,7 @@
             <a
                 class="post-action-btn btn btn--default btn-open-shareoptions"
                 href="#btn-open-shareoptions"
-                aria-label="Share this post"
+                aria-label="Diesen Beitrag teilen"
             >
                 <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
@@ -496,7 +510,7 @@
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
             
                 <i class="fa fa-list" aria-hidden="true"></i>
             </a>

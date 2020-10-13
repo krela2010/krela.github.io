@@ -1,0 +1,548 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="">
+    <title>持续继承 - null</title>
+    <meta name="author" content="krela">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"持续集成是计划编译,运行测试用例的自动化集成的总称,可以在每次提交过程中自动编译,运行测试用,发现程序问题\n常见持续集成工具 Bitrise, Github Actions, Jenkins\n\n\nGithub ActionsGitHub Actions 是 GitHub 的持续集成服务，于2018年10月推出。GitHub Actions 有一些自己的术语。\nworkflow （工作流程）：持续集成一次运行的过程，就是一个 workflow。\n\njob （任务）：一个 workflow 由一个或多个 jobs 构成，含义是一次持续集成的运行，可以完成多个任务。\n\nstep（步骤）：每个 job 由多个 step 构成，一步步完成。\n\naction （动作）：每个 step 可以依次执行一个或多个命令（action）。\n\n\n配置Actions打开github reponstories \n\n点击Actions\n第一次使用的话,点击Set up workflow\n跳转到.yml文件编辑模式,Github是基于YAML文件格式配置集成工具\n默认样式如下\n1234567891011121314151617181920name: Swifton:  push:    branches: [ master ]  pull_request:    branches: [ master ]jobs:  build:    runs-on: macos-latest     #运行所在系统平台,macos最新版本    steps:    - uses: actions/checkout@v2    - name: Build      run: swift build -v      #需要修改    - name: Run tests      run: swift test -v\n\n默认无法编译通过,需要进行部分修改\n修改run配置\n1run:xcodebuild -project &#x27;projectName.xcodeproj&#x27; -scheme projectName -destination &#x27;platform=iOS Simulator,name=iPhone 8&#x27;\n\n如果你使用了pods,编译的是workspace,可以改为\n1run:xcodebuild -workspace &#x27;projectName.xcworkspace&#x27; -scheme projectName -destination &#x27;platform=iOS Simulator,name=iPhone 8&#x27;\n\n\n\n最终脚本效果:\n1234567891011121314151617name: Swifton:  push:    branches: [ master ]  pull_request:    branches: [ master ]jobs:  build:    runs-on: macos-latest    steps:    - uses: actions/checkout@v2    - name: Build      run: xcodebuild -workspace &#x27;DYLiveStream/DYLiveStream.xcworkspace&#x27; -scheme DYLiveStream -destination &#x27;platform=iOS Simulator,name=iPhone 8&#x27;\n\n写完yaml之后提交,会开始尝试首次编译\n如果编译成功\n\n失败的话,根据error信息进行定位\n如果需要执行测试用例\n添加\n12- name: Run tests  run: xcodebuild -workspace &#x27;DYLiveStream/DYLiveStream.xcworkspace&#x27; -scheme DYLiveStream -destination &#x27;platform=iOS Simulator,name=iPhone 8&#x27; test\n\n\n\n\n\nJenkins官网https://www.jenkins.io/download/\n下载对应平台\n以macos为例\n用brew安装最新版本\n1brew install jenkins-lts\n\n安装指定版本\n1brew install jenkins-lts@YOUR_VERSION\n\n安装完成后,启动jenkins\n1brew services start jenkins-lts\n\n启动成功后\nhttp://localhost:8080 进入配置页面\n\n从此目录复制密码到解锁 Jenkins\n\n1/Users/diaoke/.jenkins/secrets/initialAdminPassword\n\n\n安装推荐插件\n\n安装完成后,进入管理页面\n\n\n创建新job(create new job)\n\n创建Freestyle project\n\n输入git url\n\n\n添加build步骤\n增加执行shell脚本步骤\n\n\n在项目根目录ci.sh 内容和github actions里配置一样\n12#!/bin/shxcodebuild -workspace &#x27;DYLiveStream/DYLiveStream.xcworkspace&#x27; -scheme DYLiveStream -destination &#x27;platform=iOS Simulator,name=iPhone 8&#x27;\n\n添加执行权限\n1chmod +x ci.sh\n\n提交\n\n\n\n构建触发器\n本项目假定按照定时触发规则\n用的是linux crontab的语法\n选择定时构建,比如每5分钟构建一次,H代表hash,并非准确时间\n1H/5 * * * *\n\n还有一些时间样例\n123456789101112Examples:# every fifteen minutes (perhaps at :07, :22, :37, :52)H/15 * * * *# every ten minutes in the first half of every hour (three times, perhaps at :04, :14, :24)H(0-29)/10 * * * *# once every two hours at 45 minutes past the hour starting at 9:45 AM and finishing at 3:45 PM every weekday.45 9-16/2 * * 1-5# once in every two hours slot between 9 AM and 5 PM every weekday (perhaps at 10:38 AM, 12:38 PM, 2:38 PM, 4:38 PM)H H(9-16)/2 * * 1-5# once a day on the 1st and 15th of every month except DecemberH H 1,15 1-11 *\n\n\n\n\n\n\n保存回到主页,点击Build Now\n构建任务开始执行\n\n\n","dateCreated":"2020-10-12T23:07:45+08:00","dateModified":"2020-10-13T16:02:29+08:00","datePublished":"2020-10-12T23:07:45+08:00","description":"持续集成是计划编译,运行测试用例的自动化集成的总称,可以在每次提交过程中自动编译,运行测试用,发现程序问题\n常见持续集成工具 Bitrise, Github Actions, Jenkins","headline":"持续继承","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/10/12/%E6%8C%81%E7%BB%AD%E7%BB%A7%E6%89%BFCI/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/10/12/%E6%8C%81%E7%BB%AD%E7%BB%A7%E6%89%BFCI/"}</script>
+    <meta name="description" content="持续集成是计划编译,运行测试用例的自动化集成的总称,可以在每次提交过程中自动编译,运行测试用,发现程序问题 常见持续集成工具 Bitrise, Github Actions, Jenkins">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="持续继承">
+<meta property="og:url" content="http://example.com/2020/10/12/%E6%8C%81%E7%BB%AD%E7%BB%A7%E6%89%BFCI/index.html">
+<meta property="og:site_name">
+<meta property="og:description" content="持续集成是计划编译,运行测试用例的自动化集成的总称,可以在每次提交过程中自动编译,运行测试用,发现程序问题 常见持续集成工具 Bitrise, Github Actions, Jenkins">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/githubactions.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/yaml.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/jenkins.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/jenkins02.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/jenkins03.png">
+<meta property="article:published_time" content="2020-10-12T15:07:45.000Z">
+<meta property="article:modified_time" content="2020-10-13T08:02:29.018Z">
+<meta property="article:author" content="krela">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/githubactions.png">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style-q1xm6d2tdcpkqfz9o6p1p6qdzbvnnvu0hbyenhmww9tanqfaayxelx72glmt.min.css">
+
+    <!--STYLES END-->
+    
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/"
+            aria-label=""
+        >
+            
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="打开链接: /#about"
+            >
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/"
+                            
+                            rel="noopener"
+                            title="首页"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-categories"
+                            
+                            rel="noopener"
+                            title="分类"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-tags"
+                            
+                            rel="noopener"
+                            title="标签"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-archives"
+                            
+                            rel="noopener"
+                            title="归档"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="http://stackoverflow.com/users"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Stack Overflow"
+                        >
+                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Stack Overflow</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/mailto"
+                            
+                            rel="noopener"
+                            title="邮箱"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/atom.xml"
+                            
+                            rel="noopener"
+                            title="RSS"
+                        >
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            持续继承
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2020-10-12T23:07:45+08:00">
+	
+		    10月 12, 2020
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>持续集成是计划编译,运行测试用例的自动化集成的总称,可以在每次提交过程中自动编译,运行测试用,发现程序问题</p>
+<p>常见持续集成工具 Bitrise, Github Actions, Jenkins</p>
+<a id="more"></a>
+
+<h3 id="Github-Actions"><a href="#Github-Actions" class="headerlink" title="Github Actions"></a>Github Actions</h3><h5 id="GitHub-Actions-是-GitHub-的持续集成服务，于2018年10月推出。"><a href="#GitHub-Actions-是-GitHub-的持续集成服务，于2018年10月推出。" class="headerlink" title="GitHub Actions 是 GitHub 的持续集成服务，于2018年10月推出。"></a>GitHub Actions 是 GitHub 的持续集成服务，于2018年10月推出。</h5><h5 id="GitHub-Actions-有一些自己的术语。"><a href="#GitHub-Actions-有一些自己的术语。" class="headerlink" title="GitHub Actions 有一些自己的术语。"></a>GitHub Actions 有一些自己的术语。</h5><ol>
+<li><p><strong>workflow</strong> （工作流程）：持续集成一次运行的过程，就是一个 workflow。</p>
+</li>
+<li><p><strong>job</strong> （任务）：一个 workflow 由一个或多个 jobs 构成，含义是一次持续集成的运行，可以完成多个任务。</p>
+</li>
+<li><p><strong>step</strong>（步骤）：每个 job 由多个 step 构成，一步步完成。</p>
+</li>
+<li><p><strong>action</strong> （动作）：每个 step 可以依次执行一个或多个命令（action）。</p>
+</li>
+</ol>
+<h5 id="配置Actions"><a href="#配置Actions" class="headerlink" title="配置Actions"></a>配置Actions</h5><p>打开github reponstories </p>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/githubactions.png"></p>
+<p>点击<code>Actions</code></p>
+<p>第一次使用的话,点击<code>Set up workflow</code></p>
+<p>跳转到.yml文件编辑模式,Github是基于YAML文件格式配置集成工具</p>
+<p>默认样式如下</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">Swift</span></span><br><span class="line"></span><br><span class="line"><span class="attr">on:</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span> [ <span class="string">master</span> ]</span><br><span class="line">  <span class="attr">pull_request:</span></span><br><span class="line">    <span class="attr">branches:</span> [ <span class="string">master</span> ]</span><br><span class="line"></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">build:</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">macos-latest</span> </span><br><span class="line">    <span class="comment">#运行所在系统平台,macos最新版本</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v2</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Build</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">swift</span> <span class="string">build</span> <span class="string">-v</span></span><br><span class="line">      <span class="comment">#需要修改</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Run</span> <span class="string">tests</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">swift</span> <span class="string">test</span> <span class="string">-v</span></span><br></pre></td></tr></table></figure>
+
+<p>默认无法编译通过,需要进行部分修改</p>
+<p>修改<code>run</code>配置</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">run:xcodebuild</span> <span class="string">-project</span> <span class="string">&#x27;projectName.xcodeproj&#x27;</span> <span class="string">-scheme</span> <span class="string">projectName</span> <span class="string">-destination</span> <span class="string">&#x27;platform=iOS Simulator,name=iPhone 8&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果你使用了pods,编译的是workspace,可以改为</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">run:xcodebuild</span> <span class="string">-workspace</span> <span class="string">&#x27;projectName.xcworkspace&#x27;</span> <span class="string">-scheme</span> <span class="string">projectName</span> <span class="string">-destination</span> <span class="string">&#x27;platform=iOS Simulator,name=iPhone 8&#x27;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>最终脚本效果:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">Swift</span></span><br><span class="line"></span><br><span class="line"><span class="attr">on:</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span> [ <span class="string">master</span> ]</span><br><span class="line">  <span class="attr">pull_request:</span></span><br><span class="line">    <span class="attr">branches:</span> [ <span class="string">master</span> ]</span><br><span class="line"></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">build:</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">macos-latest</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v2</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Build</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">xcodebuild</span> <span class="string">-workspace</span> <span class="string">&#x27;DYLiveStream/DYLiveStream.xcworkspace&#x27;</span> <span class="string">-scheme</span> <span class="string">DYLiveStream</span> <span class="string">-destination</span> <span class="string">&#x27;platform=iOS Simulator,name=iPhone 8&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>写完yaml之后提交,会开始尝试首次编译</p>
+<p>如果编译成功</p>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/yaml.png"></p>
+<p>失败的话,根据error信息进行定位</p>
+<p>如果需要执行测试用例</p>
+<p>添加</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Run</span> <span class="string">tests</span></span><br><span class="line">  <span class="attr">run:</span> <span class="string">xcodebuild</span> <span class="string">-workspace</span> <span class="string">&#x27;DYLiveStream/DYLiveStream.xcworkspace&#x27;</span> <span class="string">-scheme</span> <span class="string">DYLiveStream</span> <span class="string">-destination</span> <span class="string">&#x27;platform=iOS Simulator,name=iPhone 8&#x27;</span> <span class="string">test</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="Jenkins"><a href="#Jenkins" class="headerlink" title="Jenkins"></a>Jenkins</h3><h3 id="官网"><a href="#官网" class="headerlink" title="官网"></a>官网</h3><p><a target="_blank" rel="noopener" href="https://www.jenkins.io/download/">https://www.jenkins.io/download/</a></p>
+<p>下载对应平台</p>
+<p>以macos为例</p>
+<p>用brew安装最新版本</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install jenkins-lts</span><br></pre></td></tr></table></figure>
+
+<p>安装指定版本</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install jenkins-lts@YOUR_VERSION</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后,启动jenkins</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew services start jenkins-lts</span><br></pre></td></tr></table></figure>
+
+<p>启动成功后</p>
+<p><a target="_blank" rel="noopener" href="http://localhost:8080/">http://localhost:8080</a> 进入配置页面</p>
+<ol>
+<li>从此目录复制密码到解锁 Jenkins</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/Users/diaoke/.jenkins/secrets/initialAdminPassword</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>安装推荐插件</p>
+</li>
+<li><p>安装完成后,进入管理页面</p>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/jenkins.png"></p>
+</li>
+<li><p>创建新job(create new job)</p>
+<ul>
+<li><p>创建<code>Freestyle project</code></p>
+</li>
+<li><p>输入git url</p>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/jenkins02.png"></p>
+</li>
+<li><p>添加build步骤</p>
+<p>增加执行shell脚本步骤</p>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/jenkins03.png"></p>
+</li>
+<li><p>在项目根目录ci.sh 内容和github actions里配置一样</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/sh</span></span><br><span class="line">xcodebuild -workspace &#x27;DYLiveStream/DYLiveStream.xcworkspace&#x27; -scheme DYLiveStream -destination &#x27;platform=iOS Simulator,name=iPhone 8&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>添加执行权限</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod +x ci.sh</span><br></pre></td></tr></table></figure>
+
+<p>提交</p>
+</li>
+</ul>
+</li>
+<li><p>构建触发器</p>
+<p>本项目假定按照定时触发规则</p>
+<p>用的是linux crontab的语法</p>
+<p>选择<code>定时构建</code>,比如每5分钟构建一次,H代表hash,并非准确时间</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">H/5 <span class="emphasis">* *</span> <span class="emphasis">* *</span></span><br></pre></td></tr></table></figure>
+
+<p>还有一些时间样例</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Examples:</span><br><span class="line"></span><br><span class="line"># every fifteen minutes (perhaps at :<span class="number">07</span>, :<span class="number">22</span>, :<span class="number">37</span>, :<span class="number">52</span>)</span><br><span class="line">H/<span class="number">15</span> * * * *</span><br><span class="line"># every ten minutes <span class="keyword">in</span> the first half of every hour (three times, perhaps at :<span class="number">04</span>, :<span class="number">14</span>, :<span class="number">24</span>)</span><br><span class="line">H(<span class="number">0</span><span class="number">-29</span>)/<span class="number">10</span> * * * *</span><br><span class="line"># once every two hours at <span class="number">45</span> minutes past the hour starting at <span class="number">9</span>:<span class="number">45</span> AM <span class="keyword">and</span> finishing at <span class="number">3</span>:<span class="number">45</span> PM every weekday.</span><br><span class="line"><span class="number">45</span> <span class="number">9</span><span class="number">-16</span>/<span class="number">2</span> * * <span class="number">1</span><span class="number">-5</span></span><br><span class="line"># once <span class="keyword">in</span> every two hours slot between <span class="number">9</span> AM <span class="keyword">and</span> <span class="number">5</span> PM every weekday (perhaps at <span class="number">10</span>:<span class="number">38</span> AM, <span class="number">12</span>:<span class="number">38</span> PM, <span class="number">2</span>:<span class="number">38</span> PM, <span class="number">4</span>:<span class="number">38</span> PM)</span><br><span class="line">H H(<span class="number">9</span><span class="number">-16</span>)/<span class="number">2</span> * * <span class="number">1</span><span class="number">-5</span></span><br><span class="line"># once a day on the <span class="number">1</span>st <span class="keyword">and</span> <span class="number">15</span>th of every month except December</span><br><span class="line">H H <span class="number">1</span>,<span class="number">15</span> <span class="number">1</span><span class="number">-11</span> *</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<ol start="6">
+<li><p>保存回到主页,点击<code>Build Now</code></p>
+<p>构建任务开始执行</p>
+</li>
+</ol>
+
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/10/12/LLVM%E5%AD%A6%E4%B9%A0/"
+                    data-tooltip="LLVM学习"
+                    aria-label="下一篇: LLVM学习"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2020 krela. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/10/12/LLVM%E5%AD%A6%E4%B9%A0/"
+                    data-tooltip="LLVM学习"
+                    aria-label="下一篇: LLVM学习"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <h4 id="about-card-name">krela</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('https://cdn.jsdelivr.net/gh/krela2010/picstore/img/0_HQm1yU37T9Kn0Sqk.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/script-efzwyj1ubluyv8iapkoolcjuvxznfol9f88lx15p6wxkixuzt5pme1zhhnhc.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+
+
+
+
+    </body>
+</html>

@@ -877,5 +877,123 @@ ctrl+cmd+left/right   文件历史栈切换</code></pre>
 </li>
 </ul>
 ]]></content>
+      <tags>
+        <tag>编译器</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>持续继承</title>
+    <url>/2020/10/12/%E6%8C%81%E7%BB%AD%E7%BB%A7%E6%89%BFCI/</url>
+    <content><![CDATA[<p>持续集成是计划编译,运行测试用例的自动化集成的总称,可以在每次提交过程中自动编译,运行测试用,发现程序问题</p>
+<p>常见持续集成工具 Bitrise, Github Actions, Jenkins</p>
+<a id="more"></a>
+
+<h3 id="Github-Actions"><a href="#Github-Actions" class="headerlink" title="Github Actions"></a>Github Actions</h3><h5 id="GitHub-Actions-是-GitHub-的持续集成服务，于2018年10月推出。"><a href="#GitHub-Actions-是-GitHub-的持续集成服务，于2018年10月推出。" class="headerlink" title="GitHub Actions 是 GitHub 的持续集成服务，于2018年10月推出。"></a>GitHub Actions 是 GitHub 的持续集成服务，于2018年10月推出。</h5><h5 id="GitHub-Actions-有一些自己的术语。"><a href="#GitHub-Actions-有一些自己的术语。" class="headerlink" title="GitHub Actions 有一些自己的术语。"></a>GitHub Actions 有一些自己的术语。</h5><ol>
+<li><p><strong>workflow</strong> （工作流程）：持续集成一次运行的过程，就是一个 workflow。</p>
+</li>
+<li><p><strong>job</strong> （任务）：一个 workflow 由一个或多个 jobs 构成，含义是一次持续集成的运行，可以完成多个任务。</p>
+</li>
+<li><p><strong>step</strong>（步骤）：每个 job 由多个 step 构成，一步步完成。</p>
+</li>
+<li><p><strong>action</strong> （动作）：每个 step 可以依次执行一个或多个命令（action）。</p>
+</li>
+</ol>
+<h5 id="配置Actions"><a href="#配置Actions" class="headerlink" title="配置Actions"></a>配置Actions</h5><p>打开github reponstories </p>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/githubactions.png"></p>
+<p>点击<code>Actions</code></p>
+<p>第一次使用的话,点击<code>Set up workflow</code></p>
+<p>跳转到.yml文件编辑模式,Github是基于YAML文件格式配置集成工具</p>
+<p>默认样式如下</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">Swift</span></span><br><span class="line"></span><br><span class="line"><span class="attr">on:</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span> [ <span class="string">master</span> ]</span><br><span class="line">  <span class="attr">pull_request:</span></span><br><span class="line">    <span class="attr">branches:</span> [ <span class="string">master</span> ]</span><br><span class="line"></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">build:</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">macos-latest</span> </span><br><span class="line">    <span class="comment">#运行所在系统平台,macos最新版本</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v2</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Build</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">swift</span> <span class="string">build</span> <span class="string">-v</span></span><br><span class="line">      <span class="comment">#需要修改</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Run</span> <span class="string">tests</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">swift</span> <span class="string">test</span> <span class="string">-v</span></span><br></pre></td></tr></table></figure>
+
+<p>默认无法编译通过,需要进行部分修改</p>
+<p>修改<code>run</code>配置</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">run:xcodebuild</span> <span class="string">-project</span> <span class="string">&#x27;projectName.xcodeproj&#x27;</span> <span class="string">-scheme</span> <span class="string">projectName</span> <span class="string">-destination</span> <span class="string">&#x27;platform=iOS Simulator,name=iPhone 8&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果你使用了pods,编译的是workspace,可以改为</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">run:xcodebuild</span> <span class="string">-workspace</span> <span class="string">&#x27;projectName.xcworkspace&#x27;</span> <span class="string">-scheme</span> <span class="string">projectName</span> <span class="string">-destination</span> <span class="string">&#x27;platform=iOS Simulator,name=iPhone 8&#x27;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>最终脚本效果:</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">Swift</span></span><br><span class="line"></span><br><span class="line"><span class="attr">on:</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span> [ <span class="string">master</span> ]</span><br><span class="line">  <span class="attr">pull_request:</span></span><br><span class="line">    <span class="attr">branches:</span> [ <span class="string">master</span> ]</span><br><span class="line"></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">build:</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">macos-latest</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v2</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Build</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">xcodebuild</span> <span class="string">-workspace</span> <span class="string">&#x27;DYLiveStream/DYLiveStream.xcworkspace&#x27;</span> <span class="string">-scheme</span> <span class="string">DYLiveStream</span> <span class="string">-destination</span> <span class="string">&#x27;platform=iOS Simulator,name=iPhone 8&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>写完yaml之后提交,会开始尝试首次编译</p>
+<p>如果编译成功</p>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/yaml.png"></p>
+<p>失败的话,根据error信息进行定位</p>
+<p>如果需要执行测试用例</p>
+<p>添加</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Run</span> <span class="string">tests</span></span><br><span class="line">  <span class="attr">run:</span> <span class="string">xcodebuild</span> <span class="string">-workspace</span> <span class="string">&#x27;DYLiveStream/DYLiveStream.xcworkspace&#x27;</span> <span class="string">-scheme</span> <span class="string">DYLiveStream</span> <span class="string">-destination</span> <span class="string">&#x27;platform=iOS Simulator,name=iPhone 8&#x27;</span> <span class="string">test</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="Jenkins"><a href="#Jenkins" class="headerlink" title="Jenkins"></a>Jenkins</h3><h3 id="官网"><a href="#官网" class="headerlink" title="官网"></a>官网</h3><p><a href="https://www.jenkins.io/download/">https://www.jenkins.io/download/</a></p>
+<p>下载对应平台</p>
+<p>以macos为例</p>
+<p>用brew安装最新版本</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">brew install jenkins-lts</span><br></pre></td></tr></table></figure>
+
+<p>安装指定版本</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">brew install jenkins-lts@YOUR_VERSION</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后,启动jenkins</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">brew services start jenkins-lts</span><br></pre></td></tr></table></figure>
+
+<p>启动成功后</p>
+<p><a href="http://localhost:8080/">http://localhost:8080</a> 进入配置页面</p>
+<ol>
+<li>从此目录复制密码到解锁 Jenkins</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">/Users/diaoke/.jenkins/secrets/initialAdminPassword</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>安装推荐插件</p>
+</li>
+<li><p>安装完成后,进入管理页面</p>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/jenkins.png"></p>
+</li>
+<li><p>创建新job(create new job)</p>
+<ul>
+<li><p>创建<code>Freestyle project</code></p>
+</li>
+<li><p>输入git url</p>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/jenkins02.png"></p>
+</li>
+<li><p>添加build步骤</p>
+<p>增加执行shell脚本步骤</p>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/jenkins03.png"></p>
+</li>
+<li><p>在项目根目录ci.sh 内容和github actions里配置一样</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/sh</span></span><br><span class="line">xcodebuild -workspace &#x27;DYLiveStream/DYLiveStream.xcworkspace&#x27; -scheme DYLiveStream -destination &#x27;platform=iOS Simulator,name=iPhone 8&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>添加执行权限</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line">chmod +x ci.sh</span><br></pre></td></tr></table></figure>
+
+<p>提交</p>
+</li>
+</ul>
+</li>
+<li><p>构建触发器</p>
+<p>本项目假定按照定时触发规则</p>
+<p>用的是linux crontab的语法</p>
+<p>选择<code>定时构建</code>,比如每5分钟构建一次,H代表hash,并非准确时间</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">H/5 <span class="emphasis">* *</span> <span class="emphasis">* *</span></span><br></pre></td></tr></table></figure>
+
+<p>还有一些时间样例</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">Examples:</span><br><span class="line"></span><br><span class="line"># every fifteen minutes (perhaps at :<span class="number">07</span>, :<span class="number">22</span>, :<span class="number">37</span>, :<span class="number">52</span>)</span><br><span class="line">H/<span class="number">15</span> * * * *</span><br><span class="line"># every ten minutes <span class="keyword">in</span> the first half of every hour (three times, perhaps at :<span class="number">04</span>, :<span class="number">14</span>, :<span class="number">24</span>)</span><br><span class="line">H(<span class="number">0</span><span class="number">-29</span>)/<span class="number">10</span> * * * *</span><br><span class="line"># once every two hours at <span class="number">45</span> minutes past the hour starting at <span class="number">9</span>:<span class="number">45</span> AM <span class="keyword">and</span> finishing at <span class="number">3</span>:<span class="number">45</span> PM every weekday.</span><br><span class="line"><span class="number">45</span> <span class="number">9</span><span class="number">-16</span>/<span class="number">2</span> * * <span class="number">1</span><span class="number">-5</span></span><br><span class="line"># once <span class="keyword">in</span> every two hours slot between <span class="number">9</span> AM <span class="keyword">and</span> <span class="number">5</span> PM every weekday (perhaps at <span class="number">10</span>:<span class="number">38</span> AM, <span class="number">12</span>:<span class="number">38</span> PM, <span class="number">2</span>:<span class="number">38</span> PM, <span class="number">4</span>:<span class="number">38</span> PM)</span><br><span class="line">H H(<span class="number">9</span><span class="number">-16</span>)/<span class="number">2</span> * * <span class="number">1</span><span class="number">-5</span></span><br><span class="line"># once a day on the <span class="number">1</span>st <span class="keyword">and</span> <span class="number">15</span>th of every month except December</span><br><span class="line">H H <span class="number">1</span>,<span class="number">15</span> <span class="number">1</span><span class="number">-11</span> *</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<ol start="6">
+<li><p>保存回到主页,点击<code>Build Now</code></p>
+<p>构建任务开始执行</p>
+</li>
+</ol>
+]]></content>
   </entry>
 </search>
