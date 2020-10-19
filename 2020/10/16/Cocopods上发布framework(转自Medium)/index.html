@@ -11,7 +11,7 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"Cocopods是iOS上常用的负责管理framework的工具\n\n\nCocopods是如何工作的分为两部分介绍\n\n在App的项目里安装framework\n在Cocopods发布framework\n\n1. 在iOS项目里安装framework创建Podfile文件,里面要告诉Cocopods需要安装的framework名称,例如\n123target &#x27;MyApp&#x27; do  pod &#x27;FrameworkA&#x27;end\n\n意思是要往MyApp项目里安装FrameworkA\n完成配置后,要执行pod install执行安装步骤\npod install会读取Podfile里的内容,执行相应步骤\n\nCocopods会从远程仓库查找相应的framework进行下载,链接到项目\n注意,如果不指定版本,Cocopods会自动下载最新版本\n执行完pod install后,Cocopods会自动生成workspace文件,并把目标framework链接到项目中\n2. 在Cocopods发布framework这只发布的流程示例\n\n大体分为这几个步骤\n\n安装Cocopods\n为framework创建git仓库\n发布framework到git仓库\n项目安装framework\n\n\n安装Cocopods\n1gem install cocoapods\n\n\n\n\n\n\n为framework创建git仓库\n先创建一个本地仓库\n123mkdir ~/MyFramework.gitcd ~/MyFramework.gitgit init --bare\n\n把MyFramework的项目内容绑定到刚才的git仓库\n12345678cd ~/MyFrameworkgit initgit remote add origin ~/MyFramework.gitgit add .git commit -m &quot;Initial commit&quot;git tag -a 0.0.1 -m &quot;Version 0.0.1&quot;git push origin -u mastergit push origin --tags\n\n\n\n\n\n\n创建本地指定的pod仓库\n仓库用来发布自定义的framework,执行下列操作\n1234567891011mkdir ~/MySpecs.gitcd ~/MySpecs.gitgit init --baregit clone ~/MySpecs.git ~/MySpecs cd ~/MySpecstouch README.mdgit add README.mdgit commit -m &quot;Initial commit&quot;git push origin -u masterpod repo add my-specs ~/MySpecs.git#~/MySpecs.git 使用用绝对路径\n\n完成后执行\n1pod repo list\n\n定义的my-specs的pod源就被添加进来了\n\n\n\n\n添加MyFramework的pod配置文件\n执行操作\n1234567891011121314151617181920212223cat &gt; MyFramework.podspec &lt;&lt;-EOFPod::Spec.new do |s|    s.name         = &quot;MyFramework&quot;    s.version      = &quot;0.0.1&quot;    s.summary      = &quot;A brief description of MyFramework project.&quot;    s.description  = &lt;&lt;-DESC    An extended description of MyFramework project.    DESC    s.homepage     = &quot;http://your.homepage/here&quot;    s.license = &#123; :type =&gt; &#x27;Copyright&#x27;, :text =&gt; &lt;&lt;-LICENSE                   Copyright 2018                   Permission is granted to...                  LICENSE                &#125;    s.author             = &#123; &quot;$(git config user.name)&quot; =&gt; &quot;$(git config user.email)&quot; &#125;    s.source       = &#123; :git =&gt; &quot;$HOME/MyFramework.git&quot;, :tag =&gt; &quot;#&#123;s.version&#125;&quot; &#125;  #你的Framework的路径    s.source_files  = &quot;MyFramework/**/*.swift&quot;    s.resources = &quot;MyFramework/**/*.xib&quot;    s.platform = :ios    s.swift_version = &quot;4.2&quot;    s.ios.deployment_target  = &#x27;12.0&#x27;endEOF\n\n完成后,上传pod配置文件到repo\n1pod repo push my-specs MyFramework.podspec\n\n\n\n\n\ncocpods的全部流程已经完成\n​    之后就可以在项目里的Podfile添加Myframework的库了\n12345target &#x27;MyApp&#x27; do    use_frameworks!    pod &#x27;MyFramework&#x27;, &#x27;0.0.1&#x27;, :source =&gt; &quot;$HOME/MySpecs.git&quot;endEOF\n\n需要标明use_frameworks!\nsource指定MySpecs.git位置\nhttps://medium.com/onfido-tech/distributing-swift-frameworks-via-cocoapods-152002b41783\n","dateCreated":"2020-10-16T22:21:07+08:00","dateModified":"2020-10-19T10:04:44+08:00","datePublished":"2020-10-16T22:21:07+08:00","description":"Cocopods是iOS上常用的负责管理framework的工具","headline":"在Cocopods上发布framework(转自Medium)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/10/16/Cocopods%E4%B8%8A%E5%8F%91%E5%B8%83framework(%E8%BD%AC%E8%87%AAMedium)/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/10/16/Cocopods%E4%B8%8A%E5%8F%91%E5%B8%83framework(%E8%BD%AC%E8%87%AAMedium)/","keywords":"cocopods"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"Cocopods是iOS上常用的负责管理framework的工具\n\n\nCocopods是如何工作的分为两部分介绍\n\n在App的项目里安装framework\n在Cocopods发布framework\n\n1. 在iOS项目里安装framework创建Podfile文件,里面要告诉Cocopods需要安装的framework名称,例如\n123target &#x27;MyApp&#x27; do  pod &#x27;FrameworkA&#x27;end\n\n意思是要往MyApp项目里安装FrameworkA\n完成配置后,要执行pod install执行安装步骤\npod install会读取Podfile里的内容,执行相应步骤\n\nCocopods会从远程仓库查找相应的framework进行下载,链接到项目\n注意,如果不指定版本,Cocopods会自动下载最新版本\n执行完pod install后,Cocopods会自动生成workspace文件,并把目标framework链接到项目中\n2. 在Cocopods发布framework这只发布的流程示例\n\n大体分为这几个步骤\n\n安装Cocopods\n为framework创建git仓库\n发布framework到git仓库\n项目安装framework\n\n\n安装Cocopods\n1gem install cocoapods\n\n\n\n\n\n\n为framework创建git仓库\n先创建一个本地仓库\n123mkdir ~/MyFramework.gitcd ~/MyFramework.gitgit init --bare\n\n把MyFramework的项目内容绑定到刚才的git仓库\n12345678cd ~/MyFrameworkgit initgit remote add origin ~/MyFramework.gitgit add .git commit -m &quot;Initial commit&quot;git tag -a 0.0.1 -m &quot;Version 0.0.1&quot;git push origin -u mastergit push origin --tags\n\n\n\n\n\n\n创建本地指定的pod仓库\n仓库用来发布自定义的framework,执行下列操作\n1234567891011mkdir ~/MySpecs.gitcd ~/MySpecs.gitgit init --baregit clone ~/MySpecs.git ~/MySpecs cd ~/MySpecstouch README.mdgit add README.mdgit commit -m &quot;Initial commit&quot;git push origin -u masterpod repo add my-specs ~/MySpecs.git#~/MySpecs.git 使用用绝对路径\n\n完成后执行\n1pod repo list\n\n定义的my-specs的pod源就被添加进来了\n\n\n\n\n添加MyFramework的pod配置文件\n执行操作\n1234567891011121314151617181920212223cat &gt; MyFramework.podspec &lt;&lt;-EOFPod::Spec.new do |s|    s.name         = &quot;MyFramework&quot;    s.version      = &quot;0.0.1&quot;    s.summary      = &quot;A brief description of MyFramework project.&quot;    s.description  = &lt;&lt;-DESC    An extended description of MyFramework project.    DESC    s.homepage     = &quot;http://your.homepage/here&quot;    s.license = &#123; :type =&gt; &#x27;Copyright&#x27;, :text =&gt; &lt;&lt;-LICENSE                   Copyright 2018                   Permission is granted to...                  LICENSE                &#125;    s.author             = &#123; &quot;$(git config user.name)&quot; =&gt; &quot;$(git config user.email)&quot; &#125;    s.source       = &#123; :git =&gt; &quot;$HOME/MyFramework.git&quot;, :tag =&gt; &quot;#&#123;s.version&#125;&quot; &#125;  #你的Framework的路径    s.source_files  = &quot;MyFramework/**/*.swift&quot;    s.resources = &quot;MyFramework/**/*.xib&quot;    s.platform = :ios    s.swift_version = &quot;4.2&quot;    s.ios.deployment_target  = &#x27;12.0&#x27;endEOF\n\n完成后,上传pod配置文件到repo\n1pod repo push my-specs MyFramework.podspec\n\n\n\n\n\ncocpods的全部流程已经完成\n​    之后就可以在项目里的Podfile添加Myframework的库了\n12345target &#x27;MyApp&#x27; do    use_frameworks!    pod &#x27;MyFramework&#x27;, &#x27;0.0.1&#x27;, :source =&gt; &quot;$HOME/MySpecs.git&quot;endEOF\n\n需要标明use_frameworks!\nsource指定MySpecs.git位置\nhttps://medium.com/onfido-tech/distributing-swift-frameworks-via-cocoapods-152002b41783\n","dateCreated":"2020-10-16T22:21:07+08:00","dateModified":"2020-10-19T10:07:34+08:00","datePublished":"2020-10-16T22:21:07+08:00","description":"Cocopods是iOS上常用的负责管理framework的工具","headline":"在Cocopods上发布framework(转自Medium)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/10/16/Cocopods%E4%B8%8A%E5%8F%91%E5%B8%83framework(%E8%BD%AC%E8%87%AAMedium)/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/10/16/Cocopods%E4%B8%8A%E5%8F%91%E5%B8%83framework(%E8%BD%AC%E8%87%AAMedium)/","keywords":"cocopods"}</script>
     <meta name="description" content="Cocopods是iOS上常用的负责管理framework的工具">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="在Cocopods上发布framework(转自Medium)">
@@ -19,15 +19,15 @@
 <meta property="og:site_name">
 <meta property="og:description" content="Cocopods是iOS上常用的负责管理framework的工具">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/krela2010/picstore/master/img/cocopods.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/krela2010/picstore/master/img/cocopods2.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/krela2010/picstore/master/img/cocpods.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/cocopods.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/cocopods2.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/cocpods.png">
 <meta property="article:published_time" content="2020-10-16T14:21:07.000Z">
-<meta property="article:modified_time" content="2020-10-19T02:04:44.767Z">
+<meta property="article:modified_time" content="2020-10-19T02:07:34.319Z">
 <meta property="article:author" content="krela">
 <meta property="article:tag" content="cocopods">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/krela2010/picstore/master/img/cocopods.png">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/cocopods.png">
     
     
         
@@ -264,12 +264,12 @@
 <p>意思是要往MyApp项目里安装FrameworkA</p>
 <p>完成配置后,要执行<code>pod install</code>执行安装步骤</p>
 <p><code>pod install</code>会读取<code>Podfile</code>里的内容,执行相应步骤</p>
-<p><img src="https://raw.githubusercontent.com/krela2010/picstore/master/img/cocopods.png"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/cocopods.png"></p>
 <p><code>Cocopods</code>会从远程仓库查找相应的framework进行下载,链接到项目</p>
 <p>注意,如果不指定版本,<code>Cocopods</code>会自动下载最新版本</p>
 <p>执行完<code>pod install</code>后,<code>Cocopods</code>会自动生成workspace文件,并把目标framework链接到项目中</p>
 <h5 id="2-在Cocopods发布framework"><a href="#2-在Cocopods发布framework" class="headerlink" title="2. 在Cocopods发布framework"></a>2. 在Cocopods发布framework</h5><p>这只发布的流程示例</p>
-<p><img src="https://raw.githubusercontent.com/krela2010/picstore/master/img/cocopods2.png"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/cocopods2.png"></p>
 <p>大体分为这几个步骤</p>
 <ol>
 <li>安装Cocopods</li>
@@ -306,7 +306,7 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod repo list</span><br></pre></td></tr></table></figure>
 
 <p>定义的my-specs的pod源就被添加进来了</p>
-<p><img src="https://raw.githubusercontent.com/krela2010/picstore/master/img/cocpods.png"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/cocpods.png"></p>
 </li>
 </ul>
 <ul>
@@ -379,7 +379,7 @@
             <a
                 class="post-action-btn btn btn--default btn-open-shareoptions"
                 href="#btn-open-shareoptions"
-                aria-label="Diesen Beitrag teilen"
+                aria-label="Share this post"
             >
                 <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
@@ -390,7 +390,7 @@
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
             
                 <i class="fa fa-list" aria-hidden="true"></i>
             </a>
@@ -452,7 +452,7 @@
             <a
                 class="post-action-btn btn btn--default btn-open-shareoptions"
                 href="#btn-open-shareoptions"
-                aria-label="Diesen Beitrag teilen"
+                aria-label="Share this post"
             >
                 <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
@@ -463,7 +463,7 @@
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
             
                 <i class="fa fa-list" aria-hidden="true"></i>
             </a>

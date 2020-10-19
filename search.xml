@@ -1013,12 +1013,12 @@ ctrl+cmd+left/right   文件历史栈切换</code></pre>
 <p>意思是要往MyApp项目里安装FrameworkA</p>
 <p>完成配置后,要执行<code>pod install</code>执行安装步骤</p>
 <p><code>pod install</code>会读取<code>Podfile</code>里的内容,执行相应步骤</p>
-<p><img src="https://raw.githubusercontent.com/krela2010/picstore/master/img/cocopods.png"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/cocopods.png"></p>
 <p><code>Cocopods</code>会从远程仓库查找相应的framework进行下载,链接到项目</p>
 <p>注意,如果不指定版本,<code>Cocopods</code>会自动下载最新版本</p>
 <p>执行完<code>pod install</code>后,<code>Cocopods</code>会自动生成workspace文件,并把目标framework链接到项目中</p>
 <h5 id="2-在Cocopods发布framework"><a href="#2-在Cocopods发布framework" class="headerlink" title="2. 在Cocopods发布framework"></a>2. 在Cocopods发布framework</h5><p>这只发布的流程示例</p>
-<p><img src="https://raw.githubusercontent.com/krela2010/picstore/master/img/cocopods2.png"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/cocopods2.png"></p>
 <p>大体分为这几个步骤</p>
 <ol>
 <li>安装Cocopods</li>
@@ -1055,7 +1055,7 @@ ctrl+cmd+left/right   文件历史栈切换</code></pre>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">pod repo list</span><br></pre></td></tr></table></figure>
 
 <p>定义的my-specs的pod源就被添加进来了</p>
-<p><img src="https://raw.githubusercontent.com/krela2010/picstore/master/img/cocpods.png"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/cocpods.png"></p>
 </li>
 </ul>
 <ul>
