@@ -1,0 +1,535 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="">
+    <title>提高编译速度的方法(swift) - null</title>
+    <meta name="author" content="krela">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"文章中,我会针对编译的各个细节进行说明,一旦我们了解了整个编译过程,我们就可以尝试在各个编译过程进行优化,提高编译速度\n\n\n先了解一下Xcode 编译过程结构\n\n预编译(PreProcessor)\n替换所有的宏\n\n查找所有的依赖\n\n处理预编译的指令\n\n\n编译器(Compiler)\n转换源码为机器码(汇编)\n\n\n这是swift的编译过程,具体流程可以参考我的这边文章\nhttps://krela2010.github.io/2020/10/12/LLVM%E5%AD%A6%E4%B9%A0/\n汇编(Assembler)\n将可读代码转为机器码\n转为Mach-O文件,Mach-O是二进制文件,可以直接在iOS,Mac系统上运行\n\n链接(Linker)\n把不同的Mach-O目标文件合并到一起,生成一个可执行文件\n Object Files + dylib, .a , .tbd =&gt; Single Executable file\n\n\n加载(Loader)\n最后一步,把可执行程序加载到内存里,执行.Loader分配内存空间.加载dylibs,动态库\n\n什么是Clean Build无缓存,全部编译\n什么是Incremental Build针对修改的文件,进行编译\n把编译加速分为2个阶段\n分析和设置编译选项,这个是最直接,最简单的方法\n理解swift依赖关系,这个会影响到增量编译Incremental Build\n\n一阶段:修改Build Settings编译模式(Compliation Mode)\n\n这个配置控制驱动driver和前端任务frontend jobs,先了解一下什么是驱动driver和前端frontend\n驱动(Driver):​    任务调度,负责决定哪些文件需要编译或重新编译并运行(即作业)来执行编译和链接步骤\n前端任务(frontend jobs):​    被Driver调用,运行swift-frontend,执行编译,生成PCH文件,合并模块等.这一步骤相当耗时\nPrimary File Mode​    Driver把编译工作拆分出多个任务,每个任务读取模块中的所有文件,专注于编译主要的目标文件\n​    Primary File Mode优点是做增量编译Incremental Build时,只针对过时需要编译的文件做处理,并且也可以同时运行多个编译工作,借助多核\nWhole file Mode​    Driver只运行一个编译任务,无论多个文件.一个读取所有文件,编译所有文件\n​    Whole file Mode优点可以结合整个模块做优化,并且避免了Primary File Mode里编译初期重复工作,缺点是总是全量重编译\n结合两种特点,建议Debug使用Primary File Mode, Release使用Whole file Mode Xcode默认也是这样配置的\nOptimization Mode\n​    优化模式下执行swift编译器,SIL和LLVM耗费了大量的时间和系统资源\n​    非优化模式下,SIL和LLVM也会同样工作(仍会有一些优化处理),但是资源消耗有所下降,\n​    \n有3种优化类型,\n-Onone 代表无优化处理 \n-Osize代表优化文件大小\n-O代表优化编译速度\n复杂表达式和类型推断类型推断是swift很实用的功能,可以不用指明类型,但也会增加大量的编译时间做类型推断工作\n如何知道一个表达式耗费了大量的时间?\n在开发环境,我们一般认为100ms以下是解析一个表达式的正常时间,如果超过100ms,我们要考虑做对表达式做一些优化,如何自动检查表达式的解析时间?\n在Build Settings — &gt; Swift Compiler — &gt; Custom Flags — &gt; Other Swift Flags\n添加\n-Xfrontend -warn-long-expression-type-checking=100\n\n还可以加一些级别例如250ms,500ms档\n删除dSYM文件dSYM文件(debug symbols file),记录App异常信息,存储在dSYM Bundle里,这个文件每次都会在编译时生成\n可以Debug关闭,release开启\n![image-20201022121522124](/Users/diaoke/Library/Application Support/typora-user-images/image-20201022121522124.png)\n运行脚本运行脚本会在你每次编译都要执行一遍,对此做优化\n二阶段:swift依赖关系编译器知道项目的文件依赖关系,可以决定哪些需要顺序编译,哪些可以并行编译\n有3条编译规则\n规则1\n如果函数体发生变化,swift不会重新编译相关依赖\n原因swift是类型安全语言,不关心你的函数体内的变化\n规则2\n当在文件里添加新函数,新结构体或者新的扩展时,swift会编译文件所有相关依赖\n原因​    相较于oc,swift是基于文件编译的语言,你可以在你的文件里写任何的类和结构体,所以基于此,swift需要针对新增部分进行重编译\n\nAllExtensions.swift里添加了所有用到的extensions,如果继续增加,相应的所有的Extension的依赖也要重新编译\n如果是按照右边图示,把Extensions放到不同文件,只会编译对应文件的依赖\n结论不要把所有工具扩展放到一个文件里,拆分成不同文件\n规则3\n如果使用framework组件化结构,framework的任意变化都会是app重新编译所有文件\n原文:\nhttps://swift.org/swift-compiler/#compiler-architecture\nhttps://bytes.swiggy.com/advanced-techniques-to-speed-up-the-compile-time-in-xcode-27819cb3be59\n","dateCreated":"2020-10-22T10:00:16+08:00","dateModified":"2020-10-22T14:08:24+08:00","datePublished":"2020-10-22T10:00:16+08:00","description":"文章中,我会针对编译的各个细节进行说明,一旦我们了解了整个编译过程,我们就可以尝试在各个编译过程进行优化,提高编译速度","headline":"提高编译速度的方法(swift)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/10/22/2020-10-22-%E6%8F%90%E9%AB%98%E7%BC%96%E8%AF%91%E9%80%9F%E5%BA%A6%E7%9A%84%E6%96%B9%E6%B3%95(swift)/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/10/22/2020-10-22-%E6%8F%90%E9%AB%98%E7%BC%96%E8%AF%91%E9%80%9F%E5%BA%A6%E7%9A%84%E6%96%B9%E6%B3%95(swift)/","keywords":"swift, 编译原因"}</script>
+    <meta name="description" content="文章中,我会针对编译的各个细节进行说明,一旦我们了解了整个编译过程,我们就可以尝试在各个编译过程进行优化,提高编译速度">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="提高编译速度的方法(swift)">
+<meta property="og:url" content="http://example.com/2020/10/22/2020-10-22-%E6%8F%90%E9%AB%98%E7%BC%96%E8%AF%91%E9%80%9F%E5%BA%A6%E7%9A%84%E6%96%B9%E6%B3%95(swift)/index.html">
+<meta property="og:site_name">
+<meta property="og:description" content="文章中,我会针对编译的各个细节进行说明,一旦我们了解了整个编译过程,我们就可以尝试在各个编译过程进行优化,提高编译速度">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/build.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/build02.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/build03.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/build05.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/build06.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/build08.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/build09.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/build10.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/build11.png">
+<meta property="article:published_time" content="2020-10-22T02:00:16.000Z">
+<meta property="article:modified_time" content="2020-10-22T06:08:24.439Z">
+<meta property="article:author" content="krela">
+<meta property="article:tag" content="swift">
+<meta property="article:tag" content="编译原因">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/build.png">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style-q1xm6d2tdcpkqfz9o6p1p6qdzbvnnvu0hbyenhmww9tanqfaayxelx72glmt.min.css">
+
+    <!--STYLES END-->
+    
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/"
+            aria-label=""
+        >
+            
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="打开链接: /#about"
+            >
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/"
+                            
+                            rel="noopener"
+                            title="首页"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-categories"
+                            
+                            rel="noopener"
+                            title="分类"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-tags"
+                            
+                            rel="noopener"
+                            title="标签"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-archives"
+                            
+                            rel="noopener"
+                            title="归档"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="http://stackoverflow.com/users"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Stack Overflow"
+                        >
+                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Stack Overflow</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/mailto"
+                            
+                            rel="noopener"
+                            title="邮箱"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/atom.xml"
+                            
+                            rel="noopener"
+                            title="RSS"
+                        >
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            提高编译速度的方法(swift)
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2020-10-22T10:00:16+08:00">
+	
+		    10月 22, 2020
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>文章中,我会针对编译的各个细节进行说明,一旦我们了解了整个编译过程,我们就可以尝试在各个编译过程进行优化,提高编译速度</p>
+<a id="more"></a>
+
+<p>先了解一下Xcode 编译过程结构</p>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/build.png"></p>
+<h5 id="预编译-PreProcessor"><a href="#预编译-PreProcessor" class="headerlink" title="预编译(PreProcessor)"></a>预编译(PreProcessor)</h5><ul>
+<li><p>替换所有的宏</p>
+</li>
+<li><p>查找所有的依赖</p>
+</li>
+<li><p>处理预编译的指令</p>
+</li>
+</ul>
+<h5 id="编译器-Compiler"><a href="#编译器-Compiler" class="headerlink" title="编译器(Compiler)"></a>编译器(Compiler)</h5><ul>
+<li>转换源码为机器码(汇编)</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/build02.png"></p>
+<p>这是swift的编译过程,具体流程可以参考我的这边文章</p>
+<p><a target="_blank" rel="noopener" href="https://krela2010.github.io/2020/10/12/LLVM%E5%AD%A6%E4%B9%A0/">https://krela2010.github.io/2020/10/12/LLVM%E5%AD%A6%E4%B9%A0/</a></p>
+<h5 id="汇编-Assembler"><a href="#汇编-Assembler" class="headerlink" title="汇编(Assembler)"></a>汇编(Assembler)</h5><ul>
+<li>将可读代码转为机器码</li>
+<li>转为Mach-O文件,Mach-O是二进制文件,可以直接在iOS,Mac系统上运行</li>
+</ul>
+<h5 id="链接-Linker"><a href="#链接-Linker" class="headerlink" title="链接(Linker)"></a>链接(Linker)</h5><ul>
+<li><p>把不同的Mach-O目标文件合并到一起,生成一个可执行文件</p>
+<p> <em>Object Files + dylib, .a , .tbd =&gt; Single Executable file</em></p>
+</li>
+</ul>
+<h5 id="加载-Loader"><a href="#加载-Loader" class="headerlink" title="加载(Loader)"></a>加载(Loader)</h5><ul>
+<li>最后一步,把可执行程序加载到内存里,执行.Loader分配内存空间.加载dylibs,动态库</li>
+</ul>
+<h6 id="什么是Clean-Build"><a href="#什么是Clean-Build" class="headerlink" title="什么是Clean Build"></a>什么是<code>Clean Build</code></h6><p><em>无缓存,全部编译</em></p>
+<h6 id="什么是Incremental-Build"><a href="#什么是Incremental-Build" class="headerlink" title="什么是Incremental Build"></a>什么是<code>Incremental Build</code></h6><p><em>针对修改的文件,进行编译</em></p>
+<h5 id="把编译加速分为2个阶段"><a href="#把编译加速分为2个阶段" class="headerlink" title="把编译加速分为2个阶段"></a>把编译加速分为2个阶段</h5><ol>
+<li>分析和设置编译选项,这个是最直接,最简单的方法</li>
+<li>理解swift依赖关系,这个会影响到增量编译<code>Incremental Build</code></li>
+</ol>
+<h3 id="一阶段-修改Build-Settings"><a href="#一阶段-修改Build-Settings" class="headerlink" title="一阶段:修改Build Settings"></a>一阶段:修改Build Settings</h3><p><em>编译模式(Compliation Mode)</em></p>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/build03.png"></p>
+<p>这个配置控制驱动<code>driver</code>和前端任务<code>frontend jobs</code>,先了解一下什么是驱动<code>driver</code>和前端<code>frontend</code></p>
+<h6 id="驱动-Driver"><a href="#驱动-Driver" class="headerlink" title="驱动(Driver):"></a>驱动(Driver):</h6><p>​    任务调度,负责决定哪些文件需要编译或重新编译并运行(即作业)来执行编译和链接步骤</p>
+<h6 id="前端任务-frontend-jobs"><a href="#前端任务-frontend-jobs" class="headerlink" title="前端任务(frontend jobs):"></a>前端任务(frontend jobs):</h6><p>​    被Driver调用,运行swift-frontend,执行编译,生成<code>PCH</code>文件,合并模块等.这一步骤相当耗时</p>
+<h6 id="Primary-File-Mode"><a href="#Primary-File-Mode" class="headerlink" title="Primary File Mode"></a>Primary File Mode</h6><p>​    Driver把编译工作拆分出多个任务,每个任务读取模块中的所有文件,专注于编译主要的目标文件</p>
+<p>​    <code>Primary File Mode</code>优点是做增量编译<code>Incremental Build</code>时,只针对过时需要编译的文件做处理,并且也可以同时运行多个编译工作,借助多核</p>
+<h6 id="Whole-file-Mode"><a href="#Whole-file-Mode" class="headerlink" title="Whole file Mode"></a>Whole file Mode</h6><p>​    Driver只运行一个编译任务,无论多个文件.一个读取所有文件,编译所有文件</p>
+<p>​    <code>Whole file Mode</code>优点可以结合整个模块做优化,并且避免了<code>Primary File Mode</code>里编译初期重复工作,缺点是总是全量重编译</p>
+<p>结合两种特点,建议Debug使用<code>Primary File Mode</code>, Release使用<code>Whole file Mode</code> Xcode默认也是这样配置的</p>
+<h5 id="Optimization-Mode"><a href="#Optimization-Mode" class="headerlink" title="Optimization Mode"></a>Optimization Mode</h5><p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/build05.png"></p>
+<p>​    优化模式下执行swift编译器,SIL和LLVM耗费了大量的时间和系统资源</p>
+<p>​    非优化模式下,SIL和LLVM也会同样工作(仍会有一些优化处理),但是资源消耗有所下降,</p>
+<p>​    </p>
+<p>有3种优化类型,</p>
+<p><code>-Onone</code> 代表无优化处理 </p>
+<p><code>-Osize</code>代表优化文件大小</p>
+<p><code>-O</code>代表优化编译速度</p>
+<h5 id="复杂表达式和类型推断"><a href="#复杂表达式和类型推断" class="headerlink" title="复杂表达式和类型推断"></a>复杂表达式和类型推断</h5><p>类型推断是swift很实用的功能,可以不用指明类型,但也会增加大量的编译时间做类型推断工作</p>
+<p><em>如何知道一个表达式耗费了大量的时间?</em></p>
+<p>在开发环境,我们一般认为100ms以下是解析一个表达式的正常时间,如果超过100ms,我们要考虑做对表达式做一些优化,如何自动检查表达式的解析时间?</p>
+<p>在<code>Build Settings — &gt; Swift Compiler — &gt; Custom Flags — &gt; Other Swift Flags</code></p>
+<p>添加</p>
+<p><code>-Xfrontend -warn-long-expression-type-checking=100</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/build06.png"></p>
+<p>还可以加一些级别例如250ms,500ms档</p>
+<h5 id="删除dSYM文件"><a href="#删除dSYM文件" class="headerlink" title="删除dSYM文件"></a>删除dSYM文件</h5><p>dSYM文件(debug symbols file),记录App异常信息,存储在dSYM Bundle里,这个文件每次都会在编译时生成</p>
+<p>可以Debug关闭,release开启</p>
+<p>![image-20201022121522124](/Users/diaoke/Library/Application Support/typora-user-images/image-20201022121522124.png)</p>
+<h5 id="运行脚本"><a href="#运行脚本" class="headerlink" title="运行脚本"></a>运行脚本</h5><p>运行脚本会在你每次编译都要执行一遍,对此做优化</p>
+<h3 id="二阶段-swift依赖关系"><a href="#二阶段-swift依赖关系" class="headerlink" title="二阶段:swift依赖关系"></a>二阶段:swift依赖关系</h3><p>编译器知道项目的文件依赖关系,可以决定哪些需要顺序编译,哪些可以并行编译</p>
+<p>有3条编译规则</p>
+<h5 id="规则1"><a href="#规则1" class="headerlink" title="规则1"></a>规则1</h5><p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/build08.png"></p>
+<p>如果函数体发生变化,swift不会重新编译相关依赖</p>
+<h6 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h6><p>swift是类型安全语言,不关心你的函数体内的变化</p>
+<h5 id="规则2"><a href="#规则2" class="headerlink" title="规则2"></a>规则2</h5><p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/build09.png"></p>
+<p>当在文件里添加新函数,新结构体或者新的扩展时,swift会编译文件所有相关依赖</p>
+<h6 id="原因-1"><a href="#原因-1" class="headerlink" title="原因"></a>原因</h6><p>​    相较于oc,swift是基于文件编译的语言,你可以在你的文件里写任何的类和结构体,所以基于此,swift需要针对新增部分进行重编译</p>
+<p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/build10.png"></p>
+<p>AllExtensions.swift里添加了所有用到的extensions,如果继续增加,相应的所有的Extension的依赖也要重新编译</p>
+<p>如果是按照右边图示,把Extensions放到不同文件,只会编译对应文件的依赖</p>
+<h6 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h6><p>不要把所有工具扩展放到一个文件里,拆分成不同文件</p>
+<h5 id="规则3"><a href="#规则3" class="headerlink" title="规则3"></a>规则3</h5><p><img src="https://cdn.jsdelivr.net/gh/krela2010/picstore/img/build11.png"></p>
+<p>如果使用framework组件化结构,framework的任意变化都会是app重新编译所有文件</p>
+<h6 id=""><a href="#" class="headerlink" title=""></a></h6><p>原文:</p>
+<p><a target="_blank" rel="noopener" href="https://swift.org/swift-compiler/#compiler-architecture">https://swift.org/swift-compiler/#compiler-architecture</a></p>
+<p><a target="_blank" rel="noopener" href="https://bytes.swiggy.com/advanced-techniques-to-speed-up-the-compile-time-in-xcode-27819cb3be59">https://bytes.swiggy.com/advanced-techniques-to-speed-up-the-compile-time-in-xcode-27819cb3be59</a></p>
+
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/swift/" rel="tag">swift</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E5%9B%A0/" rel="tag">编译原因</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/10/16/Cocopods%E4%B8%8A%E5%8F%91%E5%B8%83framework(%E8%BD%AC%E8%87%AAMedium)/"
+                    data-tooltip="在Cocopods上发布framework(转自Medium)"
+                    aria-label="下一篇: 在Cocopods上发布framework(转自Medium)"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2020 krela. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/10/16/Cocopods%E4%B8%8A%E5%8F%91%E5%B8%83framework(%E8%BD%AC%E8%87%AAMedium)/"
+                    data-tooltip="在Cocopods上发布framework(转自Medium)"
+                    aria-label="下一篇: 在Cocopods上发布framework(转自Medium)"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <h4 id="about-card-name">krela</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('https://cdn.jsdelivr.net/gh/krela2010/picstore/img/0_HQm1yU37T9Kn0Sqk.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/script-efzwyj1ubluyv8iapkoolcjuvxznfol9f88lx15p6wxkixuzt5pme1zhhnhc.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+
+
+
+
+    </body>
+</html>
