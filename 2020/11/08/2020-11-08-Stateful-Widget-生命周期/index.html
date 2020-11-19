@@ -6,23 +6,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="">
-    <title>架构设计 - null</title>
+    <title>Stateful Widget 生命周期 - null</title>
     <meta name="author" content="krela">
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"架构学习的记录\n\n组件化设计1.功能模块，互相解耦，通过中间层调用2.公共组件抽离，统一维护管理3.开发人员只做业务\n优点：插件化，业务调整，之间互不影响缺点：公共组件的统一维护可以提高效率，但也存在风险\n极端分离设计非专业叫法1.所有模块、及其涉及的通用模块完全独立管理，完全解耦2.模块之间 字典数据传递\n优点：完全的模块分离缺点：开发成本高，适合大型、多开发团队的App\n","dateCreated":"2020-09-08T11:22:21+08:00","dateModified":"2020-09-08T11:35:19+08:00","datePublished":"2020-09-08T11:22:21+08:00","description":"架构学习的记录","headline":"架构设计","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/09/08/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/09/08/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/","keywords":"架构"}</script>
-    <meta name="description" content="架构学习的记录">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"研究Stateful Widget的生命周期是如何维护的\nStatelessWidget很简单,只有一个build\n\n\nStatefulWidget 生命周期相关函数有\ncreateState\nWidget创建的第一步,立刻调用\n\n可以被调用多次\n\n调用后,buildContext已经生成\n\n状态并未创建\n\n\ninitState\n只会被调用一次,此时view没有渲染,所以buildContext还不能使用\n\n必须调用super.initState\n\n\ndidChangeDependencies\n在initState之后立即调用,view已经渲染完成,statefulwidget刷新时不会调用\n\nbuild\n不能返回null\n在didChangeDependencies之后调用\n每次刷新,build都会重新调用\n不要再build里添加其他非必要逻辑\n\ndidUpdateWidget\nwidget key发生变化时会调用,一般不会用\n\ndeactivate\nwidget将被remove时调用,也有可能重新放入render tree中\n\ndispose\n当widget确实被销毁后调用\n\nmounted\nmounted是个变量,当buildContext可用渲染结束时为true,dispose后变为false\n\n监听App生命周期\n在statefulwidget 的state类添加混入WidgetsBindingObserver\n\n1class _MyScreenState extends State&lt;MyScreen&gt; with WidgetsBindingObserver\n\n\n在initState里添加监听\n1WidgetsBinding.instance.addObserver(this);\n\n在dispose删除监听\n1WidgetsBinding.instance.removeObserver(this);\n\n\n\n\n\n\n在state类里重写didChangeAppLifecycleState(AppLifecycleState state)\n12345678910@overridevoid didChangeAppLifecycleState(AppLifecycleState state) &#123;  super.didChangeAppLifecycleState(state);  if (state == AppLifecycleState.paused) &#123;    // went to Background  &#125;  if (state == AppLifecycleState.resumed) &#123;    // came back to Foreground  &#125;&#125;\n\n\n\n\n\n生命周期状态有4种\n\nresumed\ninactive\npaused\nsuspending\n\n转自https://medium.com/flutter-community/flutter-lifecycle-for-android-and-ios-developers-8f532307e0c7\n","dateCreated":"2020-11-08T23:30:12+08:00","dateModified":"2020-11-19T12:15:28+08:00","datePublished":"2020-11-08T23:30:12+08:00","description":"研究Stateful Widget的生命周期是如何维护的\nStatelessWidget很简单,只有一个build","headline":"Stateful Widget 生命周期","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/11/08/2020-11-08-Stateful-Widget-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/11/08/2020-11-08-Stateful-Widget-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/","keywords":"flutter"}</script>
+    <meta name="description" content="研究Stateful Widget的生命周期是如何维护的 StatelessWidget很简单,只有一个build">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="架构设计">
-<meta property="og:url" content="http://example.com/2020/09/08/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/index.html">
+<meta property="og:title" content="Stateful Widget 生命周期">
+<meta property="og:url" content="http://example.com/2020/11/08/2020-11-08-Stateful-Widget-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/index.html">
 <meta property="og:site_name">
-<meta property="og:description" content="架构学习的记录">
+<meta property="og:description" content="研究Stateful Widget的生命周期是如何维护的 StatelessWidget很简单,只有一个build">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-09-08T03:22:21.000Z">
-<meta property="article:modified_time" content="2020-09-08T03:35:19.454Z">
+<meta property="article:published_time" content="2020-11-08T15:30:12.000Z">
+<meta property="article:modified_time" content="2020-11-19T04:15:28.842Z">
 <meta property="article:author" content="krela">
-<meta property="article:tag" content="架构">
+<meta property="article:tag" content="flutter">
 <meta name="twitter:card" content="summary">
     
     
@@ -227,14 +227,14 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title">
-            架构设计
+            Stateful Widget 生命周期
         </h1>
     
     
         <div class="post-meta">
-    <time datetime="2020-09-08T11:22:21+08:00">
+    <time datetime="2020-11-08T23:30:12+08:00">
 	
-		    9月 08, 2020
+		    11月 08, 2020
     	
     </time>
     
@@ -246,12 +246,80 @@
     
     <div class="post-content markdown">
         <div class="main-content-wrap">
-            <p>架构学习的记录</p>
+            <p>研究Stateful Widget的生命周期是如何维护的</p>
+<p>StatelessWidget很简单,只有一个build</p>
 <a id="more"></a>
-<h3 id="组件化设计"><a href="#组件化设计" class="headerlink" title="组件化设计"></a>组件化设计</h3><p>1.功能模块，互相解耦，通过中间层调用<br>2.公共组件抽离，统一维护管理<br>3.开发人员只做业务</p>
-<p>优点：插件化，业务调整，之间互不影响<br>缺点：公共组件的统一维护可以提高效率，但也存在风险</p>
-<h3 id="极端分离设计"><a href="#极端分离设计" class="headerlink" title="极端分离设计"></a>极端分离设计</h3><p>非专业叫法<br>1.所有模块、及其涉及的通用模块完全独立管理，完全解耦<br>2.模块之间 字典数据传递</p>
-<p>优点：完全的模块分离<br>缺点：开发成本高，适合大型、多开发团队的App</p>
+
+<p>StatefulWidget 生命周期相关函数有</p>
+<h6 id="createState"><a href="#createState" class="headerlink" title="createState"></a>createState</h6><ul>
+<li><p>Widget创建的第一步,立刻调用</p>
+</li>
+<li><p>可以被调用多次</p>
+</li>
+<li><p>调用后,buildContext已经生成</p>
+</li>
+<li><p>状态并未创建</p>
+</li>
+</ul>
+<h6 id="initState"><a href="#initState" class="headerlink" title="initState"></a>initState</h6><ul>
+<li><p>只会被调用一次,此时view没有渲染,所以buildContext还不能使用</p>
+</li>
+<li><p>必须调用super.initState</p>
+</li>
+</ul>
+<h6 id="didChangeDependencies"><a href="#didChangeDependencies" class="headerlink" title="didChangeDependencies"></a>didChangeDependencies</h6><ul>
+<li>在initState之后立即调用,view已经渲染完成,statefulwidget刷新时不会调用</li>
+</ul>
+<h6 id="build"><a href="#build" class="headerlink" title="build"></a>build</h6><ul>
+<li>不能返回null</li>
+<li>在didChangeDependencies之后调用</li>
+<li>每次刷新,build都会重新调用</li>
+<li>不要再build里添加其他非必要逻辑</li>
+</ul>
+<h6 id="didUpdateWidget"><a href="#didUpdateWidget" class="headerlink" title="didUpdateWidget"></a>didUpdateWidget</h6><ul>
+<li>widget key发生变化时会调用,一般不会用</li>
+</ul>
+<h6 id="deactivate"><a href="#deactivate" class="headerlink" title="deactivate"></a>deactivate</h6><ul>
+<li>widget将被remove时调用,也有可能重新放入render tree中</li>
+</ul>
+<h6 id="dispose"><a href="#dispose" class="headerlink" title="dispose"></a>dispose</h6><ul>
+<li>当widget确实被销毁后调用</li>
+</ul>
+<h6 id="mounted"><a href="#mounted" class="headerlink" title="mounted"></a>mounted</h6><ul>
+<li>mounted是个变量,当buildContext可用渲染结束时为true,dispose后变为false</li>
+</ul>
+<h4 id="监听App生命周期"><a href="#监听App生命周期" class="headerlink" title="监听App生命周期"></a>监听App生命周期</h4><ul>
+<li>在statefulwidget 的state类添加<code>混入</code>WidgetsBindingObserver</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_MyScreenState</span> <span class="keyword">extends</span> <span class="title">State</span>&lt;<span class="title">MyScreen</span>&gt; <span class="title">with</span> <span class="title">WidgetsBindingObserver</span></span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>在initState里添加监听</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WidgetsBinding.instance.addObserver(<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在dispose删除监听</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WidgetsBinding.instance.removeObserver(<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<ul>
+<li><p>在state类里重写<code>didChangeAppLifecycleState(AppLifecycleState state)</code></p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@override</span></span><br><span class="line"><span class="keyword">void</span> didChangeAppLifecycleState(AppLifecycleState state) &#123;</span><br><span class="line">  <span class="keyword">super</span>.didChangeAppLifecycleState(state);</span><br><span class="line">  <span class="keyword">if</span> (state == AppLifecycleState.paused) &#123;</span><br><span class="line">    <span class="comment">// went to Background</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (state == AppLifecycleState.resumed) &#123;</span><br><span class="line">    <span class="comment">// came back to Foreground</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<p>生命周期状态有4种</p>
+<ul>
+<li>resumed</li>
+<li>inactive</li>
+<li>paused</li>
+<li>suspending</li>
+</ul>
+<p>转自<a target="_blank" rel="noopener" href="https://medium.com/flutter-community/flutter-lifecycle-for-android-and-ios-developers-8f532307e0c7">https://medium.com/flutter-community/flutter-lifecycle-for-android-and-ios-developers-8f532307e0c7</a></p>
 
             
 
@@ -263,7 +331,7 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">标签</span><br/>
                 
-    <a class="tag tag--primary tag--small t-none-link" href="/tags/%E6%9E%B6%E6%9E%84/" rel="tag">架构</a>
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/flutter/" rel="tag">flutter</a>
 
             </div>
         
@@ -276,9 +344,9 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/09/08/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%9D%97/"
-                    data-tooltip="设计模式"
-                    aria-label="上一篇: 设计模式"
+                    href="/2020/11/19/2020-11-19-dart%E7%9A%84%E8%AF%AD%E6%B3%95%E7%B3%96%E5%92%8C%E4%B8%80%E4%BA%9Btrick/"
+                    data-tooltip="dart的语法糖和一些trick"
+                    aria-label="上一篇: dart的语法糖和一些trick"
                 >
                     
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
@@ -290,9 +358,9 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/09/08/Markdown/"
-                    data-tooltip="Markdown"
-                    aria-label="下一篇: Markdown"
+                    href="/2020/10/30/2020-10-30-Android-Studio(Flutter)-%E5%BF%AB%E6%8D%B7%E9%94%AE/"
+                    data-tooltip="Android Studio(Flutter) 快捷键"
+                    aria-label="下一篇: Android Studio(Flutter) 快捷键"
                 >
                     
                         <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
@@ -352,9 +420,9 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/09/08/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%9D%97/"
-                    data-tooltip="设计模式"
-                    aria-label="上一篇: 设计模式"
+                    href="/2020/11/19/2020-11-19-dart%E7%9A%84%E8%AF%AD%E6%B3%95%E7%B3%96%E5%92%8C%E4%B8%80%E4%BA%9Btrick/"
+                    data-tooltip="dart的语法糖和一些trick"
+                    aria-label="上一篇: dart的语法糖和一些trick"
                 >
                     
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
@@ -366,9 +434,9 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/09/08/Markdown/"
-                    data-tooltip="Markdown"
-                    aria-label="下一篇: Markdown"
+                    href="/2020/10/30/2020-10-30-Android-Studio(Flutter)-%E5%BF%AB%E6%8D%B7%E9%94%AE/"
+                    data-tooltip="Android Studio(Flutter) 快捷键"
+                    aria-label="下一篇: Android Studio(Flutter) 快捷键"
                 >
                     
                         <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>

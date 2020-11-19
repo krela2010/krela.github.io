@@ -1,0 +1,518 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="">
+    <title>Android Studio(Flutter) 快捷键 - null</title>
+    <meta name="author" content="krela">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"articleBody":"以下是平时在Mac系统上用Android Studio进行开发时常用到的一些快捷键，在此记录一下.\nmac上按键符号\n\n⌥ : option / alt ⇧ : shift ⌃ : control ⌘ : command ⎋ : esc\n\n\n\n\n\n（一）查找/查看相关搜索任意内容 双击shift\n当前文件查找/替换 cmd + F / cmd + R 使用cmd + G，sft + cmd + G，跳到下一个/上一个高亮的变量\n查找下一个相同内容\nctrl+g\n全局查找/替换 sft + cmd + F /  sft + cmd + R\n全局搜索类 cmd + O\n全局搜索类/方法/参数 opt + cmd + O\n打开最近访问的文件列表 cmd + E\n列出类中的所有成员 command +fn + F12\n类/方法在全局项目中引用情况（查看方法/变量/属性被谁调用了） opt + fn + F7 /  cmd + 鼠标点击\n类/方法在当前文件中引用情况 cmd + fn + F7\n方法被调用层级结构 ctr + opt + H\n查看接口的实现 opt + cmd + B\n跳转至超类的方法 cmd + U\n跳转至第几行 cmd + L\n返回到上次编辑位置 cmd + [ / ] opt + cmd + ← / →\n当前编辑的文件中结构快速导航 cmd + fn + F12\n列出函数方法一系列的有效参数 cmd + P\n跳转至错误或警告 fn + F2\n查看类／方法的注释文档 fn + F1\n（二）控制操作相关Surround with快速调出if,for,try…catch,while等环绕代码 opt + cmd + T\n快速生成模版代码块，如if,while,return cmd + J\n快速生成getter／setter方法，构造方法，toString()方法等 cmd + N\n行尾自动添加分号，if后面自动加“(){ }” sft + cmd + enter\n引入重写父类的方法 ctr + O\n引入接口或抽象类方法的实现 ctr + I\n下一步意图猜测 opt + return\n将最近使用的剪贴板内容选择插入到文本 sft + cmd + V\n注释与取消注释，注释效果 //… cmd + /\n注释与取消注释，注释效果 /…/ opt + cmd + /\n上下移动代码 opt + sft + up/down\n上下代码行换位 cmd + sft + up/down\n单词间或驼峰间跳转 Alt + ← / →\n切换大小写 sft + cmd + U\n切换文件 ctr + tab\n选择区域 opt + up/down 注：如果光标停留在大括号处，则选中整个大括号区域\n局部代码块展开/收缩 cmd + + / cmd + -\n全部代码块展开/收缩 sft + cmd + + / sft + cmd + -\n撤销/取消撤销 cmd + Z / sft + cmd +Z\n删除行 cmd + C / cmd + delete\n复制行 cmd + D\n合并行 sft + ctr + J\n列编辑 Alt + 鼠标框选\n格式化代码 opt + cmd + L\n自动缩进对齐 ctr + alt + I\n清除无效包引用 opt + ctr + O\n打开设置 cmd + ,\n隐藏窗口 sft + esc\n（三）代码重构相关类名／方法名／变量名 重命名操作 sft + fn + F6\n方法重构，方法抽离 opt + cmd + M\n抽离成方法参数 opt + cmd + P\n抽离为局部变量 opt + cmd + V\n抽离为成员变量 opt + cmd + F\n（四）编译运行调试编译源码 cmd + fn + F9\n运行 ctr + R\n调试 ctr + B\nStep Into（进入到代码） fn + F7\nStep Over（跳到下一步） fn + F8\n直接运行 opt + cmd + R\n退出调试 cmd + fn + F2\n（五）版本控制打开git操作列表 ctr + V\n提交修改 cmd + K\n推到服务器 sft + cmd + K\n【option + command + b】查看抽象类或方法的子类实现【option + shift + 上下键】移动代码","dateCreated":"2020-10-30T12:45:36+08:00","dateModified":"2020-11-17T16:14:16+08:00","datePublished":"2020-10-30T12:45:36+08:00","description":"以下是平时在Mac系统上用Android Studio进行开发时常用到的一些快捷键，在此记录一下.\nmac上按键符号\n\n⌥ : option / alt ⇧ : shift ⌃ : control ⌘ : command ⎋ : esc\n","headline":"Android Studio(Flutter) 快捷键","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2020/10/30/2020-10-30-Android-Studio(Flutter)-%E5%BF%AB%E6%8D%B7%E9%94%AE/"},"publisher":{"@type":"Organization","name":"krela","sameAs":["https://github.com/","http://stackoverflow.com/users","mailto"]},"url":"http://example.com/2020/10/30/2020-10-30-Android-Studio(Flutter)-%E5%BF%AB%E6%8D%B7%E9%94%AE/","keywords":"flutter"}</script>
+    <meta name="description" content="以下是平时在Mac系统上用Android Studio进行开发时常用到的一些快捷键，在此记录一下. mac上按键符号  ⌥ : option &#x2F; alt ⇧ : shift ⌃ : control ⌘ : command ⎋ : esc">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Android Studio(Flutter) 快捷键">
+<meta property="og:url" content="http://example.com/2020/10/30/2020-10-30-Android-Studio(Flutter)-%E5%BF%AB%E6%8D%B7%E9%94%AE/index.html">
+<meta property="og:site_name">
+<meta property="og:description" content="以下是平时在Mac系统上用Android Studio进行开发时常用到的一些快捷键，在此记录一下. mac上按键符号  ⌥ : option &#x2F; alt ⇧ : shift ⌃ : control ⌘ : command ⎋ : esc">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-10-30T04:45:36.000Z">
+<meta property="article:modified_time" content="2020-11-17T08:14:16.097Z">
+<meta property="article:author" content="krela">
+<meta property="article:tag" content="flutter">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style-q1xm6d2tdcpkqfz9o6p1p6qdzbvnnvu0hbyenhmww9tanqfaayxelx72glmt.min.css">
+
+    <!--STYLES END-->
+    
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/"
+            aria-label=""
+        >
+            
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="打开链接: /#about"
+            >
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/"
+                            
+                            rel="noopener"
+                            title="首页"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-categories"
+                            
+                            rel="noopener"
+                            title="分类"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-tags"
+                            
+                            rel="noopener"
+                            title="标签"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-archives"
+                            
+                            rel="noopener"
+                            title="归档"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="http://stackoverflow.com/users"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Stack Overflow"
+                        >
+                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Stack Overflow</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/mailto"
+                            
+                            rel="noopener"
+                            title="邮箱"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/atom.xml"
+                            
+                            rel="noopener"
+                            title="RSS"
+                        >
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            Android Studio(Flutter) 快捷键
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2020-10-30T12:45:36+08:00">
+	
+		    10月 30, 2020
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>以下是平时在Mac系统上用Android Studio进行开发时常用到的一些快捷键，在此记录一下.</p>
+<p><strong>mac上按键符号</strong></p>
+<blockquote>
+<p>⌥ : option / alt<br> ⇧ : shift<br> ⌃ : control<br> ⌘ : command<br> ⎋ : esc</p>
+</blockquote>
+<a id="more"></a>
+
+
+
+<h2 id="（一）查找-查看相关"><a href="#（一）查找-查看相关" class="headerlink" title="（一）查找/查看相关"></a>（一）查找/查看相关</h2><p>搜索任意内容<br> <code>双击shift</code></p>
+<p>当前文件查找/替换<br> <code>cmd + F / cmd + R</code><br> <code>使用cmd + G，sft + cmd + G，</code>跳到下一个/上一个高亮的变量</p>
+<p>查找下一个相同内容</p>
+<p><code>ctrl+g</code></p>
+<p>全局查找/替换<br> <code>sft + cmd + F</code> /  <code>sft + cmd + R</code></p>
+<p>全局搜索类<br> <code>cmd + O</code></p>
+<p>全局搜索类/方法/参数<br> <code>opt + cmd + O</code></p>
+<p>打开最近访问的文件列表<br> <code>cmd + E</code></p>
+<p>列出类中的所有成员<br> <code>command +fn + F12</code></p>
+<p>类/方法在全局项目中引用情况（查看方法/变量/属性被谁调用了）<br> <code>opt + fn + F7</code> /  <code>cmd + 鼠标点击</code></p>
+<p>类/方法在当前文件中引用情况<br> <code>cmd + fn + F7</code></p>
+<p>方法被调用层级结构<br> <code>ctr + opt + H</code></p>
+<p>查看接口的实现<br> <code>opt + cmd + B</code></p>
+<p>跳转至超类的方法<br> <code>cmd + U</code></p>
+<p>跳转至第几行<br> <code>cmd + L</code></p>
+<p>返回到上次编辑位置<br> <code>cmd + [ / ]</code><br> <code>opt + cmd + ← / →</code></p>
+<p>当前编辑的文件中结构快速导航<br> <code>cmd + fn + F12</code></p>
+<p>列出函数方法一系列的有效参数<br> <code>cmd + P</code></p>
+<p>跳转至错误或警告<br> <code>fn + F2</code></p>
+<p>查看类／方法的注释文档<br> <code>fn + F1</code></p>
+<h2 id="（二）控制操作相关"><a href="#（二）控制操作相关" class="headerlink" title="（二）控制操作相关"></a>（二）控制操作相关</h2><p>Surround with快速调出if,for,try…catch,while等环绕代码<br> <code>opt + cmd + T</code></p>
+<p>快速生成模版代码块，如if,while,return<br> <code>cmd + J</code></p>
+<p>快速生成getter／setter方法，构造方法，toString()方法等<br> <code>cmd + N</code></p>
+<p>行尾自动添加分号，if后面自动加“(){ }”<br> <code>sft + cmd + enter</code></p>
+<p>引入重写父类的方法<br> <code>ctr + O</code></p>
+<p>引入接口或抽象类方法的实现<br> <code>ctr + I</code></p>
+<p>下一步意图猜测<br> <code>opt + return</code></p>
+<p>将最近使用的剪贴板内容选择插入到文本<br> <code>sft + cmd + V</code></p>
+<p>注释与取消注释，注释效果 //…<br> <code>cmd + /</code></p>
+<p>注释与取消注释，注释效果 /…/<br> <code>opt + cmd + /</code></p>
+<p>上下移动代码<br> <code>opt + sft + up/down</code></p>
+<p>上下代码行换位<br> <code>cmd + sft + up/down</code></p>
+<p>单词间或驼峰间跳转<br> <code>Alt + ← / →</code></p>
+<p>切换大小写<br> <code>sft + cmd + U</code></p>
+<p>切换文件<br> <code>ctr + tab</code></p>
+<p>选择区域<br> <code>opt + up/down</code><br> <strong>注：如果光标停留在大括号处，则选中整个大括号区域</strong></p>
+<p>局部代码块展开/收缩<br> <code>cmd + + / cmd + -</code></p>
+<p>全部代码块展开/收缩<br> <code>sft + cmd + + / sft + cmd + -</code></p>
+<p>撤销/取消撤销<br> <code>cmd + Z / sft + cmd +Z</code></p>
+<p>删除行<br> <code>cmd + C / cmd + delete</code></p>
+<p>复制行<br> <code>cmd + D</code></p>
+<p>合并行<br> <code>sft + ctr + J</code></p>
+<p>列编辑<br> <code>Alt + 鼠标框选</code></p>
+<p>格式化代码<br> <code>opt + cmd + L</code></p>
+<p>自动缩进对齐<br> <code>ctr + alt + I</code></p>
+<p>清除无效包引用<br> <code>opt + ctr + O</code></p>
+<p>打开设置<br> <code>cmd + ,</code></p>
+<p>隐藏窗口<br> <code>sft + esc</code></p>
+<h2 id="（三）代码重构相关"><a href="#（三）代码重构相关" class="headerlink" title="（三）代码重构相关"></a>（三）代码重构相关</h2><p>类名／方法名／变量名 重命名操作<br> <code>sft + fn + F6</code></p>
+<p>方法重构，方法抽离<br> <code>opt + cmd + M</code></p>
+<p>抽离成方法参数<br> <code>opt + cmd + P</code></p>
+<p>抽离为局部变量<br> <code>opt + cmd + V</code></p>
+<p>抽离为成员变量<br> <code>opt + cmd + F</code></p>
+<h2 id="（四）编译运行调试"><a href="#（四）编译运行调试" class="headerlink" title="（四）编译运行调试"></a>（四）编译运行调试</h2><p>编译源码<br> <code>cmd + fn + F9</code></p>
+<p>运行<br> <code>ctr + R</code></p>
+<p>调试<br> <code>ctr + B</code></p>
+<p>Step Into（进入到代码）<br> <code>fn + F7</code></p>
+<p>Step Over（跳到下一步）<br> <code>fn + F8</code></p>
+<p>直接运行<br> <code>opt + cmd + R</code></p>
+<p>退出调试<br> <code>cmd + fn + F2</code></p>
+<h2 id="（五）版本控制"><a href="#（五）版本控制" class="headerlink" title="（五）版本控制"></a>（五）版本控制</h2><p>打开git操作列表<br> <code>ctr + V</code></p>
+<p>提交修改<br> <code>cmd + K</code></p>
+<p>推到服务器<br> <code>sft + cmd + K</code></p>
+<h1 id="【option-command-b】"><a href="#【option-command-b】" class="headerlink" title="【option + command + b】"></a>【option + command + b】</h1><h3 id="查看抽象类或方法的子类实现"><a href="#查看抽象类或方法的子类实现" class="headerlink" title="查看抽象类或方法的子类实现"></a>查看抽象类或方法的子类实现</h3><h1 id="【option-shift-上下键】"><a href="#【option-shift-上下键】" class="headerlink" title="【option + shift + 上下键】"></a>【option + shift + 上下键】</h1><h3 id="移动代码"><a href="#移动代码" class="headerlink" title="移动代码"></a>移动代码</h3>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/flutter/" rel="tag">flutter</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/11/08/2020-11-08-Stateful-Widget-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/"
+                    data-tooltip="Stateful Widget 生命周期"
+                    aria-label="上一篇: Stateful Widget 生命周期"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/10/22/2020-10-22-%E4%BC%98%E5%8C%96-Objective-C-runtime(wwdc2020)/"
+                    data-tooltip="优化 Objective-C runtime(wwdc2020)"
+                    aria-label="下一篇: 优化 Objective-C runtime(wwdc2020)"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2020 krela. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/11/08/2020-11-08-Stateful-Widget-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/"
+                    data-tooltip="Stateful Widget 生命周期"
+                    aria-label="上一篇: Stateful Widget 生命周期"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/10/22/2020-10-22-%E4%BC%98%E5%8C%96-Objective-C-runtime(wwdc2020)/"
+                    data-tooltip="优化 Objective-C runtime(wwdc2020)"
+                    aria-label="下一篇: 优化 Objective-C runtime(wwdc2020)"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <h4 id="about-card-name">krela</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('https://cdn.jsdelivr.net/gh/krela2010/picstore/img/0_HQm1yU37T9Kn0Sqk.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/script-efzwyj1ubluyv8iapkoolcjuvxznfol9f88lx15p6wxkixuzt5pme1zhhnhc.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+
+
+
+
+    </body>
+</html>

@@ -1254,4 +1254,288 @@ ctrl+cmd+left/right   文件历史栈切换</code></pre>
         <tag>runtime</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Android Studio(Flutter) 快捷键</title>
+    <url>/2020/10/30/2020-10-30-Android-Studio(Flutter)-%E5%BF%AB%E6%8D%B7%E9%94%AE/</url>
+    <content><![CDATA[<p>以下是平时在Mac系统上用Android Studio进行开发时常用到的一些快捷键，在此记录一下.</p>
+<p><strong>mac上按键符号</strong></p>
+<blockquote>
+<p>⌥ : option / alt<br> ⇧ : shift<br> ⌃ : control<br> ⌘ : command<br> ⎋ : esc</p>
+</blockquote>
+<a id="more"></a>
+
+
+
+<h2 id="（一）查找-查看相关"><a href="#（一）查找-查看相关" class="headerlink" title="（一）查找/查看相关"></a>（一）查找/查看相关</h2><p>搜索任意内容<br> <code>双击shift</code></p>
+<p>当前文件查找/替换<br> <code>cmd + F / cmd + R</code><br> <code>使用cmd + G，sft + cmd + G，</code>跳到下一个/上一个高亮的变量</p>
+<p>查找下一个相同内容</p>
+<p><code>ctrl+g</code></p>
+<p>全局查找/替换<br> <code>sft + cmd + F</code> /  <code>sft + cmd + R</code></p>
+<p>全局搜索类<br> <code>cmd + O</code></p>
+<p>全局搜索类/方法/参数<br> <code>opt + cmd + O</code></p>
+<p>打开最近访问的文件列表<br> <code>cmd + E</code></p>
+<p>列出类中的所有成员<br> <code>command +fn + F12</code></p>
+<p>类/方法在全局项目中引用情况（查看方法/变量/属性被谁调用了）<br> <code>opt + fn + F7</code> /  <code>cmd + 鼠标点击</code></p>
+<p>类/方法在当前文件中引用情况<br> <code>cmd + fn + F7</code></p>
+<p>方法被调用层级结构<br> <code>ctr + opt + H</code></p>
+<p>查看接口的实现<br> <code>opt + cmd + B</code></p>
+<p>跳转至超类的方法<br> <code>cmd + U</code></p>
+<p>跳转至第几行<br> <code>cmd + L</code></p>
+<p>返回到上次编辑位置<br> <code>cmd + [ / ]</code><br> <code>opt + cmd + ← / →</code></p>
+<p>当前编辑的文件中结构快速导航<br> <code>cmd + fn + F12</code></p>
+<p>列出函数方法一系列的有效参数<br> <code>cmd + P</code></p>
+<p>跳转至错误或警告<br> <code>fn + F2</code></p>
+<p>查看类／方法的注释文档<br> <code>fn + F1</code></p>
+<h2 id="（二）控制操作相关"><a href="#（二）控制操作相关" class="headerlink" title="（二）控制操作相关"></a>（二）控制操作相关</h2><p>Surround with快速调出if,for,try…catch,while等环绕代码<br> <code>opt + cmd + T</code></p>
+<p>快速生成模版代码块，如if,while,return<br> <code>cmd + J</code></p>
+<p>快速生成getter／setter方法，构造方法，toString()方法等<br> <code>cmd + N</code></p>
+<p>行尾自动添加分号，if后面自动加“(){ }”<br> <code>sft + cmd + enter</code></p>
+<p>引入重写父类的方法<br> <code>ctr + O</code></p>
+<p>引入接口或抽象类方法的实现<br> <code>ctr + I</code></p>
+<p>下一步意图猜测<br> <code>opt + return</code></p>
+<p>将最近使用的剪贴板内容选择插入到文本<br> <code>sft + cmd + V</code></p>
+<p>注释与取消注释，注释效果 //…<br> <code>cmd + /</code></p>
+<p>注释与取消注释，注释效果 /…/<br> <code>opt + cmd + /</code></p>
+<p>上下移动代码<br> <code>opt + sft + up/down</code></p>
+<p>上下代码行换位<br> <code>cmd + sft + up/down</code></p>
+<p>单词间或驼峰间跳转<br> <code>Alt + ← / →</code></p>
+<p>切换大小写<br> <code>sft + cmd + U</code></p>
+<p>切换文件<br> <code>ctr + tab</code></p>
+<p>选择区域<br> <code>opt + up/down</code><br> <strong>注：如果光标停留在大括号处，则选中整个大括号区域</strong></p>
+<p>局部代码块展开/收缩<br> <code>cmd + + / cmd + -</code></p>
+<p>全部代码块展开/收缩<br> <code>sft + cmd + + / sft + cmd + -</code></p>
+<p>撤销/取消撤销<br> <code>cmd + Z / sft + cmd +Z</code></p>
+<p>删除行<br> <code>cmd + C / cmd + delete</code></p>
+<p>复制行<br> <code>cmd + D</code></p>
+<p>合并行<br> <code>sft + ctr + J</code></p>
+<p>列编辑<br> <code>Alt + 鼠标框选</code></p>
+<p>格式化代码<br> <code>opt + cmd + L</code></p>
+<p>自动缩进对齐<br> <code>ctr + alt + I</code></p>
+<p>清除无效包引用<br> <code>opt + ctr + O</code></p>
+<p>打开设置<br> <code>cmd + ,</code></p>
+<p>隐藏窗口<br> <code>sft + esc</code></p>
+<h2 id="（三）代码重构相关"><a href="#（三）代码重构相关" class="headerlink" title="（三）代码重构相关"></a>（三）代码重构相关</h2><p>类名／方法名／变量名 重命名操作<br> <code>sft + fn + F6</code></p>
+<p>方法重构，方法抽离<br> <code>opt + cmd + M</code></p>
+<p>抽离成方法参数<br> <code>opt + cmd + P</code></p>
+<p>抽离为局部变量<br> <code>opt + cmd + V</code></p>
+<p>抽离为成员变量<br> <code>opt + cmd + F</code></p>
+<h2 id="（四）编译运行调试"><a href="#（四）编译运行调试" class="headerlink" title="（四）编译运行调试"></a>（四）编译运行调试</h2><p>编译源码<br> <code>cmd + fn + F9</code></p>
+<p>运行<br> <code>ctr + R</code></p>
+<p>调试<br> <code>ctr + B</code></p>
+<p>Step Into（进入到代码）<br> <code>fn + F7</code></p>
+<p>Step Over（跳到下一步）<br> <code>fn + F8</code></p>
+<p>直接运行<br> <code>opt + cmd + R</code></p>
+<p>退出调试<br> <code>cmd + fn + F2</code></p>
+<h2 id="（五）版本控制"><a href="#（五）版本控制" class="headerlink" title="（五）版本控制"></a>（五）版本控制</h2><p>打开git操作列表<br> <code>ctr + V</code></p>
+<p>提交修改<br> <code>cmd + K</code></p>
+<p>推到服务器<br> <code>sft + cmd + K</code></p>
+<h1 id="【option-command-b】"><a href="#【option-command-b】" class="headerlink" title="【option + command + b】"></a>【option + command + b】</h1><h3 id="查看抽象类或方法的子类实现"><a href="#查看抽象类或方法的子类实现" class="headerlink" title="查看抽象类或方法的子类实现"></a>查看抽象类或方法的子类实现</h3><h1 id="【option-shift-上下键】"><a href="#【option-shift-上下键】" class="headerlink" title="【option + shift + 上下键】"></a>【option + shift + 上下键】</h1><h3 id="移动代码"><a href="#移动代码" class="headerlink" title="移动代码"></a>移动代码</h3>]]></content>
+      <tags>
+        <tag>flutter</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Stateful Widget 生命周期</title>
+    <url>/2020/11/08/2020-11-08-Stateful-Widget-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</url>
+    <content><![CDATA[<p>研究Stateful Widget的生命周期是如何维护的</p>
+<p>StatelessWidget很简单,只有一个build</p>
+<a id="more"></a>
+
+<p>StatefulWidget 生命周期相关函数有</p>
+<h6 id="createState"><a href="#createState" class="headerlink" title="createState"></a>createState</h6><ul>
+<li><p>Widget创建的第一步,立刻调用</p>
+</li>
+<li><p>可以被调用多次</p>
+</li>
+<li><p>调用后,buildContext已经生成</p>
+</li>
+<li><p>状态并未创建</p>
+</li>
+</ul>
+<h6 id="initState"><a href="#initState" class="headerlink" title="initState"></a>initState</h6><ul>
+<li><p>只会被调用一次,此时view没有渲染,所以buildContext还不能使用</p>
+</li>
+<li><p>必须调用super.initState</p>
+</li>
+</ul>
+<h6 id="didChangeDependencies"><a href="#didChangeDependencies" class="headerlink" title="didChangeDependencies"></a>didChangeDependencies</h6><ul>
+<li>在initState之后立即调用,view已经渲染完成,statefulwidget刷新时不会调用</li>
+</ul>
+<h6 id="build"><a href="#build" class="headerlink" title="build"></a>build</h6><ul>
+<li>不能返回null</li>
+<li>在didChangeDependencies之后调用</li>
+<li>每次刷新,build都会重新调用</li>
+<li>不要再build里添加其他非必要逻辑</li>
+</ul>
+<h6 id="didUpdateWidget"><a href="#didUpdateWidget" class="headerlink" title="didUpdateWidget"></a>didUpdateWidget</h6><ul>
+<li>widget key发生变化时会调用,一般不会用</li>
+</ul>
+<h6 id="deactivate"><a href="#deactivate" class="headerlink" title="deactivate"></a>deactivate</h6><ul>
+<li>widget将被remove时调用,也有可能重新放入render tree中</li>
+</ul>
+<h6 id="dispose"><a href="#dispose" class="headerlink" title="dispose"></a>dispose</h6><ul>
+<li>当widget确实被销毁后调用</li>
+</ul>
+<h6 id="mounted"><a href="#mounted" class="headerlink" title="mounted"></a>mounted</h6><ul>
+<li>mounted是个变量,当buildContext可用渲染结束时为true,dispose后变为false</li>
+</ul>
+<h4 id="监听App生命周期"><a href="#监听App生命周期" class="headerlink" title="监听App生命周期"></a>监听App生命周期</h4><ul>
+<li>在statefulwidget 的state类添加<code>混入</code>WidgetsBindingObserver</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_MyScreenState</span> <span class="keyword">extends</span> <span class="title">State</span>&lt;<span class="title">MyScreen</span>&gt; <span class="title">with</span> <span class="title">WidgetsBindingObserver</span></span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>在initState里添加监听</p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line">WidgetsBinding.instance.addObserver(<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在dispose删除监听</p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line">WidgetsBinding.instance.removeObserver(<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<ul>
+<li><p>在state类里重写<code>didChangeAppLifecycleState(AppLifecycleState state)</code></p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="meta">@override</span></span><br><span class="line"><span class="keyword">void</span> didChangeAppLifecycleState(AppLifecycleState state) &#123;</span><br><span class="line">  <span class="keyword">super</span>.didChangeAppLifecycleState(state);</span><br><span class="line">  <span class="keyword">if</span> (state == AppLifecycleState.paused) &#123;</span><br><span class="line">    <span class="comment">// went to Background</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (state == AppLifecycleState.resumed) &#123;</span><br><span class="line">    <span class="comment">// came back to Foreground</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<p>生命周期状态有4种</p>
+<ul>
+<li>resumed</li>
+<li>inactive</li>
+<li>paused</li>
+<li>suspending</li>
+</ul>
+<p>转自<a href="https://medium.com/flutter-community/flutter-lifecycle-for-android-and-ios-developers-8f532307e0c7">https://medium.com/flutter-community/flutter-lifecycle-for-android-and-ios-developers-8f532307e0c7</a></p>
+]]></content>
+      <tags>
+        <tag>flutter</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>dart的语法糖和一些trick</title>
+    <url>/2020/11/19/2020-11-19-dart%E7%9A%84%E8%AF%AD%E6%B3%95%E7%B3%96%E5%92%8C%E4%B8%80%E4%BA%9Btrick/</url>
+    <content><![CDATA[<p>知道这些tips,可以写出更简洁的代码</p>
+<a id="more"></a>
+
+<h6 id="1-string的乘法"><a href="#1-string的乘法" class="headerlink" title="1.string的乘法"></a>1.string的乘法</h6><figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;🎄&#x27;</span> * i);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Output:</span></span><br><span class="line"><span class="comment">// 🎄</span></span><br><span class="line"><span class="comment">// 🎄🎄</span></span><br><span class="line"><span class="comment">// 🎄🎄🎄</span></span><br><span class="line"><span class="comment">// 🎄🎄🎄🎄</span></span><br><span class="line"><span class="comment">// 🎄🎄🎄🎄🎄</span></span><br></pre></td></tr></table></figure>
+
+<h6 id="2-同步调用Future函数"><a href="#2-同步调用Future函数" class="headerlink" title="2.同步调用Future函数"></a>2.同步调用Future函数</h6><figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="comment">//演示数据</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CovidAPI</span> </span>&#123;</span><br><span class="line">  Future&lt;<span class="built_in">int</span>&gt; getCases() =&gt; Future.value(<span class="number">1000</span>);</span><br><span class="line">  Future&lt;<span class="built_in">int</span>&gt; getRecovered() =&gt; Future.value(<span class="number">100</span>);</span><br><span class="line">  Future&lt;<span class="built_in">int</span>&gt; getDeaths() =&gt; Future.value(<span class="number">10</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用Future.wait</p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="keyword">final</span> api = CovidAPI();</span><br><span class="line"><span class="keyword">final</span> values = <span class="keyword">await</span> Future.wait([</span><br><span class="line">    api.getCases(),</span><br><span class="line">    api.getRecovered(),</span><br><span class="line">    api.getDeaths(),</span><br><span class="line">]);</span><br><span class="line"><span class="built_in">print</span>(values); <span class="comment">// [1000, 100, 10]</span></span><br></pre></td></tr></table></figure>
+
+<h6 id="3-类里的call方法"><a href="#3-类里的call方法" class="headerlink" title="3.类里的call方法"></a>3.类里的call方法</h6><figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PasswordValidator</span> </span>&#123;</span><br><span class="line">  <span class="built_in">bool</span> call(<span class="built_in">String</span> password) &#123;</span><br><span class="line">    <span class="keyword">return</span> password.length &gt; <span class="number">10</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以像方法一样直接通过实例对象调用,</p>
+<p>两种调用方式</p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="keyword">final</span> validator = PasswordValidator();</span><br><span class="line"><span class="comment">// can use it like this:</span></span><br><span class="line">validator(<span class="string">&#x27;test&#x27;</span>);</span><br><span class="line">validator(<span class="string">&#x27;test1234&#x27;</span>);</span><br><span class="line"><span class="comment">// no need to use it like this:</span></span><br><span class="line">validator.call(<span class="string">&#x27;not-so-frozen-arctic&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h6 id="4用”-call-”调用回调函数避免为空"><a href="#4用”-call-”调用回调函数避免为空" class="headerlink" title="4用”?.call()”调用回调函数避免为空"></a>4用”?.call()”调用回调函数避免为空</h6><figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="comment">//demo类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CustomDraggable</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> CustomDraggable(&#123;Key key, <span class="keyword">this</span>.onDragCompleted&#125;) : <span class="keyword">super</span>(key: key);</span><br><span class="line">  <span class="keyword">final</span> VoidCallback? onDragCompleted;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> _dragComplete() &#123;</span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> Implement me</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;<span class="comment">/*...*/</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是传统写法</p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> _dragComplete() &#123;</span><br><span class="line">    <span class="keyword">if</span> (onDragCompleted != <span class="keyword">null</span>) &#123;</span><br><span class="line">      onDragCompleted();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>另一种简便写法,为null就不会调用了,和上面等效</p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line">Future&lt;<span class="keyword">void</span>&gt; _dragComplete() <span class="keyword">async</span> &#123;</span><br><span class="line">   onDragCompleted?.call();</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h6 id="5-函数作为参数传递"><a href="#5-函数作为参数传递" class="headerlink" title="5.函数作为参数传递"></a>5.函数作为参数传递</h6><p>dart里函数也是一等公民,具有和其他变量同等待遇</p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  <span class="keyword">final</span> sayHi = (name) =&gt; <span class="string">&#x27;Hi, <span class="subst">$name</span>&#x27;</span>;</span><br><span class="line">  welcome(sayHi, <span class="string">&#x27;Andrea&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> welcome(<span class="built_in">String</span> <span class="built_in">Function</span>(<span class="built_in">String</span>) greet,</span><br><span class="line">             <span class="built_in">String</span> name) &#123;</span><br><span class="line">  <span class="built_in">print</span>(greet(name));</span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&#x27;Welcome to this course&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h6 id="6-容器判断和容器展开"><a href="#6-容器判断和容器展开" class="headerlink" title="6.容器判断和容器展开"></a>6.容器判断和容器展开</h6><p>…可以把容器的元素展开,也可以在容器里添加if判断语法</p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> addRatings = <span class="keyword">true</span>;</span><br><span class="line"><span class="keyword">const</span> restaurant = &#123;</span><br><span class="line">  <span class="string">&#x27;name&#x27;</span> : <span class="string">&#x27;Pizza Mario&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;cuisine&#x27;</span>: <span class="string">&#x27;Italian&#x27;</span>,</span><br><span class="line">  <span class="keyword">if</span> (addRatings) ...&#123;</span><br><span class="line">    <span class="string">&#x27;avgRating&#x27;</span>: <span class="number">4.3</span>,</span><br><span class="line">    <span class="string">&#x27;numRatings&#x27;</span>: <span class="number">5</span>,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h6 id="7-安全遍历map”-entries”"><a href="#7-安全遍历map”-entries”" class="headerlink" title="7.安全遍历map”.entries”"></a>7.安全遍历map”.entries”</h6><figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> entry <span class="keyword">in</span> timeSpent.entries) &#123;</span><br><span class="line">  <span class="comment">// do something with keys and values</span></span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&#x27;<span class="subst">$&#123;entry.key&#125;</span>: <span class="subst">$&#123;entry.value&#125;</span>&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>比遍历key安全</p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">in</span> timeSpent.keys) &#123;</span><br><span class="line">  <span class="keyword">final</span> value = timeSpent[key];</span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&#x27;<span class="subst">$key</span>: <span class="subst">$value</span>&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个实现如果key对应的value是null,就会报错</p>
+<h6 id="8-使用命名构造函数-更具有维护性-可读性"><a href="#8-使用命名构造函数-更具有维护性-可读性" class="headerlink" title="8.使用命名构造函数,更具有维护性,可读性"></a>8.使用命名构造函数,更具有维护性,可读性</h6><figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Temperature</span> </span>&#123;</span><br><span class="line">  Temperature.celsius(<span class="keyword">this</span>.celsius);</span><br><span class="line">  Temperature.fahrenheit(<span class="built_in">double</span> fahrenheit)</span><br><span class="line">    : celsius = (fahrenheit - <span class="number">32</span>) / <span class="number">1.8</span>;</span><br><span class="line">  <span class="built_in">double</span> celsius;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h6 id="9-Getter和Setter"><a href="#9-Getter和Setter" class="headerlink" title="9.Getter和Setter"></a>9.Getter和Setter</h6><p>dart里的getter和setter的语法</p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Temperature</span> </span>&#123;</span><br><span class="line">  Temperature.celsius(<span class="keyword">this</span>.celsius);</span><br><span class="line">  Temperature.fahrenheit(<span class="built_in">double</span> fahrenheit)</span><br><span class="line">    : celsius = (fahrenheit - <span class="number">32</span>) / <span class="number">1.8</span>;</span><br><span class="line">  <span class="built_in">double</span> celsius;</span><br><span class="line">  <span class="built_in">double</span> <span class="keyword">get</span> fahrenheit</span><br><span class="line">    =&gt; celsius * <span class="number">1.8</span> + <span class="number">32</span>;</span><br><span class="line">  <span class="keyword">set</span> fahrenheit(<span class="built_in">double</span> fahrenheit)</span><br><span class="line">    =&gt; celsius = (fahrenheit - <span class="number">32</span>) / <span class="number">1.8</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="keyword">final</span> temp1 = Temperature.celsius(<span class="number">30</span>);</span><br><span class="line"><span class="built_in">print</span>(temp1.fahrenheit);</span><br><span class="line"><span class="keyword">final</span> temp2 = Temperature.fahrenheit(<span class="number">90</span>);</span><br><span class="line">temp2.celsius = <span class="number">28</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>10.用<code>_</code>下划线代替未使用的参数</p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyListView</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> ListView.builder(</span><br><span class="line">      itemBuilder: (context, index) =&gt; ListTile(</span><br><span class="line">        title: Text(<span class="string">&#x27;all the same&#x27;</span>),</span><br><span class="line">      ),</span><br><span class="line">      itemCount: <span class="number">10</span>,</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果不使用context,index,可以写成如下</p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line">istView.builder(</span><br><span class="line">  itemBuilder: (_, __) =&gt; ListTile(</span><br><span class="line">    title: Text(<span class="string">&#x27;all the same&#x27;</span>),</span><br><span class="line">  ),</span><br><span class="line">  itemCount: <span class="number">10</span>,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>_和__代表不同的参数</p>
+<h6 id="11-单例实现"><a href="#11-单例实现" class="headerlink" title="11.单例实现"></a>11.单例实现</h6><p>dart的单例实现方式</p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="comment">// file_system.dart</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FileSystem</span> </span>&#123;</span><br><span class="line">  FileSystem._();</span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">final</span> instance = FileSystem._();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>无法实例化,仅能通过以下方式访问</p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="comment">// some_other_file.dart</span></span><br><span class="line"><span class="keyword">final</span> fs = FileSystem.instance;</span><br><span class="line"><span class="comment">// do something with fs</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>12.Set</p>
+<p>如果需要一个不包含重复元素的集合,那么使用Set</p>
+<p>一个细节,如果使用final 修饰set,有重复元素只会提示warning</p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="comment">// set is final, compiles</span></span><br><span class="line"><span class="keyword">final</span> citiesSet = &#123;</span><br><span class="line">  <span class="string">&#x27;London&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;Paris&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;Rome&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;London&#x27;</span>, <span class="comment">// Two elements in a set literal shouldn&#x27;t be equal</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>如果用const修复,会提示无法编译</p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="comment">// set is const, doesn&#x27;t compile</span></span><br><span class="line"><span class="keyword">const</span> citiesSet = &#123;</span><br><span class="line">  <span class="string">&#x27;London&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;Paris&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;Rome&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;London&#x27;</span>, <span class="comment">// Two elements in a constant set literal can&#x27;t be equal</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<p><code>TODO</code></p>
+<h2 id="15-Common-Stream-constructors"><a href="#15-Common-Stream-constructors" class="headerlink" title="15. Common Stream constructors"></a><a href="https://codewithandrea.com/videos/2020-11-16-top-dart-tips-and-tricks-for-flutter-devs/#15-common-stream-constructors">15. Common Stream constructors</a></h2><p>The Stream class also comes with some handy constructors. Here are the most common ones:</p>
+<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line"><span class="module-access"><span class="module"><span class="identifier">Stream</span>.</span></span>from<span class="constructor">Iterable([1, 2, 3])</span>;</span><br><span class="line"><span class="module-access"><span class="module"><span class="identifier">Stream</span>.</span></span>value(<span class="number">10</span>);</span><br><span class="line"><span class="module-access"><span class="module"><span class="identifier">Stream</span>.</span></span>empty<span class="literal">()</span>;</span><br><span class="line"><span class="module-access"><span class="module"><span class="identifier">Stream</span>.</span></span>error(<span class="constructor">Exception(&#x27;<span class="params">something</span> <span class="params">went</span> <span class="params">wrong</span>&#x27;)</span>);</span><br><span class="line"><span class="module-access"><span class="module"><span class="identifier">Stream</span>.</span></span>from<span class="constructor">Future(Future.<span class="params">delayed</span>(Duration(<span class="params">seconds</span>: 1)</span>,<span class="function"> <span class="params">()</span> =&gt;</span> <span class="number">42</span>));</span><br><span class="line"><span class="module-access"><span class="module"><span class="identifier">Stream</span>.</span></span>periodic(<span class="constructor">Duration(<span class="params">seconds</span>: 1)</span>,<span class="function"> (<span class="params">index</span>) =&gt;</span> index);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>use <code>Stream.fromIterable</code> to create a <code>Stream</code> from a list of values.</li>
+<li>use <code>Stream.value</code> if you have just one value.</li>
+<li>use <code>Stream.empty</code> to create an empty stream.</li>
+<li>use <code>Stream.error</code> to create a stream that contains an error value.</li>
+<li>use <code>Stream.fromFuture</code> to create a stream that will contain only one value, and that value will be available when the future completes.</li>
+<li>use <code>Stream.periodic</code> to create a periodic stream of events. You can specify a <code>Duration</code> as the time interval between events, and an anonymous function to generate each value given its index in the stream.</li>
+</ul>
+<h2 id="16-Sync-and-Async-Generators"><a href="#16-Sync-and-Async-Generators" class="headerlink" title="16. Sync and Async Generators"></a><a href="https://codewithandrea.com/videos/2020-11-16-top-dart-tips-and-tricks-for-flutter-devs/#16-sync-and-async-generators">16. Sync and Async Generators</a></h2><p>In Dart we can define a <strong>synchronous</strong> generator as a function that returns an <code>Iterable</code>:</p>
+<figure class="highlight excel"><table><tr><td class="code"><pre><span class="line">Iterable&lt;<span class="built_in">int</span>&gt; <span class="built_in">count</span>(<span class="built_in">int</span> <span class="built_in">n</span>) sync* &#123;</span><br><span class="line">  for (<span class="built_in">var</span> i = <span class="number">1</span>; i &lt;= <span class="built_in">n</span>; i++) &#123;</span><br><span class="line">    <span class="built_in">yield</span> i;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>This uses the <code>sync*</code> syntax. Inside the function we can “generate” or <code>yield</code> multiple values. These will be returned as an <code>Iterable</code> when the function completes.</p>
+<hr>
+<p>On the other hand, an <strong>asynchronous</strong> generator is a function that returns a <code>Stream</code>:</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function">Stream&lt;<span class="keyword">int</span>&gt; <span class="title">countStream</span>(<span class="params"><span class="keyword">int</span> n</span>) <span class="keyword">async</span>*</span> &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">    <span class="keyword">yield</span> i;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>This uses this <code>async*</code> syntax. Inside the function we can <code>yield</code> values just like in the synchronous case.</p>
+<p>But if we want we can <code>await</code> on Future-based APIs, because this is an <strong>asynchronous</strong> generator:</p>
+<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line">Stream&lt;<span class="built_in">int</span>&gt; count<span class="constructor">Stream(<span class="params">int</span> <span class="params">n</span>)</span> async* &#123;</span><br><span class="line">  <span class="keyword">for</span> (var i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">    <span class="comment">// dummy delay - this could be a network request</span></span><br><span class="line">    await <span class="module-access"><span class="module"><span class="identifier">Future</span>.</span></span>delayed(<span class="constructor">Duration(<span class="params">seconds</span>: 1)</span>);</span><br><span class="line">    yield i;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>转自</p>
+<p><a href="https://codewithandrea.com/videos/2020-11-16-top-dart-tips-and-tricks-for-flutter-devs/#8-use-named-constructors-and-initializer-lists-for-more-ergonomic-apis">https://codewithandrea.com/videos/2020-11-16-top-dart-tips-and-tricks-for-flutter-devs/#8-use-named-constructors-and-initializer-lists-for-more-ergonomic-apis</a></p>
+]]></content>
+      <tags>
+        <tag>flutter</tag>
+      </tags>
+  </entry>
 </search>
